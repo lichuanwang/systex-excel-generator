@@ -1,6 +1,8 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Experience;
+import com.systex.excelgenerator.utils.FormattingHandler;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -9,6 +11,11 @@ import java.util.List;
 public class ExperienceSection extends Section {
 
     private List<Experience> experiences;
+    private FormattingHandler formattingHandler;
+
+    {
+        this.formattingHandler = new FormattingHandler();
+    }
 
     public ExperienceSection(List<Experience> experiences) {
         super("Experience");
@@ -32,8 +39,15 @@ public class ExperienceSection extends Section {
             row.createCell(0).setCellValue(exp.getCompanyName());
             row.createCell(1).setCellValue(exp.getJobTitle());
             row.createCell(2).setCellValue(exp.getDescription());
-            row.createCell(3).setCellValue(exp.getStartDate());
-            row.createCell(4).setCellValue(exp.getEndDate());
+
+            //  format start and end date
+            Cell dateCell = row.createCell(3);
+            dateCell.setCellValue(exp.getStartDate());
+            dateCell.setCellStyle(formattingHandler.DateFormatting(exp.getStartDate(), sheet.getWorkbook()));
+
+            dateCell = row.createCell(4);
+            dateCell.setCellValue(exp.getEndDate());
+            dateCell.setCellStyle(formattingHandler.DateFormatting(exp.getEndDate(), sheet.getWorkbook()));
         }
 
         return rowNum;

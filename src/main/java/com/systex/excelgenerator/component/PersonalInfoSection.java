@@ -2,6 +2,8 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.component.Section;
+import com.systex.excelgenerator.utils.FormattingHandler;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -10,6 +12,11 @@ import java.text.SimpleDateFormat;
 public class PersonalInfoSection extends Section {
 
     private Candidate candidate;
+    private FormattingHandler formattingHandler;
+
+    {
+        this.formattingHandler = new FormattingHandler();
+    }
 
     public PersonalInfoSection(Candidate candidate) {
         super("Personal Information");
@@ -35,7 +42,11 @@ public class PersonalInfoSection extends Section {
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Phone");
-        row.createCell(1).setCellValue(candidate.getPhone());
+
+        // format phone number
+        Cell personelCell = row.createCell(1);
+        personelCell.setCellValue(candidate.getPhone());
+        personelCell.setCellStyle(formattingHandler.TextFormatting(candidate.getPhone(), sheet.getWorkbook()));
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Email");

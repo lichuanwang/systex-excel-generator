@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class ExcelFile {
     private XSSFWorkbook workbook;
+    private XSSFSheet sheet;
 
     public ExcelFile() {
         this.workbook = new XSSFWorkbook();
@@ -28,4 +29,6 @@ public class ExcelFile {
     public XSSFWorkbook getWorkbook() {
         return workbook;
     }
+
+    public XSSFSheet getSheet() {return sheet;}
 }
