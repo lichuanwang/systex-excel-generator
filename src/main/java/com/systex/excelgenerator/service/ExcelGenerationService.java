@@ -2,7 +2,7 @@ package com.systex.excelgenerator.service;
 
 import com.systex.excelgenerator.builder.ConcreteExcelBuilder;
 import com.systex.excelgenerator.builder.ExcelBuilder;
-import com.systex.excelgenerator.builder.StyleBuilder;
+import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.director.ExcelDirector;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;

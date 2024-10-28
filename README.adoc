@@ -1,0 +1,107 @@
+= Candidate Excel Generation Project Documentation
+Oscar Wang
+:doctype: book
+:toc: left
+:toclevels: 3
+
+== Project Overview
+
+This project is a **Spring Boot** application that generates Excel files representing candidate profiles based on resume data. Each profile includes various sections like personal information, education, experience, skills, and projects. The Excel generation leverages the **Apache POI** library and implements the **Builder Design Pattern** to construct and organize Excel content in a modular and maintainable way.
+
+== Technologies Used
+
+* Java
+* Apache POI (for Excel file generation)
+* AsciiDoc (for documentation)
+
+== Project Structure
+
+The project is organized into several key packages:
+
+- `builder`:: Contains classes for the Builder design pattern, orchestrating the Excel file creation process.
+- `model`:: Holds data models for candidate details like `Candidate`, `Education`, `Experience`, etc.
+- `component`:: Defines sections of the Excel file such as `PersonalInfoSection` and `ExperienceSection`.
+- `excel`:: Manages the `ExcelFile` class, which encapsulates Apache POI workbook creation.
+- `style`:: Implements the `StyleBuilder` for fluent and customizable styling of Excel cells after content generation.
+- `service`:: Contains `ExcelGenerationService`, responsible for orchestrating Excel generation and applying styles.
+
+== Design Pattern: Builder Pattern
+
+The **Builder Design Pattern** is used to separate the construction of the complex Excel file object from its representation. This approach allows for flexible and modular design, making it easy to add, remove, or change parts of the file generation logic without affecting other parts of the codebase.
+
+=== Components of the Builder Pattern
+
+1. **ExcelBuilder (Abstract Builder)**::
+Defines the methods needed to construct an Excel file, such as `buildHeader()`, `buildSections()`, and `buildFooter()`.
+
+2. **ConcreteExcelBuilder (Concrete Builder)**::
+Implements the actual logic for building the content of each Excel section. It creates and populates each section, then organizes them in the final Excel file.
+
+3. **ExcelDirector (Director)**::
+Manages the building process, ensuring that each step is completed in the correct order.
+
+4. **ExcelFile (Product)**::
+Encapsulates the Apache POI workbook and provides methods to create sheets and save the file.
+
+This design pattern enhances modularity and makes the code easily extendable for new Excel sections or formats.
+
+== Project Components
+
+=== Model Package (`model`)
+
+The `model` package contains classes that represent data associated with a candidate. These include:
+
+- `Candidate`:: Contains candidate-specific details like name, address, and lists of education, experience, skills, and projects.
+- `Education`:: Stores information about a candidate's educational background, including school name, degree, and `LocalDate` start and end dates.
+- `Experience`:: Represents the candidate's work experience with details such as company name, role, and start/end dates.
+- `Skill` and `Project`:: Store information about the candidate's skills and project experience, respectively.
+- `Address`:: Stores information about street address, city, zipcode, country.
+
+=== Component Package (`component`)
+
+Each class in the `component` package represents a section in the Excel file. Examples include:
+
+- `PersonalInfoSection`:: Populates the candidate's personal information.
+- `ExperienceSection`:: Adds rows for the candidate's work experience.
+- `EducationSection`:: Adds rows for each educational qualification.
+- `ProjectSection`:: Add rows for each project that the candidate did.
+- `SkillSection`:: Add rows for each skill that the candidate have.
+
+Each section is responsible for its own content generation within the Excel sheet.
+
+=== Excel Package (`excel`)
+
+The `ExcelFile` class encapsulates Apache POI's `XSSFWorkbook` and provides methods to manage the workbook, such as creating sheets and saving the file to disk.
+
+=== Style Package (`style`)
+
+The `StyleBuilder` class in this package provides a **Fluent API** for applying custom styles to the Excel cells. This approach enables easy and readable configuration of styles, such as bolding headers, adjusting font sizes, and setting borders. Styles are applied after the content generation is complete, allowing for a clear separation between data and presentation.
+
+=== Service Package (`service`)
+
+The `ExcelGenerationService` class orchestrates the overall Excel generation process by:
+
+1. Initializing the builder and director to construct the file.
+2. Using the `StyleBuilder` to apply consistent styling to sections and cells.
+3. Saving the generated file.
+
+== How to Run the Project
+
+To run this project:
+
+1. Clone the repository and navigate to the project directory.
+2. Ensure that the necessary dependencies are installed.
+3. Run the `Main` class to generate an example Excel file with sample data.
+4. The output file `candidate_info.xlsx` should appear in your project directory.
+
+== Future Improvements
+
+Possible extensions to this project include:
+
+- Adding support for more sections, such as certifications or awards.
+- Enhancing the `StyleBuilder` to support additional styles, such as cell background colors or custom fonts.
+- Implementing validation rules for candidate data to ensure completeness and accuracy.
+
+== Conclusion
+
+This project showcases an effective use of the Builder Design Pattern for constructing complex Excel files in a structured, modular way. The pattern, combined with a fluent-style `StyleBuilder`, enables clear separation between data generation and presentation, making the project easy to maintain, extend, and customize.

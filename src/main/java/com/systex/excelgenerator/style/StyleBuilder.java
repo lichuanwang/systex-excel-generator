@@ -1,4 +1,4 @@
-package com.systex.excelgenerator.builder;
+package com.systex.excelgenerator.style;
 
 import org.apache.poi.ss.usermodel.*;
 
