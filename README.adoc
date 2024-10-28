@@ -6,7 +6,7 @@ Oscar Wang
 
 == Project Overview
 
-This project is a **Spring Boot** application that generates Excel files representing candidate profiles based on resume data. Each profile includes various sections like personal information, education, experience, skills, and projects. The Excel generation leverages the **Apache POI** library and implements the **Builder Design Pattern** to construct and organize Excel content in a modular and maintainable way.
+This project is a **Java** application that generates Excel files representing candidate profiles based on resume data. Each profile includes various sections like personal information, education, experience, skills, and projects. The Excel generation leverages the **Apache POI** library and implements the **Builder Design Pattern** to construct and organize Excel content in a modular and maintainable way.
 
 == Technologies Used
 
