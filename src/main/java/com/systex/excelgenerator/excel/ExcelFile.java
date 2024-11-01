@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ExcelFile {
-    private XSSFWorkbook workbook;
+    private final XSSFWorkbook workbook;
 
     public ExcelFile() {
         this.workbook = new XSSFWorkbook();
@@ -19,7 +19,7 @@ public class ExcelFile {
     }
 
     // Method to save the Excel file to a specified path
-    public void saveToFile(String filePath) throws IOException {
+    public final void saveToFile(String filePath) throws IOException {
         try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
             workbook.write(outputStream);
         }
