@@ -24,10 +24,13 @@ public class ExcelGenerationService {
         // Apply custom styles to the content
         XSSFSheet sheet = excelFile.getWorkbook().getSheet("Candidate Information");
         applyStyles(sheet);
+//        for(int i = 0; i < 5; i++) {
+//            sheet.autoSizeColumn(i);
+//        }
 
         // Save the Excel file
         try {
-            excelFile.saveToFile("candidate_info.xlsx");
+            excelFile.saveToFile("candidate_info_test.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -39,6 +39,7 @@ public class Main {
         experience1.setJobTitle("Software Engineer");
         experience1.setStartDate(LocalDate.of(2019, 9, 30));
         experience1.setEndDate(LocalDate.of(2020, 10, 30));
+        experience1.setDescription("Developed large scale application");
 
         candidate.setExperienceList(Arrays.asList(experience1));
 

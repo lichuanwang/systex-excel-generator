@@ -21,26 +21,46 @@ public class ConcreteExcelBuilder extends ExcelBuilder {
     public void buildSections() {
         XSSFSheet sheet = excelFile.createSheet("Candidate Information");
 
-        Section personalInfoSection = new PersonalInfoSection(candidate);
-        Section educationSection = new EducationSection(candidate.getEducationList());
-        Section experienceSection = new ExperienceSection(candidate.getExperienceList());
-        Section projectSection = new ProjectSection(candidate.getProjects());
-        Section SkillSection = new SkillSection(candidate.getSkills());
+        // Create new section
+        PersonalInfoSection personalInfoSection = new PersonalInfoSection();
+        EducationSection educationSection = new EducationSection();
+        ExperienceSection experienceSection = new ExperienceSection();
+        ProjectSection projectSection = new ProjectSection();
+        SkillSection skillSection = new SkillSection();
+
+        // Assign data to each section
+        personalInfoSection.setData(candidate);
+        educationSection.setData(candidate.getEducationList());
+        experienceSection.setData(candidate.getExperienceList());
+        projectSection.setData(candidate.getProjects());
+        skillSection.setData(candidate.getSkills());
 
         int rowNum = 0;
-        rowNum = personalInfoSection.populate(sheet, rowNum);
-        rowNum += 5;
+        if (!personalInfoSection.isEmpty()) {
+            rowNum = personalInfoSection.populate(sheet, rowNum);
+            rowNum += 5;
+        }
 
-        rowNum = educationSection.populate(sheet, rowNum);
-        rowNum += candidate.getEducationList().size() + 3;
+        if (!educationSection.isEmpty()) {
+            rowNum = educationSection.populate(sheet, rowNum);
+            rowNum += 5;
+        }
 
-        rowNum = experienceSection.populate(sheet, rowNum);
-        rowNum += candidate.getExperienceList().size() + 3;
+        if (!experienceSection.isEmpty()) {
+            rowNum = experienceSection.populate(sheet, rowNum);
+            rowNum += 5;
+        }
 
-        rowNum = projectSection.populate(sheet, rowNum);
-        rowNum += candidate.getProjects().size() + 3;
+        if (!projectSection.isEmpty()) {
+            rowNum = projectSection.populate(sheet, rowNum);
+            rowNum += 5;
+        }
 
-        rowNum= SkillSection.populate(sheet, rowNum);
+        if (!skillSection.isEmpty()) {
+            rowNum = skillSection.populate(sheet, rowNum);
+            rowNum += 5;
+        }
+
         System.out.println(rowNum);
     }
 
