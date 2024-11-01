@@ -27,21 +27,11 @@ public class ConcreteExcelBuilder extends ExcelBuilder {
         Section projectSection = new ProjectSection(candidate.getProjects());
         Section SkillSection = new SkillSection(candidate.getSkills());
 
-        int rowNum = 0;
-        rowNum = personalInfoSection.populate(sheet, rowNum);
-        rowNum += 5;
-
-        rowNum = educationSection.populate(sheet, rowNum);
-        rowNum += candidate.getEducationList().size() + 3;
-
-        rowNum = experienceSection.populate(sheet, rowNum);
-        rowNum += candidate.getExperienceList().size() + 3;
-
-        rowNum = projectSection.populate(sheet, rowNum);
-        rowNum += candidate.getProjects().size() + 3;
-
-        rowNum= SkillSection.populate(sheet, rowNum);
-        System.out.println(rowNum);
+        personalInfoSection.populate(sheet);
+        educationSection.populate(sheet);
+        experienceSection.populate(sheet);
+        projectSection.populate(sheet);
+        SkillSection.populate(sheet);
     }
 
     @Override

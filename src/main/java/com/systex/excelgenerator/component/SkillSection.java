@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Skill;
+import com.systex.excelgenerator.utils.ExcelUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -16,22 +17,47 @@ public class SkillSection extends Section {
     }
 
     @Override
-    public int populate(XSSFSheet sheet, int rowNum) {
-        addHeader(sheet, rowNum);
-        rowNum++;
+    public int populate(XSSFSheet sheet) {
+        addHeader(sheet);
+        if(sheet.getPhysicalNumberOfRows() == 0){
+            relativeRow = 0;
+            relativeColumn = 0;
+        }
+        int bodyRow = relativeRow + 1;
+        int flag = relativeColumn;
 
-        Row headerRow = sheet.createRow(rowNum++);
-        headerRow.createCell(0).setCellValue("Id");
-        headerRow.createCell(1).setCellValue("Name");
-        headerRow.createCell(2).setCellValue("Level");
+        String[] headers = {"Id", "Name", "Level"};
+
+        Row headerRow = ExcelUtils.createOrGet(sheet, bodyRow++);
+        for (String header : headers) {
+            headerRow.createCell(relativeColumn++).setCellValue(header);
+        }
 
         for (Skill skill : skills) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(skill.getId());
-            row.createCell(1).setCellValue(skill.getSkillName());
-            row.createCell(2).setCellValue(skill.getLevel());
+            relativeColumn = flag;
+            Row row = ExcelUtils.createOrGet(sheet, bodyRow++);
+            Object[] data = {
+                    skill.getId(),
+                    skill.getSkillName(),
+                    skill.getLevel()
+            };
+            for (Object value : data) {
+                row.createCell(relativeColumn++).setCellValue(String.valueOf(value));
+            }
         }
-        return rowNum;
 
+        relativeColumn += ExcelUtils.colStride(2);
+        nextRelativeRow = Math.max(relativeRow, bodyRow);
+
+        if (relativeColumn >= maxCol) {
+            relativeRow = ExcelUtils.rowStride(nextRelativeRow);
+            relativeColumn = 0;
+        }
+
+        System.out.println("relativeRow: " + relativeRow);
+        System.out.println("relativeColumn: " + relativeColumn);
+        System.out.println("nextRelativeRow: " + nextRelativeRow);
+        System.out.println("row number: " + sheet.getPhysicalNumberOfRows());
+        return relativeRow;
     }
 }

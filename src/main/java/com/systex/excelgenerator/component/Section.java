@@ -8,16 +8,20 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public abstract class Section {
     protected String title;
-
+    static int relativeRow = 0;
+    static int relativeColumn = 0;
+    static int maxCol = 12;
+    static int nextRelativeRow = 0;
     public Section(String title) {
         this.title = title;
     }
 
-    public abstract int populate(XSSFSheet sheet, int rowNum);
+    public abstract int populate(XSSFSheet sheet);
 
-    public void addHeader(XSSFSheet sheet, int rowNum) {
-        Row headerRow = sheet.createRow(rowNum);
-        Cell headerCell = headerRow.createCell(0);
+    public void addHeader(XSSFSheet sheet) {
+        Row headerRow = (sheet.getRow(relativeRow) == null)?
+                sheet.createRow(relativeRow):sheet.getRow(relativeRow);
+        Cell headerCell = headerRow.createCell(relativeColumn);
         headerCell.setCellValue(this.title);
 
         // Apply style if needed (e.g., bold, font size)
@@ -28,4 +32,5 @@ public abstract class Section {
         style.setFont(font);
         headerCell.setCellStyle(style);
     }
+
 }
