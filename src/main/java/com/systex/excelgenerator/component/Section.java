@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
+import java.io.IOException;
+
 public abstract class Section {
     protected String title;
 
@@ -13,7 +15,7 @@ public abstract class Section {
         this.title = title;
     }
 
-    public abstract int populate(XSSFSheet sheet, int rowNum);
+    public abstract int populate(XSSFSheet sheet, int rowNum) throws IOException;
 
     public void addHeader(XSSFSheet sheet, int rowNum) {
         Row headerRow = sheet.createRow(rowNum);

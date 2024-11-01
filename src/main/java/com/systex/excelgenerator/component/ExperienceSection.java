@@ -2,19 +2,25 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormulaHandler;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExperienceSection extends Section {
 
     private List<Experience> experiences;
     private FormattingHandler formattingHandler;
+    private FormulaHandler formulaHandler;
 
     {
         this.formattingHandler = new FormattingHandler();
+        this.formulaHandler = new FormulaHandler();
     }
 
     public ExperienceSection(List<Experience> experiences) {
@@ -33,6 +39,7 @@ public class ExperienceSection extends Section {
         headerRow.createCell(2).setCellValue("Description");
         headerRow.createCell(3).setCellValue("Start Date");
         headerRow.createCell(4).setCellValue("End Date");
+        headerRow.createCell(5).setCellValue("DateInterval");
 
         for (Experience exp : experiences) {
             Row row = sheet.createRow(rowNum++);
@@ -48,6 +55,14 @@ public class ExperienceSection extends Section {
             dateCell = row.createCell(4);
             dateCell.setCellValue(exp.getEndDate());
             dateCell.setCellStyle(formattingHandler.DateFormatting(exp.getEndDate(), sheet.getWorkbook()));
+
+            // cal date interval
+            dateCell = row.createCell(5);
+            dateCell.setCellFormula(formulaHandler.calDataInterval(row.getRowNum() , 3 , 4));
+
+            Map<String,Integer> params = new HashMap<>();
+            params.put("h", 1);
+            formulaHandler.parseFormula(params,"formula");
         }
 
         return rowNum;

@@ -6,6 +6,9 @@ public class Project {
     private String role;
     private String technologiesUsed;
 
+    // test HyperLink
+    private String projectlink;
+
     public String getProjectName() {
         return projectName;
     }
@@ -37,4 +40,8 @@ public class Project {
     public void setTechnologiesUsed(String technologiesUsed) {
         this.technologiesUsed = technologiesUsed;
     }
+
+    public String getProjectlink() { return projectlink; }
+
+    public void setProjectlink(String projectlink) { this.projectlink = projectlink; }
 }

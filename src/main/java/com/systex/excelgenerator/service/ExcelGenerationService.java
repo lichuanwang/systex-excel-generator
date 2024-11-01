@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class ExcelGenerationService {
 
-    public void generateExcelForCandidate(Candidate candidate) {
+    public void generateExcelForCandidate(Candidate candidate) throws IOException {
         // Build the Excel content
         ExcelBuilder builder = new ConcreteExcelBuilder(candidate);
         ExcelDirector director = new ExcelDirector(builder);
@@ -27,7 +27,7 @@ public class ExcelGenerationService {
 
         // Save the Excel file
         try {
-            excelFile.saveToFile("candidate_info.xlsx");
+            excelFile.saveToFile("test_candidate.xlsx"); //candidate_info.xlsx
         } catch (IOException e) {
             e.printStackTrace();
         }

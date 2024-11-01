@@ -3,6 +3,8 @@ package com.systex.excelgenerator.director;
 import com.systex.excelgenerator.builder.ExcelBuilder;
 import com.systex.excelgenerator.excel.ExcelFile;
 
+import java.io.IOException;
+
 public class ExcelDirector {
     private ExcelBuilder excelBuilder;
 
@@ -10,7 +12,7 @@ public class ExcelDirector {
         this.excelBuilder = builder;
     }
 
-    public void constructExcelFile() {
+    public void constructExcelFile() throws IOException {
         excelBuilder.createNewExcelFile();
         excelBuilder.buildHeader();
         excelBuilder.buildSections();

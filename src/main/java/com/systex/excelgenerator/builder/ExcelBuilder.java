@@ -2,6 +2,8 @@ package com.systex.excelgenerator.builder;
 
 import com.systex.excelgenerator.excel.ExcelFile;
 
+import java.io.IOException;
+
 public abstract class ExcelBuilder {
     protected ExcelFile excelFile;
 
@@ -14,6 +16,6 @@ public abstract class ExcelBuilder {
     }
 
     public abstract void buildHeader();
-    public abstract void buildSections();
+    public abstract void buildSections() throws IOException;
     public abstract void buildFooter();
 }

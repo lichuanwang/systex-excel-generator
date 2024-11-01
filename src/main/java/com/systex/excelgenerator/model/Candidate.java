@@ -1,5 +1,6 @@
 package com.systex.excelgenerator.model;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,10 @@ public class Candidate {
     private String phone;
     private String email;
     private Address address;
+
+    // test image
+    private String image;
+
     private List<Education> educationList;
     private List<Experience> experienceList;
     private List<Skill> skills;
@@ -95,4 +100,8 @@ public class Candidate {
     public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
+
+    public String getImage() { return image; }
+
+    public void setImage(String image) { this.image = image; }
 }
