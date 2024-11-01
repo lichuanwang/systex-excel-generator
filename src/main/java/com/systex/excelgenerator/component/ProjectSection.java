@@ -1,63 +1,64 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Project;
+import com.systex.excelgenerator.utils.ExcelUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-public class ProjectSection extends AbstractSection<Project> {
+public class ProjectSection extends Section {
 
     private List<Project> projects;
 
-    public ProjectSection() {
+    public ProjectSection(List<Project> projects) {
         super("Project");
+        this.projects = projects;
     }
 
     @Override
-    protected int generateHeader(XSSFSheet sheet, int rowNum) {
-        Row headerRow = sheet.createRow(rowNum++);
-        headerRow.createCell(0).setCellValue("Project");
-        headerRow.createCell(1).setCellValue("Role");
-        headerRow.createCell(2).setCellValue("Description");
-        headerRow.createCell(3).setCellValue("Technology");
-        return rowNum;
-    }
+    public int populate(XSSFSheet sheet) {
+        addHeader(sheet);
+        if(sheet.getPhysicalNumberOfRows() == 0){
+            relativeRow = 0;
+            relativeColumn = 0;
+        }
+        int bodyRow = relativeRow + 1;
+        int flag = relativeColumn;
 
-    @Override
-    protected int generateData(XSSFSheet sheet, int rowNum) {
+        String[] headers = {"Project", "Role", "Description", "Technology"};
+
+        Row headerRow = ExcelUtils.createOrGet(sheet, bodyRow++);
+        relativeColumn = flag;
+        for (String header : headers) {
+            headerRow.createCell(relativeColumn++).setCellValue(header);
+        }
+
         for (Project project : projects) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(project.getProjectName());
-            row.createCell(1).setCellValue(project.getRole());
-            row.createCell(2).setCellValue(project.getDescription());
-            row.createCell(3).setCellValue(project.getTechnologiesUsed());
+            relativeColumn = flag;
+            Row row = ExcelUtils.createOrGet(sheet, bodyRow++);
+            Object[] data = {
+                    project.getProjectName(),
+                    project.getRole(),
+                    project.getDescription(),
+                    project.getTechnologiesUsed()
+            };
+            for (Object value : data) {
+                row.createCell(relativeColumn++).setCellValue(String.valueOf(value));
+            }
         }
-        return rowNum;
-    }
 
-    @Override
-    protected int generateFooter(XSSFSheet sheet, int rowNum) {
-        return rowNum;
-    }
-
-    @Override
-    public void setData(Project data) {
-        this.projects = Arrays.asList(data);
-    }
-
-    @Override
-    public void setData(Collection<Project> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.projects = new ArrayList<>(dataCollection);
+        relativeColumn += ExcelUtils.colStride(2);
+        nextRelativeRow = Math.max(relativeRow, bodyRow);
+        if (relativeColumn >= maxCol) {
+            relativeRow = ExcelUtils.rowStride(nextRelativeRow);
+            relativeColumn = 0;
         }
+
+        System.out.println("relativeRow: " + relativeRow);
+        System.out.println("relativeColumn: " + relativeColumn);
+        System.out.println("nextRelativeRow: " + nextRelativeRow);
+        return relativeRow;
     }
 
-    @Override
-    public boolean isEmpty() {
-         return projects == null || projects.isEmpty();
-    }
 }

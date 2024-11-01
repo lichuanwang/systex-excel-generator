@@ -1,5 +1,4 @@
 package com.systex.excelgenerator.model;
-
 import java.time.LocalDate;
 
 public class Experience {

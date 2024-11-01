@@ -1,92 +1,69 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Education;
+import com.systex.excelgenerator.utils.ExcelUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class EducationSection extends AbstractSection<Education> {
+public class EducationSection extends Section {
 
     private List<Education> educations;
 
-    public EducationSection() {
+    public EducationSection(List<Education> educations) {
         super("Education");
+        this.educations = educations;
     }
 
     @Override
-    protected int generateHeader(XSSFSheet sheet, int rowNum) {
-        Row headerRow = sheet.createRow(rowNum++);
-        headerRow.createCell(0).setCellValue("School Name");
-        headerRow.createCell(1).setCellValue("Major");
-        headerRow.createCell(2).setCellValue("Grade");
-        headerRow.createCell(3).setCellValue("Start Date");
-        headerRow.createCell(4).setCellValue("End Date");
+    public int populate(XSSFSheet sheet) {
+        addHeader(sheet);
+        if(sheet.getPhysicalNumberOfRows() == 0){
+            relativeRow = 0;
+            relativeColumn = 0;
+        }
 
-        return rowNum;
-    }
+        int bodyRow = relativeRow + 1;
+        int flag = relativeColumn;
 
-    @Override
-    protected int generateData(XSSFSheet sheet, int rowNum) {
+        String[] headers = {"School Name", "Major", "Grade", "Start Date", "End Date"};
+        Row headerRow = ExcelUtils.createOrGet(sheet, bodyRow++);
+        for (String header : headers) {
+            headerRow.createCell(relativeColumn++).setCellValue(header);
+        }
+
         for (Education edu : educations) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(edu.getSchoolName());
-            row.createCell(1).setCellValue(edu.getMajor());
-            row.createCell(2).setCellValue(edu.getGrade());
-            row.createCell(3).setCellValue(edu.getStartDate());
-            row.createCell(4).setCellValue(edu.getEndDate());
+            relativeColumn = flag;
+            Row row = ExcelUtils.createOrGet(sheet, bodyRow++);
+            Object[] data = {
+                    edu.getSchoolName(),
+                    edu.getMajor(),
+                    edu.getGrade(),
+                    edu.getStartDate(),
+                    edu.getEndDate()
+            };
+            for (Object value : data) {
+                row.createCell(relativeColumn++).setCellValue(String.valueOf(value));
+            }
         }
-        return rowNum;
-    }
 
-    @Override
-    protected int generateFooter(XSSFSheet sheet, int rowNum) {
-        return rowNum;
-    }
-
-
-
-    @Override
-    public void setData(Education data) {
-        if( educations != null ) {
-            this.educations = Arrays.asList(data); // Check if this will return the same thing just like the one below
+        relativeColumn += ExcelUtils.colStride(2);
+        nextRelativeRow = Math.max(relativeRow, bodyRow);
+        if (relativeColumn >= maxCol) {
+            relativeRow = ExcelUtils.rowStride(nextRelativeRow);
+            relativeColumn = 0;
         }
+
+
+        System.out.println("relativeRow: " + relativeRow);
+        System.out.println("relativeColumn: " + relativeColumn);
+        System.out.println("nextRelativeRow: " + nextRelativeRow);
+        System.out.println("row number: " + sheet.getPhysicalNumberOfRows());
+        return relativeRow;
     }
 
-    @Override
-    public void setData(Collection<Education> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.educations = new ArrayList<>(dataCollection);
-        }
-    }
 
-    @Override
-    public boolean isEmpty() {
-        return educations == null || educations.isEmpty();
-    }
-//    @Override
-//    public int populate(XSSFSheet sheet, int rowNum) {
-//        addHeader(sheet, rowNum);
-//        rowNum++;
-//
-//        Row headerRow = sheet.createRow(rowNum++);
-//        headerRow.createCell(0).setCellValue("School Name");
-//        headerRow.createCell(1).setCellValue("Major");
-//        headerRow.createCell(2).setCellValue("Grade");
-//        headerRow.createCell(3).setCellValue("Start Date");
-//        headerRow.createCell(4).setCellValue("End Date");
-//
-//        for (Education edu : educations) {
-//            Row row = sheet.createRow(rowNum++);
-//            row.createCell(0).setCellValue(edu.getSchoolName());
-//            row.createCell(1).setCellValue(edu.getMajor());
-//            row.createCell(2).setCellValue(edu.getGrade());
-//            row.createCell(3).setCellValue(edu.getStartDate());
-//            row.createCell(4).setCellValue(edu.getEndDate());
-//        }
-//        return rowNum;
-//    }
+
 }
