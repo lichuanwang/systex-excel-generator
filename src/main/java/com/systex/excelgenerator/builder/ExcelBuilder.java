@@ -14,6 +14,6 @@ public abstract class ExcelBuilder {
     }
 
     public abstract void buildHeader();
-    public abstract void buildSections();
+    public abstract void buildBody();
     public abstract void buildFooter();
 }

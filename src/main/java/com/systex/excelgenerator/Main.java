@@ -31,7 +31,13 @@ public class Main {
         education1.setStartDate(LocalDate.of(2019, 9, 30));
         education1.setEndDate(LocalDate.of(2024, 6, 30));
 
-        candidate.setEducationList(Arrays.asList(education1));
+        Education education2 = new Education();
+        education2.setSchoolName("Springfield University");
+        education2.setMajor("Bachelor of Science in Computer Science");
+        education2.setStartDate(LocalDate.of(2019, 9, 30));
+        education2.setEndDate(LocalDate.of(2024, 6, 30));
+
+        candidate.setEducationList(Arrays.asList(education1, education2));
 
         // Step 3: Add Experience data
         Experience experience1 = new Experience();

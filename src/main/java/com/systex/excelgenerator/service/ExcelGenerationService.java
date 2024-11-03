@@ -24,9 +24,19 @@ public class ExcelGenerationService {
         // Apply custom styles to the content
         XSSFSheet sheet = excelFile.getWorkbook().getSheet("Candidate Information");
         applyStyles(sheet);
-//        for(int i = 0; i < 5; i++) {
-//            sheet.autoSizeColumn(i);
-//        }
+
+        int maxColumnIndex = 0;
+        for (int rowIndex = 0; rowIndex <= sheet.getPhysicalNumberOfRows(); rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row != null && row.getLastCellNum() > maxColumnIndex) {
+                maxColumnIndex = row.getLastCellNum();
+            }
+        }
+
+        // Auto-size all columns up to the maximum column index
+        for (int i = 0; i < maxColumnIndex; i++) {
+            sheet.autoSizeColumn(i);
+        }
 
         // Save the Excel file
         try {

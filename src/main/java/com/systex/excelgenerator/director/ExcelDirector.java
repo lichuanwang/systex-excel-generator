@@ -13,7 +13,7 @@ public class ExcelDirector {
     public void constructExcelFile() {
         excelBuilder.createNewExcelFile();
         excelBuilder.buildHeader();
-        excelBuilder.buildSections();
+        excelBuilder.buildBody();
         excelBuilder.buildFooter();
     }
 
