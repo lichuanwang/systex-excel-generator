@@ -1,5 +1,6 @@
 package com.systex.excelgenerator.utils;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.util.CellReference;
 
 import java.util.Map;
@@ -8,12 +9,29 @@ import java.util.Set;
 public class FormulaHandler {
 
     // 解析公式
-    public String parseFormula(Map<String,Integer> parameters , String formula){
+    // 使用者知道資料的範圍(Excel中)
+    public String parseFormula1(Map<String,String> parameters , String formula){
+
         // 解析文字 [使用者輸入公式去抓取替換的參數]
-        String template = """
-                IF(DATEDIF(${startCell},${endCell},\"y\")=0
-                """;
-        return "";
+        String template = formula;
+
+        // 替換${},把它變成Excel中的格子(ex:A4)
+        for (Map.Entry<String, String> entry : parameters.entrySet()){
+            template = template.replace("${"+entry.getKey()+"}" , entry.getValue());
+        }
+
+        return template;
+    }
+
+    // 解析公式
+    // 使用者不知道資料的範圍只知道資料是第幾個row和第幾個column
+    public <T extends CustomCellReference> String parseFormula2(Set<T> cellRefs , String formula){
+        String template = formula;
+
+        for (T cellRef : cellRefs) {
+            template = template.replace("${" + cellRef.getCellName() + "}", cellRef.formatAsString());
+        }
+        return template;
     }
 
     // 計算時間的區間

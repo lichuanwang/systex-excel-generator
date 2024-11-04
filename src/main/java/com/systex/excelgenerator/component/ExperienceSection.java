@@ -3,14 +3,13 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
+import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ExperienceSection extends Section {
 
@@ -58,11 +57,50 @@ public class ExperienceSection extends Section {
 
             // cal date interval
             dateCell = row.createCell(5);
-            dateCell.setCellFormula(formulaHandler.calDataInterval(row.getRowNum() , 3 , 4));
+            //dateCell.setCellFormula(formulaHandler.calDataInterval(row.getRowNum() , 3 , 4));
 
-            Map<String,Integer> params = new HashMap<>();
-            params.put("h", 1);
-            formulaHandler.parseFormula(params,"formula");
+            // test parse formula
+            String formula1 = """
+                    IF(DATEDIF(${startCellRef},${endCellRef},"y")=0,"",
+                    DATEDIF(${startCellRef},${endCellRef},"y")&"年")&
+                    DATEDIF(${startCellRef},${endCellRef},"ym")&"個月"
+                    """;
+
+            String formula2 = """
+                    SUM(${startCellRef1}:${endCellRef1})+SUM(${startCellRef2}:${endCellRef2})
+                    """;
+
+            System.out.println(formula1);
+            System.out.println(formula2);
+
+            // test parse formula1
+            Map<String , String> fmap1 = new HashMap<>();
+            fmap1.put("startCellRef","D22");
+            fmap1.put("endCellRef","E22");
+
+            dateCell.setCellFormula(formulaHandler.parseFormula1(fmap1 , formula1));
+
+            // test parse formula2
+            // test parse more params in formula
+            dateCell = row.createCell(6);
+            dateCell.setCellValue(2);
+            dateCell = row.createCell(7);
+            dateCell.setCellValue(6);
+            dateCell = row.createCell(8);
+            dateCell.setCellValue(12);
+            dateCell = row.createCell(9);
+            dateCell.setCellValue(5);
+
+            // Set<? extends CellReference>
+            // 使用者要自己建NamedCellReference Class..?
+            Set<NamedCellReference> set1 = new HashSet<>();
+            set1.add(new NamedCellReference("startCellRef1" , row.getRowNum() , 6));
+            set1.add(new NamedCellReference("endCellRef1" , row.getRowNum() , 7));
+            set1.add(new NamedCellReference("startCellRef2" , row.getRowNum() , 8));
+            set1.add(new NamedCellReference("endCellRef2" , row.getRowNum() , 9));
+
+            dateCell = row.createCell(10);
+            dateCell.setCellFormula(formulaHandler.parseFormula2(set1 , formula2));
         }
 
         return rowNum;

@@ -11,7 +11,7 @@ public class HyperlinkHandler {
     public void setHyperLink(String link , Cell cell , Workbook workbook) {
         createHelper = workbook.getCreationHelper();
 
-        // 設定文字中的連結 , 導道設定的連結網頁
+        // 設定文字中的連結 , 導到設定的連結網頁
         Hyperlink hyperlink = createHelper.createHyperlink(HyperlinkType.URL);
         hyperlink.setAddress(link);
         cell.setHyperlink(hyperlink);
