@@ -22,8 +22,7 @@ public class ExcelFile {
 
     // Method to add a new sheet
     public ExcelSheet createSheet(String sheetName) {
-        XSSFSheet sheet = workbook.createSheet(sheetName);
-        ExcelSheet excelSheet = new ExcelSheet(sheet, 5);
+        ExcelSheet excelSheet = new ExcelSheet(workbook, sheetName, 10);
         sheets.add(excelSheet);
         return excelSheet;
     }
@@ -34,6 +33,8 @@ public class ExcelFile {
             workbook.write(outputStream);
         }
     }
+
+
 
     public XSSFWorkbook getWorkbook() {
         return workbook;

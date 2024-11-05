@@ -8,29 +8,14 @@ import java.util.*;
 
 public class EducationSection extends AbstractSection<Education> {
 
-    private List<Education> educations;
 
     public EducationSection() {
         super("Education");
     }
 
     @Override
-    public void setData(Education data) {
-        if( educations != null ) {
-            this.educations = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Education> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.educations = new ArrayList<>(dataCollection);
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        return educations == null || educations.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -42,7 +27,7 @@ public class EducationSection extends AbstractSection<Education> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return educations.size() + 2; // +2 for the header row and extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
@@ -58,7 +43,7 @@ public class EducationSection extends AbstractSection<Education> {
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
-        for (Education edu : educations) {
+        for (Education edu : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(edu.getSchoolName());
             row.createCell(startCol + 1).setCellValue(edu.getMajor());

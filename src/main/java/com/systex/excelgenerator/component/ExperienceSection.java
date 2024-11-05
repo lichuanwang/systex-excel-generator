@@ -8,29 +8,13 @@ import java.util.*;
 
 public class ExperienceSection extends AbstractSection<Experience> {
 
-    private List<Experience> experiences;
-
     public ExperienceSection() {
         super("Experience");
     }
 
     @Override
-    public void setData(Experience data) {
-        if( experiences != null ) {
-            this.experiences = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Experience> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.experiences = new ArrayList<>(dataCollection);
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        return experiences == null || experiences.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -42,7 +26,7 @@ public class ExperienceSection extends AbstractSection<Experience> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return experiences.size() + 2; // +2 for the header row and one extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
@@ -58,7 +42,7 @@ public class ExperienceSection extends AbstractSection<Experience> {
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
-        for (Experience exp : experiences) {
+        for (Experience exp : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(exp.getCompanyName());
             row.createCell(startCol + 1).setCellValue(exp.getJobTitle());

@@ -3,14 +3,16 @@ package com.systex.excelgenerator.builder;
 import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
-import com.systex.excelgenerator.model.Project;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-public class ConcreteExcelBuilder extends ExcelBuilder {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class RecruitmentExcelBuilder extends ExcelBuilder {
 
     private Candidate candidate;
 
-    public ConcreteExcelBuilder(Candidate candidate) {
+    public RecruitmentExcelBuilder(Candidate candidate) {
         this.candidate = candidate;
     }
 
@@ -21,45 +23,31 @@ public class ConcreteExcelBuilder extends ExcelBuilder {
 
     @Override
     public void buildBody() {
-        ExcelSheet sheet = excelFile.createSheet("Candidate Information");
+        ExcelSheet sheet = excelFile.createSheet(candidate.getName());
+        List<Section> sectionList = new ArrayList<>();
 
-        PersonalInfoSection personalInfoSection = new PersonalInfoSection();
-        personalInfoSection.setData(candidate);
+        initializeSection(sectionList, new PersonalInfoSection(), candidate);
+        initializeSection(sectionList, new EducationSection(), candidate.getEducationList());
+        initializeSection(sectionList, new ExperienceSection(), candidate.getExperienceList());
+        initializeSection(sectionList, new ProjectSection(), candidate.getProjects());
+        initializeSection(sectionList, new SkillSection(), candidate.getSkills());
 
-        EducationSection educationSection = new EducationSection();
-        educationSection.setData(candidate.getEducationList());
-
-        ExperienceSection experienceSection = new ExperienceSection();
-        experienceSection.setData(candidate.getExperienceList());
-
-        ProjectSection projectSection = new ProjectSection();
-        projectSection.setData(candidate.getProjects());
-
-        SkillSection skillSection = new SkillSection();
-        skillSection.setData(candidate.getSkills());
-
-
-        if (!personalInfoSection.isEmpty()) {
-            sheet.addSection(personalInfoSection);
-        }
-
-        if (!educationSection.isEmpty()) {
-            sheet.addSection(educationSection);
-        }
-
-        if (!experienceSection.isEmpty()) {
-            sheet.addSection(experienceSection);
-        }
-
-        if (!projectSection.isEmpty()) {
-            sheet.addSection(projectSection);
-        }
-
-        if (!skillSection.isEmpty()) {
-            sheet.addSection(skillSection);
+        for (Section section : sectionList) {
+            if (!section.isEmpty()) {
+                sheet.addSection(section);
+            }
         }
     }
 
+    private void initializeSection(List<Section> sectionList, Section section, Object data) {
+        section.setData(data);
+        sectionList.add(section);
+    }
+
+    private <T> void initializeSection(List<Section> sectionList, Section section, Collection<T> data) {
+        section.setData(data);
+        sectionList.add(section);
+    }
 //    @Override
 //    public void buildBody() {
 //        ExcelSheet sheet = excelFile.createSheet("Candidate Information");

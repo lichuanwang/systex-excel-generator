@@ -2,6 +2,7 @@ package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.Section;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ExcelSheet {
@@ -11,9 +12,12 @@ public class ExcelSheet {
     private final int maxColPerRow;
     private int deepestRowOnCurrentLevel = 0;
 
-    public ExcelSheet(XSSFSheet sheet, int maxColPerRow) {
-        this.xssfSheet = sheet;
+    public ExcelSheet(Workbook workbook, String sheetName, int maxColPerRow) {
+        this.xssfSheet = (XSSFSheet) workbook.createSheet(sheetName); // directly new a sheet
         this.maxColPerRow = maxColPerRow;
+    }
+    public Workbook getWorkbook() {
+        return xssfSheet.getWorkbook();
     }
 
     public void addSection(Section section) {
@@ -29,7 +33,7 @@ public class ExcelSheet {
 
         // Update layout positions
         startingCol += section.getWidth();
-        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() - 1);
+        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() + 1);
     }
 
     // Method to create or get a row
@@ -42,13 +46,10 @@ public class ExcelSheet {
     }
 
     // Getter for the underlying XSSFSheet, if needed
-    public XSSFSheet getUnderlyingSheet() {
-        return xssfSheet;
-    }
-
     public XSSFSheet getXssfSheet() {
         return xssfSheet;
     }
+
 
     public int getStartingRow() {
         return startingRow;

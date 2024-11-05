@@ -9,29 +9,13 @@ import java.util.*;
 
 public class SkillSection extends AbstractSection<Skill> {
 
-    private List<Skill> skills;
-
     public SkillSection() {
         super("Skill");
     }
 
     @Override
-    public void setData(Skill data) {
-        if( skills != null ) {
-            this.skills = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Skill> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.skills = new ArrayList<>(dataCollection);
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        return skills == null || skills.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -43,7 +27,7 @@ public class SkillSection extends AbstractSection<Skill> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return skills.size() + 2; // +2 for the header row and extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
@@ -57,7 +41,7 @@ public class SkillSection extends AbstractSection<Skill> {
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
-        for (Skill skill : skills) {
+        for (Skill skill : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(skill.getId());
             row.createCell(startCol + 1).setCellValue(skill.getSkillName());

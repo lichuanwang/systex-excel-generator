@@ -1,6 +1,6 @@
 package com.systex.excelgenerator.service;
 
-import com.systex.excelgenerator.builder.ConcreteExcelBuilder;
+import com.systex.excelgenerator.builder.RecruitmentExcelBuilder;
 import com.systex.excelgenerator.builder.ExcelBuilder;
 import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.director.ExcelDirector;
@@ -15,14 +15,14 @@ public class ExcelGenerationService {
 
     public void generateExcelForCandidate(Candidate candidate) {
         // Build the Excel content
-        ExcelBuilder builder = new ConcreteExcelBuilder(candidate);
+        ExcelBuilder builder = new RecruitmentExcelBuilder(candidate);
         ExcelDirector director = new ExcelDirector(builder);
         director.constructExcelFile();
 
         ExcelFile excelFile = director.getExcelFile();
 
         // Apply custom styles to the content
-        XSSFSheet sheet = excelFile.getWorkbook().getSheet("Candidate Information");
+        XSSFSheet sheet = excelFile.getWorkbook().getSheet(candidate.getName());
         applyStyles(sheet);
 
         int maxColumnIndex = 0;

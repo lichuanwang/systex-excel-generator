@@ -8,29 +8,14 @@ import java.util.*;
 
 public class ProjectSection extends AbstractSection<Project> {
 
-    private List<Project> projects;
-
     public ProjectSection() {
         super("Project");
     }
 
-    @Override
-    public void setData(Project data) {
-        if( projects != null ) {
-            this.projects = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Project> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.projects = new ArrayList<>(dataCollection);
-        }
-    }
 
     @Override
     public boolean isEmpty() {
-        return projects == null || projects.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -42,7 +27,7 @@ public class ProjectSection extends AbstractSection<Project> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return projects.size() + 2; // +2 for the header row and extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
@@ -57,7 +42,7 @@ public class ProjectSection extends AbstractSection<Project> {
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
-        for (Project project : projects) {
+        for (Project project : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(project.getProjectName());
             row.createCell(startCol + 1).setCellValue(project.getRole());

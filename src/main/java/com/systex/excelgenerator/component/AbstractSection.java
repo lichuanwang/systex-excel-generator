@@ -1,14 +1,19 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Education;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public abstract class AbstractSection<T> implements Section<T> {
     protected String title;
+    protected Collection<T> content;
 
     public AbstractSection(String title) {
         this.title = title;
@@ -27,29 +32,7 @@ public abstract class AbstractSection<T> implements Section<T> {
         populateHeader(sheet, startRow + 1, startCol);
         populateBody(sheet, startRow + 2, startCol);
         populateFooter(sheet, startRow + 3, startCol);
-//        XSSFSheet sheet = excelSheet.getUnderlyingSheet();
-//        if (sheet.exceedMaxColPerRow()) {
-//            sheet.jumpToNextAvailableRow();
-//        }
-//        addSectionTitle(sheet);
-//        sheet.setStartingCol(sheet.getStartingCol() + 2);
     }
-
-
-//    public void addSectionTitle(ExcelSheet sheet) {
-//        int rowNum = sheet.getStartingRow();
-//        Row headerRow = sheet.createOrGetRow(rowNum);
-//        Cell headerCell = headerRow.createCell(sheet.getStartingCol());
-//        headerCell.setCellValue(this.title);
-//
-//        // Apply style if needed (e.g., bold, font size)
-//        CellStyle style = sheet.getUnderlyingSheet().getWorkbook().createCellStyle();
-//        Font font = sheet.getUnderlyingSheet().getWorkbook().createFont();
-//        font.setBold(true);
-//        font.setFontHeightInPoints((short) 14);
-//        style.setFont(font);
-//        headerCell.setCellStyle(style);
-//    }
 
     public void addSectionTitle(ExcelSheet excelSheet, int startRow, int startCol) {
         Row headerRow = excelSheet.createOrGetRow(startRow);
@@ -57,15 +40,24 @@ public abstract class AbstractSection<T> implements Section<T> {
         headerCell.setCellValue(this.title);
 
         // Apply style if needed (e.g., bold, font size)
-        XSSFSheet sheet = excelSheet.getUnderlyingSheet();
-        CellStyle style = sheet.getWorkbook().createCellStyle();
-        Font font = sheet.getWorkbook().createFont();
+        CellStyle style = excelSheet.getWorkbook().createCellStyle();
+        Font font = excelSheet.getWorkbook().createFont();
         font.setBold(true);
         font.setFontHeightInPoints((short) 14);
         style.setFont(font);
         headerCell.setCellStyle(style);
     }
 
+    public void setData(T data) {
+        if( content != null ) {
+            this.content = new ArrayList<T>(); // Check if this will return the same thing just like the one below
+            this.content.add(data);
+        }
+    }
 
-
+    public void setData(Collection<T> dataCollection) {
+        if (dataCollection != null && !dataCollection.isEmpty()) {
+            this.content = new ArrayList<>(dataCollection);
+        }
+    }
 }

@@ -42,7 +42,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
     @Override
     public int getWidth() {
-        return 3;
+        return 3; //
     }
 
     @Override
@@ -93,10 +93,10 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         // Load the image file
         try (FileInputStream imageStream = new FileInputStream("profile.jpg")) {
             byte[] bytes = IOUtils.toByteArray(imageStream);
-            int pictureIdx = sheet.getUnderlyingSheet().getWorkbook().addPicture(bytes, XSSFWorkbook.PICTURE_TYPE_JPEG);
+            int pictureIdx = sheet.getXssfSheet().getWorkbook().addPicture(bytes, XSSFWorkbook.PICTURE_TYPE_JPEG);
 
             // Create an anchor to position the image
-            XSSFClientAnchor anchor = sheet.getUnderlyingSheet().getWorkbook().getCreationHelper().createClientAnchor();
+            XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
             anchor.setCol1(sheet.getMaxColPerRow() + 1);
             anchor.setRow1(sheet.getStartingRow());
             anchor.setCol2(sheet.getMaxColPerRow() + 3);
@@ -105,7 +105,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
             anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
 
             // Insert the image into the sheet
-            XSSFDrawing drawing = sheet.getUnderlyingSheet().createDrawingPatriarch();
+            XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
             drawing.createPicture(anchor, pictureIdx);
 
             System.out.println("Image added");
