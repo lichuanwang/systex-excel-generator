@@ -58,7 +58,7 @@ public class FormattingHandler {
 
     // 凍結儲存格
     public void freezeCell(Sheet sheet , int first, int last){
-        // 凍結儲存格的某一列到某一列 (某一行到某一行..?)
+        // 凍結儲存格的某一列到某一列
         sheet.createFreezePane(first, last);
     }
 }

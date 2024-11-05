@@ -15,31 +15,39 @@ import org.openxmlformats.schemas.drawingml.x2006.chart.CTDLbls;
 public class ChartHandler {
 
     // 四個常用的圖表
+
     /**
      * 產生圓餅圖
+     * @param sheet
+     * @param dataStartRow
+     * @param dataLastRow
+     * @param categoryCol
+     * @param valueCol
+     * @param indexRow
+     * @param headerRow
      */
-    public void genPieChart(Sheet sheet, int dataStartRow, int dataLastRow,
-                            int categoryCol, int valueCol, int indexRow, int headerRow){
+    public void genPieChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
+                            int xAxisCol, int yAxisCol, int ChartStartRow){
         //System.out.println(dataStartRow+","+dataLastRow+","+dataCol+","+valueCol);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
 
-        // 從 headerRow 中取得標題名稱(數值的名稱來當標題)
+        // 從headerRow中取得標題名稱(數值的名稱來當標題)
         Row row = sheet.getRow(headerRow);
-        String valueTitle = row.getCell(valueCol).getStringCellValue();
+        String valueTitle = row.getCell(yAxisCol).getStringCellValue();
 
         // 設置圖表的位置,高從indexRow開始往下,寬是col1~col2
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, indexRow, 10, indexRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, ChartStartRow, 10, ChartStartRow + 15));
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, categoryCol, categoryCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, yAxisCol)
         );
 
         // 選定資料範圍數值的資料來源
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, valueCol, valueCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, yAxisCol)
         );
 
         //設定圖表類型為圓餅圖
@@ -72,19 +80,19 @@ public class ChartHandler {
      * 產生雷達圖
      */
     public void genRadarChart(Sheet sheet, int dataStartRow, int dataLastRow,
-                              int categoryCol, int valueCol, int indexRow, int headerRow) {
-        //System.out.println(dataStartRow + "," + dataLastRow + "," + dataCol + "," + valueCol);
+                              int xAxisCol, int yAxisCol, int ChartStartRow, int headerRow) {
+        //System.out.println(dataStartRow + "," + dataLastRow + "," + dataCol + "," + yAxisCol);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, indexRow, 10, indexRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, ChartStartRow, 10, ChartStartRow + 15));
 
         // 從headerRow中取得類別軸和數值軸的標題名稱
         Row row = sheet.getRow(headerRow);
-        String categoryTitle = row.getCell(categoryCol).getStringCellValue();
-        String valueTitle = row.getCell(valueCol).getStringCellValue();
+        String categoryTitle = row.getCell(xAxisCol).getStringCellValue();
+        String valueTitle = row.getCell(yAxisCol).getStringCellValue();
 
         // 數值軸的名稱來當整張圖表的標題
         chart.setTitleText(valueTitle);
@@ -92,12 +100,12 @@ public class ChartHandler {
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, categoryCol, categoryCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, xAxisCol)
         );
 
         // 選定資料範圍數值的資料來源
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, valueCol, valueCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, yAxisCol, yAxisCol)
         );
 
         // 設定類別軸和數值軸
