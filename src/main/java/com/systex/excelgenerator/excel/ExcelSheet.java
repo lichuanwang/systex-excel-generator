@@ -86,4 +86,8 @@ public class ExcelSheet {
     public int getMaxColPerRow(int maxColPerRow) {
         return maxColPerRow;
     }
+
+    public String getSheetName() {
+        return xssfSheet.getSheetName();
+    }
 }

@@ -18,7 +18,7 @@ public class Main {
         Candidate candidate = new Candidate();
         candidate.setName("John Doe");
         candidate.setEmail("john.doe@gmail.com");
-        candidate.setPhone("1234567890");
+        candidate.setPhone("0987654321");  //original : 1234567890
         candidate.setBirthday(new Date(1999));
         candidate.setGender("Male");
 
@@ -57,9 +57,11 @@ public class Main {
         Skill skill1 = new Skill();
         skill1.setId(1);
         skill1.setSkillName("Java");
+        skill1.setLevel(4);
         Skill skill2 = new Skill();
         skill2.setId(2);
         skill2.setSkillName("Spring Boot");
+        skill2.setLevel(2);
 
         candidate.setSkills(Arrays.asList(skill1, skill2));
 

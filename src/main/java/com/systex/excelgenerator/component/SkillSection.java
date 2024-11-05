@@ -2,6 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
+import com.systex.excelgenerator.utils.DataValidationHandler;
 import org.apache.poi.ss.usermodel.Row;
 
 public class SkillSection extends AbstractSection<Skill> {
@@ -42,6 +43,12 @@ public class SkillSection extends AbstractSection<Skill> {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(skill.getId());
             row.createCell(startCol + 1).setCellValue(skill.getSkillName());
+
+            // test data valid
+            DataValidationHandler dataValidationHandler = new DataValidationHandler(sheet.getXssfSheet()
+                    , row.getRowNum() , row.getRowNum() , startCol + 2 , startCol + 2);
+            dataValidationHandler.IntegerDataValid("between" , "0" , "5");
+
             row.createCell(startCol + 2).setCellValue(skill.getLevel());
         }
     }

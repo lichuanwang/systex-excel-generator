@@ -2,9 +2,18 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
+import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormulaHandler;
+import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.Row;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class EducationSection extends AbstractSection<Education> {
+
+    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationSection() {
         super("Education");
@@ -35,6 +44,7 @@ public class EducationSection extends AbstractSection<Education> {
         headerRow.createCell(startCol + 2).setCellValue("Grade");
         headerRow.createCell(startCol + 3).setCellValue("Start Date");
         headerRow.createCell(startCol + 4).setCellValue("End Date");
+        headerRow.createCell(startCol + 5).setCellValue("Date Interval");
     }
 
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
@@ -46,7 +56,31 @@ public class EducationSection extends AbstractSection<Education> {
             row.createCell(startCol + 1).setCellValue(edu.getMajor());
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
             row.createCell(startCol + 3).setCellValue(edu.getStartDate());
+
+            // format date
+            row.getCell(startCol + 3).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
+
             row.createCell(startCol + 4).setCellValue(edu.getEndDate());
+
+            // format date
+            row.getCell(startCol + 4).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
+
+
+            // 計算時間區間(解析公式)
+            // 輸入公式
+            String formula = """
+                    IF(DATEDIF(${startCellRef},${endCellRef},"y")=0,"",
+                    DATEDIF(${startCellRef},${endCellRef},"y")&"年")&
+                    DATEDIF(${startCellRef},${endCellRef},"ym")&"個月"
+                    """;
+
+            // 要替換的佔位符set
+            Set<NamedCellReference> replaceSet = new HashSet<>();
+            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
+            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
+
+            // 計算過後的時間區間的值
+            row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
         }
     }
 
