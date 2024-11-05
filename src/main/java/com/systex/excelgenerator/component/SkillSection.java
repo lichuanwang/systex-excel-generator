@@ -47,9 +47,6 @@ public class SkillSection extends Section {
         // if skill level > 2 (conditional test)
         formattingHandler.ConditionalFormatting(sheet , "2" , startRow , rowNum-1 , 2);
 
-        // generate line chart
-        //chartHandler.genLineChart(sheet, startRow, rowNum - 1, 1, 2, rowNum+2  ,headerRow.getRowNum());
-
         // generate pie chart
         //chartHandler.genPieChart(sheet, startRow, rowNum - 1, 1, 2, rowNum+2  ,headerRow.getRowNum());
 
@@ -58,7 +55,10 @@ public class SkillSection extends Section {
 
         // generate bar chart
         //System.out.println(startRow+","+(rowNum-1)+",1,2,"+(rowNum+2)+","+headerRow.getRowNum());
-        chartHandler.genBarChart(sheet, startRow, rowNum - 1, 1, 2, rowNum+2  ,headerRow.getRowNum());
+        //chartHandler.genBarChart(sheet, startRow, rowNum - 1, 1, 2, rowNum+2  ,headerRow.getRowNum());
+
+        // generate line chart
+        chartHandler.genLineChart(sheet, startRow, rowNum - 1, 1, 2, rowNum+2  ,headerRow.getRowNum());
 
         return rowNum;
 

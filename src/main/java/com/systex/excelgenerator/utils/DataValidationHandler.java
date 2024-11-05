@@ -21,11 +21,6 @@ public class DataValidationHandler {
         this.firstCol = firstCol;
         this.lastCol = lastCol;
         this.sheet = sheet;
-
-        // 共用workbook , sheet
-        //Workbook wb = new XSSFWorkbook();
-        //Sheet sheet = wb.createSheet();
-
         this.validationHelper = sheet.getDataValidationHelper();
 
         // 設定資料範圍
@@ -60,7 +55,7 @@ public class DataValidationHandler {
     }
 
     // 日期資料驗證
-    public void DateDataValid(String operator , String startDate , String endDate){
+    public void DateValid(String operator , String startDate , String endDate){
         // 預設日期格式為"yyyy/MM/dd"(可更改)
         constraint = validationHelper.createDateConstraint(ConvertOperator(operator)
                 , startDate , endDate , "yyyy/MM/dd");
@@ -94,18 +89,7 @@ public class DataValidationHandler {
     }
 
     public void applyValidation(){
-        // 共用workbook , sheet
-        //Workbook wb = new XSSFWorkbook();
-        //Sheet sheet = wb.createSheet();
-
         DataValidation dataValidation = validationHelper.createValidation(constraint, addressList);
-
-        // 設定錯誤提示
-        //dataValidation.setShowErrorBox(true); // 顯示錯誤框
-        //dataValidation.setErrorStyle(DataValidation.ErrorStyle.STOP); // 錯誤樣式，STOP 會阻止輸入
-        //dataValidation.set("輸入錯誤"); // 錯誤提示標題
-        //dataValidation.setErrorMessage("輸入的資料不符合要求，請檢查！"); // 錯誤提示內容
-
         sheet.addValidationData(dataValidation);
     }
 }
