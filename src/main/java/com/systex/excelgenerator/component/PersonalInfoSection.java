@@ -1,18 +1,19 @@
 package com.systex.excelgenerator.component;
 
+import com.systex.excelgenerator.style.ExcelStyleUtils;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+
 
 public class PersonalInfoSection extends AbstractSection<Candidate> {
 
@@ -71,6 +72,14 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
             e.printStackTrace();
         }
 
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
+
+        // 使用 createSpecialStyle 創建初始樣式
+        CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
+
+        // 使用 cloneStyle 深拷貝樣式
+        CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
+
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getName());
@@ -79,7 +88,10 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(SimpleDateFormat.getDateInstance().format(candidate.getBirthday()));
         row = sheet.createOrGetRow(startRow++);
-        row.createCell(startCol).setCellValue(candidate.getPhone());
+        Cell phoneCell = row.createCell(startCol);
+        phoneCell.setCellValue(candidate.getPhone());
+        phoneCell.setCellStyle(clonedStyle);
+
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getEmail());
         row = sheet.createOrGetRow(startRow);

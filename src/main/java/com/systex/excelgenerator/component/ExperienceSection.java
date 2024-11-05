@@ -2,7 +2,10 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
@@ -56,11 +59,24 @@ public class ExperienceSection extends AbstractSection<Experience> {
     }
 
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
+
+        // 使用 createSpecialStyle 創建初始樣式
+        CellStyle initialStyle = createSpecialStyle(workbook);
+
+        // 使用 cloneStyle 深拷貝樣式
+        CellStyle clonedStyle = cloneStyle(workbook, initialStyle);
+
         int rowNum = startRow; // Start from the row after the header
 
         for (Experience exp : experiences) {
             Row row = sheet.createOrGetRow(rowNum++);
-            row.createCell(startCol).setCellValue(exp.getCompanyName());
+
+            // 創建 CompanyName 單元格並應用深拷貝樣式
+            Cell companyCell = row.createCell(startCol);
+            companyCell.setCellValue(exp.getCompanyName());
+            companyCell.setCellStyle(clonedStyle); // 使用深拷貝的樣式
+
             row.createCell(startCol + 1).setCellValue(exp.getJobTitle());
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
