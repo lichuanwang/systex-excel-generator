@@ -3,12 +3,16 @@ package com.systex.excelgenerator;
 
 import com.systex.excelgenerator.model.*;
 import com.systex.excelgenerator.service.ExcelGenerationService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
 public class Main {
+    private static final Logger log = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) {
         // Step 1: Create a mock Candidate with sample data
         Candidate candidate = new Candidate();
@@ -72,6 +76,6 @@ public class Main {
         ExcelGenerationService excelGenerationService = new ExcelGenerationService();
         excelGenerationService.generateExcelForCandidate(candidate);
 
-        System.out.println("Excel file generated successfully!");
+        log.info("Excel file generated successfully!");
     }
 }

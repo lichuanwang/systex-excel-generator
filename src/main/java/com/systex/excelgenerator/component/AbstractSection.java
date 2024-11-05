@@ -1,12 +1,10 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.model.Education;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +13,7 @@ public abstract class AbstractSection<T> implements Section<T> {
     protected String title;
     protected Collection<T> content;
 
-    public AbstractSection(String title) {
+    protected AbstractSection(String title) {
         this.title = title;
     }
 
@@ -49,8 +47,8 @@ public abstract class AbstractSection<T> implements Section<T> {
     }
 
     public void setData(T data) {
-        if( content != null ) {
-            this.content = new ArrayList<T>(); // Check if this will return the same thing just like the one below
+        if(content != null) {
+            this.content = new ArrayList<>(); // Check if this will return the same thing just like the one below
             this.content.add(data);
         }
     }
