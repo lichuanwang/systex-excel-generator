@@ -55,10 +55,5 @@ public class ExcelGenerationService {
                 cell.setCellStyle(headerStyle);
             }
         }
-
-        // Auto-size columns
-        for (int i = 0; i < 5; i++) {
-            sheet.autoSizeColumn(i);
-        }
     }
 }
