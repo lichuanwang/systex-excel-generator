@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Education;
+import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import org.apache.poi.ss.usermodel.Cell;
@@ -8,6 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
+import java.util.Date;
 import java.util.List;
 
 public class EducationSection extends Section {
@@ -15,6 +17,7 @@ public class EducationSection extends Section {
     private List<Education> educations;
     private FormattingHandler formattingHandler;
     private FormulaHandler formulaHandler;
+    private DataValidationHandler dataValidationHandler;
 
     {
         this.formattingHandler = new FormattingHandler();

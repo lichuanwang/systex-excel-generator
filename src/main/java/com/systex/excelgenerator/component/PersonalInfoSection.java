@@ -2,9 +2,11 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.component.Section;
+import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.ImageHandler;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -16,6 +18,7 @@ public class PersonalInfoSection extends Section {
     private Candidate candidate;
     private FormattingHandler formattingHandler;
     private ImageHandler imageHandler;
+    private DataValidationHandler dataValidationHandler;
 
     {
         this.formattingHandler = new FormattingHandler();
@@ -42,6 +45,11 @@ public class PersonalInfoSection extends Section {
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Gender");
         row.createCell(1).setCellValue(candidate.getGender());
+
+        // test data valid - gender : male/female
+        dataValidationHandler = new DataValidationHandler(sheet , row.getRowNum() , row.getRowNum() , 1 , 1);
+        String[] options = {"Male","Female"};
+        dataValidationHandler.ListDataValid(options);
 
         row = sheet.createRow(rowNum++);
         row.createCell(0).setCellValue("Birthday");
