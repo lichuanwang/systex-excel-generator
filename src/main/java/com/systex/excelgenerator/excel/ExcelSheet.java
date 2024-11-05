@@ -9,7 +9,7 @@ public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private int startingRow = 0;
     private int startingCol = 0;
-    private final int maxColPerRow;
+    private int maxColPerRow;
     private int deepestRowOnCurrentLevel = 0;
 
     public ExcelSheet(Workbook workbook, String sheetName, int maxColPerRow) {
@@ -78,6 +78,15 @@ public class ExcelSheet {
     public void setDeepestRowOnCurrentLevel(int deepestRowOnCurrentLevel) {
         this.deepestRowOnCurrentLevel = deepestRowOnCurrentLevel;
     }
+
+    public void setMaxColPerRow(int maxColPerRow) {
+        this.maxColPerRow = maxColPerRow;
+    }
+
+    public int getMaxColPerRow(int maxColPerRow) {
+        return maxColPerRow;
+    }
+
 }
 
 

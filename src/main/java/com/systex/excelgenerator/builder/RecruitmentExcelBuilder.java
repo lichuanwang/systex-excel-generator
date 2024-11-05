@@ -48,6 +48,13 @@ public class RecruitmentExcelBuilder extends ExcelBuilder {
         section.setData(data);
         sectionList.add(section);
     }
+
+    @Override
+    public void buildFooter() {
+        // Build footer logic if necessary
+    }
+}
+
 //    @Override
 //    public void buildBody() {
 //        ExcelSheet sheet = excelFile.createSheet("Candidate Information");
@@ -93,8 +100,3 @@ public class RecruitmentExcelBuilder extends ExcelBuilder {
 ////        System.out.println(rowNum);
 //    }
 
-    @Override
-    public void buildFooter() {
-        // Build footer logic if necessary
-    }
-}

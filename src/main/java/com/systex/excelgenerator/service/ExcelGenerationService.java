@@ -2,6 +2,7 @@ package com.systex.excelgenerator.service;
 
 import com.systex.excelgenerator.builder.RecruitmentExcelBuilder;
 import com.systex.excelgenerator.builder.ExcelBuilder;
+import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.director.ExcelDirector;
 import com.systex.excelgenerator.excel.ExcelFile;
@@ -22,19 +23,12 @@ public class ExcelGenerationService {
         ExcelFile excelFile = director.getExcelFile();
 
         // Apply custom styles to the content
-        XSSFSheet sheet = excelFile.getWorkbook().getSheet(candidate.getName());
+        ExcelSheet excelSheet = excelFile.getExelSheet(candidate.getName());
+        XSSFSheet sheet = excelSheet.getXssfSheet();
         applyStyles(sheet);
 
-        int maxColumnIndex = 0;
-        for (int rowIndex = 0; rowIndex <= sheet.getPhysicalNumberOfRows(); rowIndex++) {
-            Row row = sheet.getRow(rowIndex);
-            if (row != null && row.getLastCellNum() > maxColumnIndex) {
-                maxColumnIndex = row.getLastCellNum();
-            }
-        }
-
         // Auto-size all columns up to the maximum column index
-        for (int i = 0; i < maxColumnIndex; i++) {
+        for (int i = 0; i < excelSheet.getMaxColPerRow(); i++) {
             sheet.autoSizeColumn(i);
         }
 
