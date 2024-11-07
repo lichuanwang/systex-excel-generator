@@ -23,7 +23,8 @@ public class ExcelGenerationService {
         ExcelFile excelFile = director.getExcelFile();
 
         // Apply custom styles to the content
-        ExcelSheet excelSheet = excelFile.getExelSheet(candidate.getName());
+        ExcelSheet excelSheet = excelFile.getExelSheet(
+                candidate.getName());
         XSSFSheet sheet = excelSheet.getXssfSheet();
         applyStyles(sheet);
 

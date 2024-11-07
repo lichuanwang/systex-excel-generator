@@ -28,7 +28,7 @@ public class ChartHandler {
      */
     public void genPieChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
                             int xAxisCol, int yAxisCol, int ChartStartRow){
-        //System.out.println(dataStartRow+","+dataLastRow+","+dataCol+","+valueCol);
+        System.out.println(headerRow+","+dataStartRow+","+dataLastRow+","+xAxisCol+","+yAxisCol+","+ChartStartRow);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
@@ -38,16 +38,16 @@ public class ChartHandler {
         String valueTitle = row.getCell(yAxisCol).getStringCellValue();
 
         // 設置圖表的位置,高從indexRow開始往下,寬是col1~col2
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, ChartStartRow, 10, ChartStartRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 5, ChartStartRow, 12, ChartStartRow + 15));
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, yAxisCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, xAxisCol)
         );
 
         // 選定資料範圍數值的資料來源
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, yAxisCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, yAxisCol, yAxisCol)
         );
 
         //設定圖表類型為圓餅圖
@@ -79,15 +79,15 @@ public class ChartHandler {
     /**
      * 產生雷達圖
      */
-    public void genRadarChart(Sheet sheet, int dataStartRow, int dataLastRow,
-                              int xAxisCol, int yAxisCol, int ChartStartRow, int headerRow) {
+    public void genRadarChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
+                              int xAxisCol, int yAxisCol, int ChartStartRow) {
         //System.out.println(dataStartRow + "," + dataLastRow + "," + dataCol + "," + yAxisCol);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, ChartStartRow, 10, ChartStartRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 5, ChartStartRow, 12, ChartStartRow + 15));
 
         // 從headerRow中取得類別軸和數值軸的標題名稱
         Row row = sheet.getRow(headerRow);
@@ -129,6 +129,18 @@ public class ChartHandler {
         XDDFSolidFillProperties fillProperties = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.ORANGE));
         series.setFillProperties(fillProperties);
 
+        // 設定table title
+        chart.setTitleText(valueTitle);
+        chart.setTitleOverlay(false);
+        XDDFChartLegend legend = chart.getOrAddLegend();
+        legend.setPosition(LegendPosition.RIGHT);
+
+        // 顯示圖表圖例
+        CTDLbls dLbls = chart.getCTChart().getPlotArea().getRadarChartArray(0).getSerArray(0).addNewDLbls();
+        dLbls.addNewShowCatName().setVal(true);  // 類別名稱
+        dLbls.addNewShowVal().setVal(true);      // 值
+        dLbls.addNewShowSerName().setVal(true);  // 數列名稱
+
         // 顯示主要格線
         chart.getCTChart().getPlotArea().getCatAxArray(0).addNewMajorGridlines();
         chart.getCTChart().getPlotArea().getValAxArray(0).addNewMajorGridlines();
@@ -140,20 +152,20 @@ public class ChartHandler {
     /**
      * 產生直條圖
      */
-    public void genBarChart(Sheet sheet, int dataStartRow, int dataLastRow,
-                            int categoryCol, int valueCol, int indexRow, int headerRow) {
-        //System.out.println(dataStartRow+","+dataLastRow+","+categoryCol+","+valueCol+","+indexRow+","+headerRow);
+    public void genBarChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
+                            int xAxisCol, int yAxisCol, int ChartStartRow) {
+        //System.out.println(dataStartRow+","+dataLastRow+","+xAxisCol+","+yAxisCol+","+indexRow+","+headerRow);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, indexRow, 10, indexRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 5, ChartStartRow, 12, ChartStartRow + 15));
 
         // 從headerRow中取得類別軸和數值軸的標題名稱
         Row row = sheet.getRow(headerRow);
-        String categoryTitle = row.getCell(categoryCol).getStringCellValue();
-        String valueTitle = row.getCell(valueCol).getStringCellValue();
+        String categoryTitle = row.getCell(xAxisCol).getStringCellValue();
+        String valueTitle = row.getCell(yAxisCol).getStringCellValue();
 
         // 數值軸的名稱來當整張圖表的標題
         chart.setTitleText(valueTitle);
@@ -161,12 +173,12 @@ public class ChartHandler {
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, categoryCol, categoryCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, xAxisCol)
         );
 
         // 選定資料範圍數值的資料來源
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, valueCol, valueCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, yAxisCol, yAxisCol)
         );
 
         // 設定類別軸和數值軸
@@ -192,18 +204,18 @@ public class ChartHandler {
     /**
      * 產生折線圖
      */
-    public void genLineChart(Sheet sheet, int dataStartRow, int dataLastRow,
-                             int categoryCol, int valueCol, int indexRow, int headerRow){
+    public void genLineChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
+                             int xAxisCol, int yAxisCol, int ChartStartRow){
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 3, indexRow, 10, indexRow + 15));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0, 0, 0, 0, 5, ChartStartRow, 12, ChartStartRow + 15));
 
         // 從headerRow中取得類別軸和數值軸的標題名稱
         Row row = sheet.getRow(headerRow);
-        String categoryTitle = row.getCell(categoryCol).getStringCellValue();
-        String valueTitle = row.getCell(valueCol).getStringCellValue();
+        String categoryTitle = row.getCell(xAxisCol).getStringCellValue();
+        String valueTitle = row.getCell(yAxisCol).getStringCellValue();
 
         // 數值軸的名稱來當整張圖表的標題
         chart.setTitleText(valueTitle);
@@ -211,12 +223,12 @@ public class ChartHandler {
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, categoryCol, categoryCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, xAxisCol, xAxisCol)
         );
 
         // 選定資料範圍數值的資料來源
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
-                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, valueCol, valueCol)
+                (XSSFSheet) sheet, new CellRangeAddress(dataStartRow, dataLastRow, yAxisCol, yAxisCol)
         );
 
         // 設定類別軸和數值軸

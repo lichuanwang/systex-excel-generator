@@ -2,9 +2,12 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
+import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.poi.ss.usermodel.Row;
 
 public class ProjectSection extends AbstractSection<Project> {
+
+    private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public ProjectSection() {
         super("Project");
@@ -42,7 +45,16 @@ public class ProjectSection extends AbstractSection<Project> {
         for (Project project : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(project.getProjectName());
+
+            // Set Outer HyperLink
+            hyperlinkHandler.setHyperLink("https://github.com/ruanyanamy/systex-excel-generator"
+                    , row.getCell(startCol) , sheet.getWorkbook());
+
             row.createCell(startCol + 1).setCellValue(project.getRole());
+
+            // Set Internal HyperLink
+            hyperlinkHandler.setInternalLink(sheet.getSheetName(), row.getCell(startCol + 1) , sheet.getWorkbook());
+
             row.createCell(startCol + 2).setCellValue(project.getDescription());
             row.createCell(startCol + 3).setCellValue(project.getTechnologiesUsed());
         }

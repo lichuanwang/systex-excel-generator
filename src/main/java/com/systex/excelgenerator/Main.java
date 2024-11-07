@@ -57,13 +57,17 @@ public class Main {
         Skill skill1 = new Skill();
         skill1.setId(1);
         skill1.setSkillName("Java");
-        skill1.setLevel(4);
+        skill1.setLevel(5);
         Skill skill2 = new Skill();
         skill2.setId(2);
         skill2.setSkillName("Spring Boot");
         skill2.setLevel(2);
+        Skill skill3 = new Skill();
+        skill3.setId(3);
+        skill3.setSkillName("Angular");
+        skill3.setLevel(3);
 
-        candidate.setSkills(Arrays.asList(skill1, skill2));
+        candidate.setSkills(Arrays.asList(skill1, skill2, skill3));
 
         // Step 5: Add Projects data
         Project project1 = new Project();

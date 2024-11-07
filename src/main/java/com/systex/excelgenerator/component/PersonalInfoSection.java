@@ -104,7 +104,6 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getEmail());
 
         // Set Email HyperLink
-        System.out.println(candidate.getEmail());
         hyperlinkHandler.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
 
         row = sheet.createOrGetRow(startRow);
