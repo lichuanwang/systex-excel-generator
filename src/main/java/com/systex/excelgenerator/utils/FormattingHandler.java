@@ -60,4 +60,9 @@ public class FormattingHandler {
         // 凍結儲存格的某一列到某一列
         sheet.createFreezePane(first, last);
     }
+
+    // 篩選器
+    public void CellFilter (Sheet sheet , int firstRow ,  int lastRow , int firstCol , int lastCol){
+        sheet.setAutoFilter(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+    }
 }

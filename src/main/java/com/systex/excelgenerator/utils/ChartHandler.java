@@ -129,18 +129,6 @@ public class ChartHandler {
         XDDFSolidFillProperties fillProperties = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.ORANGE));
         series.setFillProperties(fillProperties);
 
-        // 設定table title
-        chart.setTitleText(valueTitle);
-        chart.setTitleOverlay(false);
-        XDDFChartLegend legend = chart.getOrAddLegend();
-        legend.setPosition(LegendPosition.RIGHT);
-
-        // 顯示圖表圖例
-        CTDLbls dLbls = chart.getCTChart().getPlotArea().getRadarChartArray(0).getSerArray(0).addNewDLbls();
-        dLbls.addNewShowCatName().setVal(true);  // 類別名稱
-        dLbls.addNewShowVal().setVal(true);      // 值
-        dLbls.addNewShowSerName().setVal(true);  // 數列名稱
-
         // 顯示主要格線
         chart.getCTChart().getPlotArea().getCatAxArray(0).addNewMajorGridlines();
         chart.getCTChart().getPlotArea().getValAxArray(0).addNewMajorGridlines();
@@ -244,6 +232,11 @@ public class ChartHandler {
 
         // 設定資料(圖例)
         data.addSeries(categories, values);
+
+        // 顯示圖表圖例
+        XDDFChartLegend legend = chart.getOrAddLegend();
+        legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊
+        //legend.se
 
         // 顯示圖表
         chart.plot(data);
