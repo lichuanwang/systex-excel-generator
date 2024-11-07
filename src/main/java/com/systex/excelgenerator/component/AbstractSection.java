@@ -48,7 +48,7 @@ public abstract class AbstractSection<T> implements Section<T> {
 
     public void setData(T data) {
         if(content != null) {
-            this.content = new ArrayList<>(); // Check if this will return the same thing just like the one below
+            this.content = new ArrayList<>();
             this.content.add(data);
         }
     }
