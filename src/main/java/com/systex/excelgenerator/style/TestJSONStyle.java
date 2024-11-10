@@ -58,8 +58,9 @@ public class TestJSONStyle {
                     originalFont.getXSSFColor().getARGBHex(), // 使用 ARGBHex 字串表示顏色
                     originalFont.getItalic()
             );
-
+            // 將 fontData 物件序列化為 JSON
             String json = mapper.writeValueAsString(fontData);
+            // 將 JSON 字串反序列化為一個新的 FontData 物件 clonedFontData
             FontData clonedFontData = mapper.readValue(json, FontData.class);
 
             XSSFFont newFont = workbook.createFont();
