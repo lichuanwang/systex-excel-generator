@@ -27,13 +27,6 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
     }
 
     @Override
-    public void setData(Candidate candidate) {
-        if (candidate != null) {
-            this.candidate = candidate;
-        }
-    }
-
-    @Override
     public void setData(Collection<Candidate> dataCollection) {
         if (dataCollection != null && !dataCollection.isEmpty()) {
             this.candidate = dataCollection.iterator().next();
@@ -56,7 +49,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
     }
 
     @Override
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
 
         String[] headers = {"Name", "Gender", "Birthday", "Phone", "Email", "Address"};
 
@@ -68,7 +61,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
     }
 
     @Override
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
         try {
             addImageToSheet(sheet);
@@ -92,7 +85,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
     }
 
     @Override
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol){
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol){
         // implement footer logic here
     }
 
@@ -122,8 +115,8 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
     @Override
     public void render(ExcelSheet sheet, int startRow, int startCol) {
         addSectionTitle(sheet, startRow, startCol);
-        populateHeader(sheet, startRow + 1, startCol);
-        populateBody(sheet, startRow + 1, startCol + 1);
-        populateFooter(sheet, startRow + 1, startCol + 2);
+        renderHeader(sheet, startRow + 1, startCol);
+        renderBody(sheet, startRow + 1, startCol + 1);
+        renderFooter(sheet, startRow + 1, startCol + 2);
     }
 }

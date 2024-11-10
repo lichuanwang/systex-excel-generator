@@ -1,49 +1,62 @@
 package com.systex.excelgenerator.service;
 
-import com.systex.excelgenerator.builder.RecruitmentExcelBuilder;
-import com.systex.excelgenerator.builder.ExcelBuilder;
+import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.style.StyleBuilder;
-import com.systex.excelgenerator.director.ExcelDirector;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelGenerationService {
 
-    public void generateExcelForCandidate(Candidate candidate) {
-        // Build the Excel content
-        ExcelBuilder builder = new RecruitmentExcelBuilder(candidate);
-        ExcelDirector director = new ExcelDirector(builder);
-        director.constructExcelFile();
+    public void generateExcelForCandidate(List<Candidate> candidates) {
 
-        ExcelFile excelFile = director.getExcelFile();
+        // Create a new file
+        ExcelFile excelFile = new ExcelFile("Candidate Information");
 
-        // Apply custom styles to the content
-        ExcelSheet excelSheet = excelFile.getExelSheet(candidate.getName());
-        XSSFSheet sheet = excelSheet.getXssfSheet();
-        applyStyles(sheet);
+        for (Candidate candidate : candidates) {
+            // create a new sheet
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName());
 
-        // Auto-size all columns up to the maximum column index
-        for (int i = 0; i < excelSheet.getMaxColPerRow(); i++) {
-            sheet.autoSizeColumn(i);
+            // add sections to sheet
+            List<Candidate> candidateList = new ArrayList<>();
+            candidateList.add(candidate);
+            sheet.addSection(new PersonalInfoSection(), candidateList);
+            sheet.addSection(new EducationSection(), candidate.getEducationList());
+            sheet.addSection(new ExperienceSection(), candidate.getExperienceList());
+            sheet.addSection(new ProjectSection(), candidate.getProjects());
+            sheet.addSection(new SkillSection(), candidate.getSkills());
+
+            // Apply styles to sheet
+            applyStyles(sheet);
+
+            // Auto-size all columns up to the maximum column index
+            for (int i = 0; i < sheet.getMaxColPerRow(); i++) {
+                XSSFSheet xssfSheet = sheet.getXssfSheet();
+                xssfSheet.autoSizeColumn(i);
+            }
         }
 
         // Save the Excel file
         try {
-            excelFile.saveToFile("candidate_info_test.xlsx");
+            excelFile.save("candidate_info_test.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void applyStyles(XSSFSheet sheet) {
-        // Example: Apply styles to the first row (header)
-        Row headerRow = sheet.getRow(0);
-        StyleBuilder styleBuilder = new StyleBuilder(sheet.getWorkbook());
+    private void applyStyles(ExcelSheet sheet) {
+
+        // get the xssfsheet
+        XSSFSheet xssfSheet = sheet.getXssfSheet();
+
+        Row headerRow = xssfSheet.getRow(0);
+        StyleBuilder styleBuilder = new StyleBuilder(xssfSheet.getWorkbook());
 
         if (headerRow != null) {
             for (Cell cell : headerRow) {
