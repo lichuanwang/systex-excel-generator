@@ -2,6 +2,9 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
+import com.systex.excelgenerator.utils.DataValidationHandler;
+import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +24,8 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
     private static final Logger log = LogManager.getLogger(PersonalInfoSection.class);
     private Candidate candidate;
+    private FormattingHandler formattingHandler = new FormattingHandler();
+    private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public PersonalInfoSection() {
         super("Personal Information");
@@ -74,12 +79,26 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getName());
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getGender());
+
+        // test data valid - gender : male/female
+        DataValidationHandler dataValidationHandler = new DataValidationHandler(sheet.getXssfSheet() , row.getRowNum(), row.getRowNum(), startCol, startCol);
+        String[] options = {"Male","Female"};
+        dataValidationHandler.ListDataValid(options);
+
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(DateFormat.getDateInstance().format(candidate.getBirthday()));
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getPhone());
+
+        // format phone number
+        row.getCell(startCol).setCellStyle(formattingHandler.TextFormatting(sheet.getWorkbook()));
+
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getEmail());
+
+        // Set Email HyperLink
+        hyperlinkHandler.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
+
         row = sheet.createOrGetRow(startRow);
         row.createCell(startCol).setCellValue(candidate.getAddress().toString());
     }

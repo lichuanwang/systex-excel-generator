@@ -50,9 +50,19 @@ public class Main {
         Skill skill1 = new Skill();
         skill1.setId(1);
         skill1.setSkillName("Java");
-        candidate1.setSkills(Arrays.asList(skill1));
+        skill1.setLevel(5);
+        Skill skill2 = new Skill();
+        skill2.setId(2);
+        skill2.setSkillName("Spring Boot");
+        skill2.setLevel(2);
+        Skill skill3 = new Skill();
+        skill3.setId(3);
+        skill3.setSkillName("Angular");
+        skill3.setLevel(3);
 
-        // Add Projects data for Candidate 1
+        candidate1.setSkills(Arrays.asList(skill1, skill2, skill3));
+
+        // Step 5: Add Projects data
         Project project1 = new Project();
         project1.setProjectName("E-commerce Platform");
         project1.setDescription("Developed an online shopping platform with Spring Boot and React.");
@@ -92,12 +102,12 @@ public class Main {
         candidate2.setExperienceList(Arrays.asList(experience2));
 
         // Add Skills data for Candidate 2
-        Skill skill2 = new Skill();
-        skill2.setId(2);
-        skill2.setSkillName("Data Analysis");
-        Skill skill3 = new Skill();
-        skill3.setId(3);
-        skill3.setSkillName("Project Management");
+        Skill skill4 = new Skill();
+        skill4.setId(2);
+        skill4.setSkillName("Data Analysis");
+        Skill skill5 = new Skill();
+        skill5.setId(3);
+        skill5.setSkillName("Project Management");
         candidate2.setSkills(Arrays.asList(skill2, skill3));
 
         // Add Projects data for Candidate 2
