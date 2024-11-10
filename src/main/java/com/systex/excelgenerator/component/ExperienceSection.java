@@ -2,6 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
+import com.systex.excelgenerator.style.ExcelStyleUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -62,10 +63,10 @@ public class ExperienceSection extends AbstractSection<Experience> {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
 
         // 使用 createSpecialStyle 創建初始樣式
-        CellStyle initialStyle = createSpecialStyle(workbook);
+        CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
 
         // 使用 cloneStyle 深拷貝樣式
-        CellStyle clonedStyle = cloneStyle(workbook, initialStyle);
+        CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
 
         int rowNum = startRow; // Start from the row after the header
 

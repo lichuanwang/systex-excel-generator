@@ -74,10 +74,8 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
 
-        // 使用 createSpecialStyle 創建初始樣式
+        // 使用 createSpecialStyle 創建初始樣式、使用 cloneStyle 深拷貝樣式
         CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
-
-        // 使用 cloneStyle 深拷貝樣式
         CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
 
         // Fill in the data
