@@ -1,7 +1,8 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.style.CustomStyle;
-import com.systex.excelgenerator.style.ExcelStyleUtils;
+import com.systex.excelgenerator.style.ExcelFormat;
+import com.systex.excelgenerator.style.ExcelStyle;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.commons.compress.utils.IOUtils;
@@ -75,9 +76,10 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
 
-        // 使用複製樣式
+        // 使用克隆的樣式
         CellStyle initialStyle = CustomStyle.createSpecialStyle(workbook);
-        CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
+        CellStyle clonedStyle = ExcelStyle.cloneStyle(workbook, initialStyle);
+        CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
 
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);
@@ -90,9 +92,12 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         Cell phoneCell = row.createCell(startCol);
         phoneCell.setCellValue(candidate.getPhone());
         phoneCell.setCellStyle(clonedStyle);
+        phoneCell.setCellStyle(phoneStyle);
 
         row = sheet.createOrGetRow(startRow++);
-        row.createCell(startCol).setCellValue(candidate.getEmail());
+        Cell emailCell = row.createCell(startCol);
+        emailCell.setCellValue(candidate.getEmail());
+        emailCell.setCellStyle(clonedStyle);
         row = sheet.createOrGetRow(startRow);
         row.createCell(startCol).setCellValue(candidate.getAddress().toString());
     }

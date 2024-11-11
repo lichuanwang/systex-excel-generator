@@ -64,7 +64,7 @@ public class TestJSONStyle {
         Font clonedFont = cloneFont(workbook, originalFont);
 
         // 檢查原字型與複製字型是否相同內容
-        System.out.println("字型名稱相同: " + originalFont.getFontName().equals(((XSSFFont) clonedFont).getFontName()));
-        System.out.println("字型粗體相同: " + (originalFont.getBold() == ((XSSFFont) clonedFont).getBold()));
+        System.out.println("兩者有相同屬性: " + originalFont.getFontName().equals(((XSSFFont) clonedFont).getFontName()));
+        System.out.println("兩者有相同記憶體位置: " + (originalFont.getBold() == ((XSSFFont) clonedFont).getBold()));
     }
 }

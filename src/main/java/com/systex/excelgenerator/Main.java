@@ -14,7 +14,7 @@ public class Main {
         Candidate candidate = new Candidate();
         candidate.setName("John Doe");
         candidate.setEmail("john.doe@gmail.com");
-        candidate.setPhone("1234567890");
+        candidate.setPhone("0987654321");
         candidate.setBirthday(new Date(1999));
         candidate.setGender("Male");
 

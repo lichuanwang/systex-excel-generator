@@ -2,7 +2,13 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
+import com.systex.excelgenerator.style.CustomStyle;
+import com.systex.excelgenerator.style.ExcelFormat;
+import com.systex.excelgenerator.style.ExcelStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
@@ -56,6 +62,9 @@ public class EducationSection extends AbstractSection<Education> {
     }
 
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
+        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+
         int rowNum = startRow; // Start from the row after the header
 
         for (Education edu : educations) {
@@ -63,8 +72,13 @@ public class EducationSection extends AbstractSection<Education> {
             row.createCell(startCol).setCellValue(edu.getSchoolName());
             row.createCell(startCol + 1).setCellValue(edu.getMajor());
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
-            row.createCell(startCol + 3).setCellValue(edu.getStartDate());
-            row.createCell(startCol + 4).setCellValue(edu.getEndDate());
+
+            Cell dateCell =  row.createCell(startCol + 3);
+            dateCell.setCellValue(edu.getStartDate());
+            dateCell.setCellStyle(dateStyle);
+            dateCell =  row.createCell(startCol + 4);
+            dateCell.setCellValue(edu.getEndDate());
+            dateCell.setCellStyle(dateStyle);
         }
     }
 

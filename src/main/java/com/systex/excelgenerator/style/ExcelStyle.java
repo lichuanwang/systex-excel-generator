@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import java.io.IOException;
 
-public class ExcelStyleUtils {
+public class ExcelStyle {
     private static final ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     // JSON 基礎字型資料類別
@@ -74,6 +74,8 @@ public class ExcelStyleUtils {
             throw new RuntimeException("複製樣式時發生錯誤", e);
         }
     }
+
+
 }
 
 

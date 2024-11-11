@@ -3,7 +3,8 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.CustomStyle;
-import com.systex.excelgenerator.style.ExcelStyleUtils;
+import com.systex.excelgenerator.style.ExcelFormat;
+import com.systex.excelgenerator.style.ExcelStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -49,11 +50,6 @@ public class ExperienceSection extends AbstractSection<Experience> {
         return experiences.size() + 2; // +2 for the header row and one extra row space
     }
 
-    // 提供 getter 來獲取藍色樣式
-    public CellStyle getClonedBlueStyle() {
-        return clonedBlueStyle;
-    }
-
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
@@ -69,11 +65,13 @@ public class ExperienceSection extends AbstractSection<Experience> {
 
         // 1. 創建並clone預設樣式
         CellStyle initialStyle = CustomStyle.createSpecialStyle(workbook);
-        clonedBlueStyle  = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
+        clonedBlueStyle  = ExcelStyle.cloneStyle(workbook, initialStyle);
 
         // 2. 修改clone樣式的背景色為寶石藍
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
         clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 
@@ -86,6 +84,12 @@ public class ExperienceSection extends AbstractSection<Experience> {
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
             row.createCell(startCol + 4).setCellValue(exp.getEndDate());
+            Cell dateCell =  row.createCell(startCol + 3);
+            dateCell.setCellValue(exp.getStartDate());
+            dateCell.setCellStyle(dateStyle);
+            dateCell =  row.createCell(startCol + 4);
+            dateCell.setCellValue(exp.getEndDate());
+            dateCell.setCellStyle(dateStyle);
         }
     }
 
