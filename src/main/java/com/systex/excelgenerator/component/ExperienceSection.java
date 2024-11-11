@@ -2,10 +2,9 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
+import com.systex.excelgenerator.style.CustomStyle;
 import com.systex.excelgenerator.style.ExcelStyleUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
@@ -13,6 +12,7 @@ import java.util.*;
 public class ExperienceSection extends AbstractSection<Experience> {
 
     private List<Experience> experiences;
+    private CellStyle clonedBlueStyle;
 
     public ExperienceSection() {
         super("Experience");
@@ -49,6 +49,11 @@ public class ExperienceSection extends AbstractSection<Experience> {
         return experiences.size() + 2; // +2 for the header row and one extra row space
     }
 
+    // 提供 getter 來獲取藍色樣式
+    public CellStyle getClonedBlueStyle() {
+        return clonedBlueStyle;
+    }
+
     protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
@@ -62,23 +67,22 @@ public class ExperienceSection extends AbstractSection<Experience> {
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
 
-        // 使用 createSpecialStyle 創建初始樣式
-        CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
+        // 1. 創建並clone預設樣式
+        CellStyle initialStyle = CustomStyle.createSpecialStyle(workbook);
+        clonedBlueStyle  = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
 
-        // 使用 cloneStyle 深拷貝樣式
-        CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
+        // 2. 修改clone樣式的背景色為寶石藍
+        clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+        clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         int rowNum = startRow; // Start from the row after the header
 
         for (Experience exp : experiences) {
             Row row = sheet.createOrGetRow(rowNum++);
+            Cell jobTitleCell = row.createCell(startCol + 1);
+            jobTitleCell.setCellValue(exp.getJobTitle());
+            jobTitleCell.setCellStyle(clonedBlueStyle );        // 設置儲存格樣式
 
-            // 創建 CompanyName 單元格並應用深拷貝樣式
-            Cell companyCell = row.createCell(startCol);
-            companyCell.setCellValue(exp.getCompanyName());
-            companyCell.setCellStyle(clonedStyle); // 使用深拷貝的樣式
-
-            row.createCell(startCol + 1).setCellValue(exp.getJobTitle());
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
             row.createCell(startCol + 4).setCellValue(exp.getEndDate());

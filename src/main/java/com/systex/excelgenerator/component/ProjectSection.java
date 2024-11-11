@@ -2,7 +2,6 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
-import com.systex.excelgenerator.style.ExcelStyleUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -57,24 +56,12 @@ public class ProjectSection extends AbstractSection<Project> {
     }
 
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
-        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
-        CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
-        CellStyle royalBlueStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
-
-        Font modifiedFont = workbook.createFont();
-        modifiedFont.setFontHeightInPoints((short) 14);
-        royalBlueStyle.setFont(modifiedFont);
-
-        royalBlueStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-        royalBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
         int rowNum = startRow; // Start from the row after the header
 
         for (Project project : projects) {
             Row row = sheet.createOrGetRow(rowNum++);
             Cell projectNameCell = row.createCell(startCol);
             projectNameCell.setCellValue(project.getProjectName());
-            projectNameCell.setCellStyle(royalBlueStyle);
 
             row.createCell(startCol + 1).setCellValue(project.getRole());
             row.createCell(startCol + 2).setCellValue(project.getDescription());

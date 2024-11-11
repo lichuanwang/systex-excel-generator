@@ -1,5 +1,6 @@
 package com.systex.excelgenerator.component;
 
+import com.systex.excelgenerator.style.CustomStyle;
 import com.systex.excelgenerator.style.ExcelStyleUtils;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
@@ -74,8 +75,8 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
 
-        // 使用 createSpecialStyle 創建初始樣式、使用 cloneStyle 深拷貝樣式
-        CellStyle initialStyle = ExcelStyleUtils.createSpecialStyle(workbook);
+        // 使用複製樣式
+        CellStyle initialStyle = CustomStyle.createSpecialStyle(workbook);
         CellStyle clonedStyle = ExcelStyleUtils.cloneStyle(workbook, initialStyle);
 
         // Fill in the data
