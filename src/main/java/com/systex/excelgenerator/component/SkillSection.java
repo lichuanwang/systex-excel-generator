@@ -33,7 +33,7 @@ public class SkillSection extends AbstractSection<Skill> {
         return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
         headerRow.createCell(startCol).setCellValue("Id");
@@ -41,7 +41,7 @@ public class SkillSection extends AbstractSection<Skill> {
         headerRow.createCell(startCol + 2).setCellValue("Level");
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
         for (Skill skill : content) {
@@ -84,7 +84,7 @@ public class SkillSection extends AbstractSection<Skill> {
         //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
     }
 }

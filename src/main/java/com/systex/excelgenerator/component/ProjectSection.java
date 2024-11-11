@@ -30,7 +30,7 @@ public class ProjectSection extends AbstractSection<Project> {
         return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
         headerRow.createCell(startCol).setCellValue("Project Name");
@@ -39,7 +39,7 @@ public class ProjectSection extends AbstractSection<Project> {
         headerRow.createCell(startCol + 3).setCellValue("Technologies Used");
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
         for (Project project : content) {
@@ -60,7 +60,7 @@ public class ProjectSection extends AbstractSection<Project> {
         }
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
     }
 }
