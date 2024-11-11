@@ -62,20 +62,26 @@ public class SkillSection extends AbstractSection<Skill> {
         }
 
         // gen Pie chart
-        chartHandler.genPieChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genPieChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
 
         // gen Radar chart
-        chartHandler.genRadarChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genRadarChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+
+        RadarChartSection radarChartSection = new RadarChartSection();
+        radarChartSection.setChartPosition(startCol,rowNum + 2);
+        radarChartSection.setDataSource(startRow , rowNum - 1 , startCol + 1 , startCol + 2);
+
+        radarChartSection.render(sheet);
 
         // gen Bar chart
-        chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
 
         // gen Line chart
-        chartHandler.genLineChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genLineChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
     }
 
     protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {

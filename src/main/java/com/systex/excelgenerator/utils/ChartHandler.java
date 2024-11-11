@@ -181,7 +181,7 @@ public class ChartHandler {
         // 可以改成直條圖(改方向)
         barChartData.setBarDirection(BarDirection.COL);
 
-        // 設定資料(圖例)
+        // 設定資料
         XDDFChartData.Series series = barChartData.addSeries(categories, values);
         series.setTitle(valueTitle, null);
 
@@ -236,7 +236,6 @@ public class ChartHandler {
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊
-        //legend.se
 
         // 顯示圖表
         chart.plot(data);
