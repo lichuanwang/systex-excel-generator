@@ -7,7 +7,7 @@ import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 
-public abstract class AbstractChartSection implements Section<T> {
+public abstract class AbstractChartSection<T> implements Section<T> {
 
     protected int col1, row1, col2, row2;
     protected int dataFirstRow, dataLastRow, xAxisCol, yAxisCol;
@@ -29,6 +29,13 @@ public abstract class AbstractChartSection implements Section<T> {
 //    public boolean isEmpty() {
 //        return content == null || content.isEmpty();
 //    }
+    public int getWidth(){
+        return 7;
+    }
+
+    public int getHeight(){
+        return 15;
+    }
 
     // 設定圖表的位置
     public void setChartPosition(int col1, int row1) {
@@ -53,12 +60,13 @@ public abstract class AbstractChartSection implements Section<T> {
     protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
 
     // 各個圖表共通有的東西
-    public void render(ExcelSheet sheet){
+    public void render(ExcelSheet sheet, int startRow, int startCol){
         // 設定sheet中的畫布
         XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,col1,row1,col2,row2));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,
+                startCol , startRow ,startCol + getWidth() ,startRow + getHeight()));
 
         // 設定圖表的軸
         XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);

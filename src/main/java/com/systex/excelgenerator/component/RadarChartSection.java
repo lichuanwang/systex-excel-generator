@@ -12,7 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.util.Collection;
 
-public class RadarChartSection extends AbstractChartSection{
+public class RadarChartSection<T> extends AbstractChartSection<T> {
 
     // set chart type
     @Override
@@ -32,6 +32,16 @@ public class RadarChartSection extends AbstractChartSection{
 
         chart.getCTChart().getPlotArea().getCatAxArray(0).addNewMajorGridlines();
         chart.getCTChart().getPlotArea().getValAxArray(0).addNewMajorGridlines();
+    }
+
+    @Override
+    public void setData(Collection<T> data) {
+
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
 }

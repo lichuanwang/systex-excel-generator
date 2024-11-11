@@ -73,7 +73,7 @@ public class SkillSection extends AbstractSection<Skill> {
         radarChartSection.setChartPosition(startCol,rowNum + 2);
         radarChartSection.setDataSource(startRow , rowNum - 1 , startCol + 1 , startCol + 2);
 
-        radarChartSection.render(sheet);
+        //radarChartSection.render(sheet);
 
         // gen Bar chart
         //chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1

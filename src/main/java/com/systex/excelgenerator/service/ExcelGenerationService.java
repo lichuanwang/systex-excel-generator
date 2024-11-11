@@ -2,6 +2,7 @@ package com.systex.excelgenerator.service;
 
 import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Skill;
 import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
@@ -31,6 +32,9 @@ public class ExcelGenerationService {
             sheet.addSection(new ExperienceSection(), candidate.getExperienceList());
             sheet.addSection(new ProjectSection(), candidate.getProjects());
             sheet.addSection(new SkillSection(), candidate.getSkills());
+
+            // add chart section
+            sheet.addSection(new RadarChartSection() , candidate.getSkills());
 
             // Apply styles to sheet
             applyStyles(sheet);
