@@ -182,6 +182,7 @@ public class ChartHandler {
         barChartData.setBarDirection(BarDirection.COL);
 
         // 設定資料
+        //barChartData.addSeries(categories , values);
         XDDFChartData.Series series = barChartData.addSeries(categories, values);
         series.setTitle(valueTitle, null);
 

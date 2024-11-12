@@ -62,7 +62,10 @@ public abstract class AbstractChartSection {
 
         // 創建具體的圖表數據並配置
         XDDFChartData data = createChartData(chart);
-        data.addSeries(categories, values);
+
+        // bar chart如果沒有用series設定標題會出錯
+        XDDFChartData.Series series = data.addSeries(categories, values);
+        series.setTitle("no",null);
 
         // 各圖表特有的設定
         setChartItems(chart, data);

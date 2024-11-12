@@ -35,10 +35,10 @@ public class ExcelGenerationService {
 
             // add chart sections to sheet
             // 改成傳section name進去,在裡面用name找
-            //sheet.addChartSection(new RadarChartSection() , "Skill");
-            //sheet.addChartSection(new PieChartSection() , "Skill");
+            sheet.addChartSection(new RadarChartSection() , "Skill");
+            sheet.addChartSection(new PieChartSection() , "Skill");
             sheet.addChartSection(new BarChartSection() , "Skill");
-            //sheet.addChartSection(new LineChartSection() , "Skill");
+            sheet.addChartSection(new LineChartSection() , "Skill");
 
             // Apply styles to sheet
             applyStyles(sheet);

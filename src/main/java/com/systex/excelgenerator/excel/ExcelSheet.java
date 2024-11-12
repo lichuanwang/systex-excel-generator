@@ -104,7 +104,8 @@ public class ExcelSheet {
         // 要有錯誤處理
 
         // set chart position
-        chartsection.setChartPosition(startingRow, getMaxColPerRow() + 1);
+        chartsection.setChartPosition(getMaxColPerRow() + 1 , startingRow);
+        //chartsection.setChartPosition(1, startingRow);
         // set chart data source
         chartsection.setDataSource(section);
         // render chart sections

@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Row;
 public class SkillSection extends AbstractSection<Skill> {
 
     private FormattingHandler formattingHandler = new FormattingHandler();
-    //private ChartHandler chartHandler = new ChartHandler();
+    private ChartHandler chartHandler = new ChartHandler();
 
     public SkillSection() {
         super("Skill");

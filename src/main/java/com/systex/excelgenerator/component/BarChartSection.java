@@ -22,5 +22,9 @@ public class BarChartSection extends AbstractChartSection {
 
     @Override
     protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+        data.setVaryColors(true);
+        // 顯示圖表圖例
+        XDDFChartLegend legend = chart.getOrAddLegend();
+        legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊
     }
 }
