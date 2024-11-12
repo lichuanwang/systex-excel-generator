@@ -95,18 +95,22 @@ public class ExcelSheet {
     }
 
     // add chart sections
-    public void addChartSection(AbstractChartSection chartsection , Section<?> section) {
+    public void addChartSection(AbstractChartSection chartsection , String sectionname) {
+
         // 傳section name進來再去查找
+        Section<?> section = getSectionByName(sectionname);
+
         // 邏輯有點死
         // 要有錯誤處理
+
         // set chart position
         chartsection.setChartPosition(startingRow, getMaxColPerRow() + 1);
-
         // set chart data source
         chartsection.setDataSource(section);
-
         // render chart sections
         chartsection.render(this);
+
+        // 要更新每個圖表生成的位置(還沒做)
     }
 
     // Getter for the underlying XSSFSheet, if needed

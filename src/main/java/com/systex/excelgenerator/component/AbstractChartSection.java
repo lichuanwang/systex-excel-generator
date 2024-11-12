@@ -34,8 +34,8 @@ public abstract class AbstractChartSection {
         this.yAxisCol = section.getDataEndCol();
     }
 
-    // 決定是甚麼圖表類型
-    protected abstract XDDFChartData createChartData(XSSFChart chart, XDDFCategoryAxis categoryAxis, XDDFValueAxis valueAxis);
+    // 決定是甚麼圖表類型跟軸設定
+    protected abstract XDDFChartData createChartData(XSSFChart chart);
 
     // 各個圖表的特有設定
     protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
@@ -50,7 +50,7 @@ public abstract class AbstractChartSection {
         XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,
                 col1 , row1 , col2 , row2));
 
-        System.out.println(dataFirstRow+","+dataLastRow);
+        //System.out.println(dataFirstRow+","+dataLastRow);
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
@@ -60,13 +60,8 @@ public abstract class AbstractChartSection {
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, yAxisCol, yAxisCol));
 
-        // 設定圖表的軸
-        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
-        valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-
         // 創建具體的圖表數據並配置
-        XDDFChartData data = createChartData(chart, categoryAxis, valueAxis);
+        XDDFChartData data = createChartData(chart);
         data.addSeries(categories, values);
 
         // 各圖表特有的設定

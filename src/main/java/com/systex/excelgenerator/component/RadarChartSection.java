@@ -16,9 +16,15 @@ public class RadarChartSection extends AbstractChartSection {
 
     // set chart type
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart, XDDFCategoryAxis categoryAxis, XDDFValueAxis valueAxis) {
+    protected XDDFChartData createChartData(XSSFChart chart) {
+        // 設定圖表的軸
+        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
+        valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+
         XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
         radarData.setStyle(RadarStyle.FILLED);
+
         return radarData;
     }
 
