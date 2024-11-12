@@ -1,18 +1,24 @@
 package com.systex.excelgenerator.excel;
 
+import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.Section;
+import org.apache.poi.ss.formula.functions.T;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Collection<Section<?>> sections;
+    private Map<String, Section<?>> sectionMap;
     private int startingRow = 0;
     private int startingCol = 0;
     private int maxColPerRow;
@@ -22,7 +28,7 @@ public class ExcelSheet {
         this.sheetName = sheetName;
         this.xssfSheet = workbook.createSheet(sheetName);
         this.maxColPerRow = maxColPerRow;
-        this.sections = new ArrayList<>();
+        this.sectionMap = new TreeMap<>();
     }
 
     public String getSheetName() {
@@ -44,7 +50,7 @@ public class ExcelSheet {
         section.setData(dataCollection);
 
         // add section to list
-        this.sections.add(section);
+        this.sectionMap.put(section.getTitle(), section);
 
         // Determine starting position for the section
         adjustLayoutForNewSection(section);
@@ -71,6 +77,13 @@ public class ExcelSheet {
         deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() + 1);
     }
 
+    public Section<?> getSectionByName(String name) {
+//        Section<T> result = (Section<T>) sectionMap.get(name);
+
+
+        return sectionMap.get(name);
+    }
+
 
     // Method to create or get a row
     public Row createOrGetRow(int rowNum) {
@@ -79,6 +92,21 @@ public class ExcelSheet {
             row = xssfSheet.createRow(rowNum);
         }
         return row;
+    }
+
+    // add chart sections
+    public void addChartSection(AbstractChartSection chartsection , Section<?> section) {
+        // 傳section name進來再去查找
+        // 邏輯有點死
+        // 要有錯誤處理
+        // set chart position
+        chartsection.setChartPosition(startingRow, getMaxColPerRow() + 1);
+
+        // set chart data source
+        chartsection.setDataSource(section);
+
+        // render chart sections
+        chartsection.render(this);
     }
 
     // Getter for the underlying XSSFSheet, if needed

@@ -33,8 +33,10 @@ public class ExcelGenerationService {
             sheet.addSection(new ProjectSection(), candidate.getProjects());
             sheet.addSection(new SkillSection(), candidate.getSkills());
 
-            // add chart section
-            sheet.addSection(new RadarChartSection() , candidate.getSkills());
+            // add chart sections to sheet
+            // 改成傳section name進去,在裡面用name找
+            sheet.addChartSection(new RadarChartSection() , sheet.getSectionByName("Skill"));
+
 
             // Apply styles to sheet
             applyStyles(sheet);
