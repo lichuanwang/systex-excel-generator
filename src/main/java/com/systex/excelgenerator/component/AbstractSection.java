@@ -12,6 +12,10 @@ import java.util.Collection;
 public abstract class AbstractSection<T> implements Section<T> {
     protected String title;
     protected Collection<T> content;
+    protected int dataStartRow;
+    protected int dataEndRow;
+    protected int dataStartColumn;
+    protected int dataEndColumn;
 
 
     protected AbstractSection(String title) {
@@ -55,5 +59,21 @@ public abstract class AbstractSection<T> implements Section<T> {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getDataStartRow() {
+        return dataStartRow;
+    }
+
+    public int getDataEndRow() {
+        return dataEndRow;
+    }
+
+    public int getDataStartCol() {
+        return dataStartColumn;
+    }
+
+    public int getDataEndCol() {
+        return dataEndColumn;
     }
 }
