@@ -6,13 +6,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Collection<Section<?>> sections;
+    private Map<String, Section<?>> sections = new HashMap<>();
     private int startingRow = 0;
     private int startingCol = 0;
     private int maxColPerRow;
@@ -22,7 +21,8 @@ public class ExcelSheet {
         this.sheetName = sheetName;
         this.xssfSheet = workbook.createSheet(sheetName);
         this.maxColPerRow = maxColPerRow;
-        this.sections = new ArrayList<>();
+        // sections can be initialized above when declaring the variable
+        // Think about the data type what kind of data structure might be the most efficient in this case
     }
 
     public String getSheetName() {
@@ -33,6 +33,7 @@ public class ExcelSheet {
         return xssfSheet.getWorkbook();
     }
 
+    // for the collection, also think about what kind of data structure might be the best for this case
     public <T> void addSection(Section<T> section, Collection<T> dataCollection) {
         // Validate that the section is not empty
         if (dataCollection == null) {
@@ -44,7 +45,7 @@ public class ExcelSheet {
         section.setData(dataCollection);
 
         // add section to list
-        this.sections.add(section);
+        this.sections.put(section.getTitle(), section);
 
         // Determine starting position for the section
         adjustLayoutForNewSection(section);

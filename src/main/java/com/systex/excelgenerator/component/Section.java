@@ -10,5 +10,6 @@ public interface Section<T> {
     int getWidth();
     int getHeight();
     void render(ExcelSheet sheet, int startRow, int startCol);
+    String getTitle();
 }
 

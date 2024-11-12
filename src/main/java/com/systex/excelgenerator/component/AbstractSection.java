@@ -53,4 +53,7 @@ public abstract class AbstractSection<T> implements Section<T> {
         }
     }
 
+    public String getTitle() {
+        return title;
+    }
 }
