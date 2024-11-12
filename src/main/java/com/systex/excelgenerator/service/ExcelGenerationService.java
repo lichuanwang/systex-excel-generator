@@ -22,7 +22,7 @@ public class ExcelGenerationService {
 
         for (Candidate candidate : candidates) {
             // create a new sheet
-            ExcelSheet sheet = excelFile.createSheet(candidate.getName());
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
             // add sections to sheet
             List<Candidate> candidateList = new ArrayList<>();
