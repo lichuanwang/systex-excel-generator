@@ -2,7 +2,6 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
-import com.systex.excelgenerator.utils.ChartHandler;
 import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingHandler;
 import org.apache.poi.ss.usermodel.Row;
@@ -10,7 +9,6 @@ import org.apache.poi.ss.usermodel.Row;
 public class SkillDataSection extends AbstractDataSection<Skill> {
 
     private FormattingHandler formattingHandler = new FormattingHandler();
-    private ChartHandler chartHandler = new ChartHandler();
 
     public SkillDataSection() {
         super("Skill");
@@ -63,28 +61,6 @@ public class SkillDataSection extends AbstractDataSection<Skill> {
                     , row.getRowNum() , row.getRowNum() , startCol + 2);
         }
         this.dataEndRow = rowNum - 1;
-        // gen Pie chart
-        //chartHandler.genPieChart(sheet.getXssfSheet(), startRow - 1
-        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
-
-        // gen Radar chart
-        //chartHandler.genRadarChart(sheet.getXssfSheet(), startRow - 1
-        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
-
-        //RadarChartSection radarChartSection = new RadarChartSection();
-        //radarChartSection.setChartPosition(startCol,rowNum + 2);
-        //radarChartSection.setDataSource(startRow , rowNum - 1 , startCol + 1 , startCol + 2);
-        //System.out.println("setting data source");
-
-        //radarChartSection.render(sheet);
-
-        // gen Bar chart
-        //chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1
-        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
-
-        // gen Line chart
-        //chartHandler.genLineChart(sheet.getXssfSheet(), startRow - 1
-        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
     }
 
     protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {

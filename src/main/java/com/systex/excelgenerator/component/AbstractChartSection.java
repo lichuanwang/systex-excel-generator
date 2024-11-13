@@ -49,8 +49,6 @@ public abstract class AbstractChartSection {
         XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,
                 col1 , row1 , col2 , row2));
 
-        //System.out.println(dataFirstRow+","+dataLastRow);
-
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, xAxisCol, xAxisCol));
@@ -63,6 +61,7 @@ public abstract class AbstractChartSection {
         XDDFChartData data = createChartData(chart);
 
         // bar chart如果沒有用series設定標題會出錯
+        // title可以之後套用進來
         XDDFChartData.Series series = data.addSeries(categories, values);
         series.setTitle("no",null);
 

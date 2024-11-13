@@ -101,13 +101,15 @@ public class ExcelSheet {
 
         // set chart position
         chartsection.setChartPosition(getMaxColPerRow() + 1 , startingRow);
-        //chartsection.setChartPosition(1, startingRow);
+
         // set chart data source
         chartsection.setDataSource(dataSection);
+
         // render chart sections
         chartsection.render(this);
 
         // 要更新每個圖表生成的位置(還沒做)
+        // 要有getwidth
     }
 
     // Getter for the underlying XSSFSheet, if needed

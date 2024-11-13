@@ -4,7 +4,6 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 
 import java.util.Collection;
 
-// data section
 public interface DataSection<T> {
     void setData(Collection<T> data);
     boolean isEmpty();
