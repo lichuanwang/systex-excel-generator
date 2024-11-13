@@ -4,12 +4,12 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
 import com.systex.excelgenerator.utils.ChartHandler;
 import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 import org.apache.poi.ss.usermodel.Row;
 
 public class SkillSection extends AbstractSection<Skill> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private ChartHandler chartHandler = new ChartHandler();
 
     public SkillSection() {
@@ -57,7 +57,7 @@ public class SkillSection extends AbstractSection<Skill> {
             row.createCell(startCol + 2).setCellValue(skill.getLevel());
 
             // if skill level > 2 (conditional test)
-            formattingHandler.ConditionalFormatting(sheet.getXssfSheet() , "2"
+            formattingAndFilter.ConditionalFormatting(sheet.getXssfSheet() , "2"
                     , row.getRowNum() , row.getRowNum() , startCol + 2);
         }
 

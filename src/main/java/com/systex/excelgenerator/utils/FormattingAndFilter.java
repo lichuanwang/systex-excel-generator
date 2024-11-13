@@ -6,7 +6,7 @@ import org.apache.poi.ss.util.CellReference;
 
 import java.time.LocalDate;
 
-public class FormattingHandler {
+public class FormattingAndFilter {
 
     // 格式設定
     // date format

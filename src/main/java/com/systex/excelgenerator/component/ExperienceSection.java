@@ -2,7 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
-import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ExperienceSection extends AbstractSection<Experience> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private FormulaHandler formulaHandler = new FormulaHandler();
 
     public ExperienceSection() {
@@ -58,12 +58,12 @@ public class ExperienceSection extends AbstractSection<Experience> {
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
 
             // format date
-            row.getCell(startCol + 3).setCellStyle(formattingHandler.DateFormatting(exp.getStartDate() , sheet.getWorkbook()));
+            row.getCell(startCol + 3).setCellStyle(formattingAndFilter.DateFormatting(exp.getStartDate() , sheet.getWorkbook()));
 
             row.createCell(startCol + 4).setCellValue(exp.getEndDate());
 
             // format date
-            row.getCell(startCol + 4).setCellStyle(formattingHandler.DateFormatting(exp.getStartDate() , sheet.getWorkbook()));
+            row.getCell(startCol + 4).setCellStyle(formattingAndFilter.DateFormatting(exp.getStartDate() , sheet.getWorkbook()));
 
             // 計算時間區間(解析公式)
             // 輸入公式

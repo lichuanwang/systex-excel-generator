@@ -2,7 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
-import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class EducationSection extends AbstractSection<Education> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationSection() {
@@ -58,12 +58,12 @@ public class EducationSection extends AbstractSection<Education> {
             row.createCell(startCol + 3).setCellValue(edu.getStartDate());
 
             // format date
-            row.getCell(startCol + 3).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
+            row.getCell(startCol + 3).setCellStyle(formattingAndFilter.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
 
             row.createCell(startCol + 4).setCellValue(edu.getEndDate());
 
             // format date
-            row.getCell(startCol + 4).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
+            row.getCell(startCol + 4).setCellStyle(formattingAndFilter.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
 
 
             // 計算時間區間(解析公式)
@@ -82,6 +82,9 @@ public class EducationSection extends AbstractSection<Education> {
             // 計算過後的時間區間的值
             row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
         }
+        // test 篩選器
+        // 只需要header就好
+        formattingAndFilter.CellFilter(sheet.getXssfSheet(),startRow-1,rowNum-1,startCol,startCol + 5);
     }
 
     protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {

@@ -3,7 +3,7 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +24,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
 
     private static final Logger log = LogManager.getLogger(PersonalInfoSection.class);
     private Candidate candidate;
-    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public PersonalInfoSection() {
@@ -98,7 +98,7 @@ public class PersonalInfoSection extends AbstractSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getPhone());
 
         // format phone number
-        row.getCell(startCol).setCellStyle(formattingHandler.TextFormatting(sheet.getWorkbook()));
+        row.getCell(startCol).setCellStyle(formattingAndFilter.TextFormatting(sheet.getWorkbook()));
 
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getEmail());
