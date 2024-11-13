@@ -1,0 +1,373 @@
+:toc:
+:toclevels: 3
+:source-highlighter: highlight.js
+:highlightjs-theme: atom-one-dark-reasonable
+:icons: font
+:table-stripes: even
+
+= Status Update 11/06
+
+++++
+<style>
+    h1{
+        font-weight: bold;
+        color: #003060;
+    }
+    h2{
+        color: black;
+        font-weight: bold;
+    }
+    h3 {
+      font-weight: bold;
+      color: #003060;
+    }
+    h4 {
+      color: #003D79;
+    }
+
+</style>
+++++
+
+== 一、使用JSON做深拷貝
+
+=== 1. 測試JSON複製樣式可以達成：
+* 相同的內容
+* 不同的記憶體位置
+
+==== 若有十六進位要額外處理
+* `#0047AB` 是以十六進位格式表示
+
+[source,java]
+----
+String colorStr = "#0047AB";
+byte[] colorBytes = new byte[] {
+    (byte) Integer.parseInt(colorStr.substring(1, 3), 16), // Red
+    (byte) Integer.parseInt(colorStr.substring(3, 5), 16), // Green
+    (byte) Integer.parseInt(colorStr.substring(5, 7), 16)  // Blue 171（171 10101011 變成 -85) 127
+};
+----
+
+==== 嘗試使用JSON序列化與反序列化
+
+[source,java]
+----
+package com.systex.excelgenerator.style;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import java.io.IOException;
+
+
+class FontData {
+    public String fontName;
+    public short fontSize;
+    public boolean bold;
+
+    public FontData() {}  // 無參數建構子
+
+    public FontData(String fontName, short fontSize, boolean bold) {
+        this.fontName = fontName;
+        this.fontSize = fontSize;
+        this.bold = bold;
+    }
+}
+
+----
+
+
+[source,java]
+----
+public class TestJSONStyle {
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * 複製字型：將字型資料轉成 JSON 格式，再轉回字型物件
+     */
+    public static Font cloneFont(XSSFWorkbook workbook);
+}
+----
+
+== 二、Excel功能說明文件
+
+* 說明工具類的使用方法
+
+=== 1、圖表
+
+****
+icon:folder[1x] ChartHandler
+****
+
+* 可生成 `圓餅圖(Pie Chart)` 、 `雷達圖(Radar Chart)` 、 `直條圖(Bar Chart)` 、 `折線圖(Line Chart)`，並根據需求設定圖表細節。
+* *使用方式*：直接呼叫方法，可對圖表顯示做修改。
+* *圖表標籤設定*
+  1. 類別名稱：`dLbls.addNewShowCatName().setVal(true);`
+  2. 值：`dLbls.addNewShowVal().setVal(true);`
+  3. 數列名稱：`dLbls.addNewShowSerName().setVal(true);`
+  4. 百分比：`dLbls.addNewShowPercent().setVal(true);`
+  5. 指引線：`dLbls.addNewShowLeaderLines().setVal(true);`
+
+image::https://i.imgur.com/MyUJuOH.png[width=90%, height=90%]
+
+==== 圓餅圖
+* *說明*：根據儲存格資料建立圓餅圖。
+* *Method*：`genPieChart(Sheet sheet, int dataStartRow, int dataLastRow, int xAxisCol, int valueCol, int ChartStartRow, int headerRow)`
+* *Method參數*
+  - `Sheet sheet`：指定產生圖表的工作表
+  - `int dataStartRow`：選取資料的開始行數
+  - `int dataLastRow`：選取資料的結束行數
+  - `int xAxisCol`：選取資料範圍的類別列數
+  - `int yAxisCol`：選取資料範圍的數值列數
+  - `int ChartStartRow`：設定圖表位置開始的行數
+  - `int headerRow`：標題名稱的行數
+
+
+==== 雷達圖
+* *說明*：根據儲存格資料建立雷達圖。
+* *Method*：`genRadarChart(Sheet sheet, int dataStartRow, int dataLastRow, int xAxisCol, int valueCol, int ChartStartRow, int headerRow)`
+* *Method參數*
+  - `Sheet sheet`：指定產生圖表的工作表
+  - `int dataStartRow`：選取資料的開始行數
+  - `int dataLastRow`：選取資料的結束行數
+  - `int xAxisCol`：選取資料範圍的類別列數
+  - `int yAxisCol`：選取資料範圍的數值列數
+  - `int ChartStartRow`：設定圖表位置開始的行數
+  - `int headerRow`：標題名稱的行數
+
+
+==== 長條圖
+* *說明*：根據儲存格資料建立長條圖。
+* *Method*：`genBarChart(Sheet sheet, int dataStartRow, int dataLastRow, int xAxisCol, int valueCol, int ChartStartRow, int headerRow)`
+* *Method參數*
+  - `Sheet sheet`：指定產生圖表的工作表
+  - `int dataStartRow`：選取資料的開始行數
+  - `int dataLastRow`：選取資料的結束行數
+  - `int xAxisCol`：選取資料範圍的類別列數
+  - `int yAxisCol`：選取資料範圍的數值列數
+  - `int ChartStartRow`：設定圖表位置開始的行數
+  - `int headerRow`：標題名稱的行數
+
+
+==== 折線圖
+* *說明*：根據儲存格資料建立折線圖。
+* *Method*：`genLineChart(Sheet sheet, int dataStartRow, int dataLastRow, int xAxisCol, int valueCol, int ChartStartRow, int headerRow)`
+* *Method參數*
+  - `Sheet sheet`：指定產生圖表的工作表
+  - `int dataStartRow`：選取資料的開始行數
+  - `int dataLastRow`：選取資料的結束行數
+  - `int xAxisCol`：選取資料範圍的類別列數
+  - `int yAxisCol`：選取資料範圍的數值列數
+  - `int ChartStartRow`：設定圖表位置開始的行數
+  - `int headerRow`：標題名稱的行數
+
+
+=== 2、資料驗證
+****
+icon:folder[1x] DataValidationHandler
+****
+
+==== 資料驗證：整數
+* *說明*：將儲存格設定為整數型資料驗證，並限制其輸入範圍。
+* *Method*：`IntegerDataValid(String operator , String startRange , String endRange)`
+* *Method參數*
+  - `String operator`：指定比較運算符
+  - `String startRange`：指定數值開始的範圍
+  - `String endRange`： 指定數值結束的範圍
+
+==== 資料驗證：小數
+* *說明*：將儲存格設定為小數型資料驗證，並限制其輸入範圍。
+* *Method*：`NumericDataValid(String operator , String startRange , String endRange)`
+* *Method參數*
+  - `String operator`：指定比較運算符
+  - `String startRange`：指定數值開始的範圍
+  - `String endRange`： 指定數值結束的範圍
+
+==== 資料驗證：日期
+* 說明：將儲存格設定為日期型資料驗證，限制其輸入內容僅為符合指定日期格式的日期。
+* Method：`DateValid(String operator , String startDate , String endDate)`
+* *Method參數*
+  - `String operator`：指定比較運算符
+  - `String startRange`：指定開始的日期
+  - `String endRange`： 指定結束的日期
+
+==== 資料驗證：下拉式選單
+* *說明*：將儲存格設定為下拉式選單資料驗證，限制其輸入內容僅能從預設選項中選取。
+* *Method*：`ListDataValid(String[] Options)`
+* *Method參數*
+  - `String[] Options`：選指定下拉式選單中的項目
+
+=== 3、格式
+****
+icon:folder[1x] FormattingHandler
+****
+
+==== 條件式格式
+
+* *說明*：設定並根據儲存格的內容自動設置表格樣式。
+* *使用方式*：直接呼叫方法。
+* *Method*：`ConditionalFormatting(Sheet sheet , String conditionalvalue , int startRow , int endRow , int col)`
+* *Method參數*
+  - `Sheet sheet`：應用條件格式的工作表
+  - `String conditionalvalue`：條件格式的比較值
+  - `int startRow`：條件格式應用的開始行數
+  - `int endRow`：條件格式應用的結束行數
+  - `int col`：條件格式應用的列數
+
+* *格式設定*
+  1. 設定文字顏色
+
+[source,java]
+----
+FontFormatting fontFormat = rule.createFontFormatting();
+fontFormat.setFontColorIndex(IndexedColors.指定顏色.getIndex());
+----
+
+  2. 設定儲存格顏色
+
+[source,java]
+----
+PatternFormatting fill = rule.createPatternFormatting();
+fill.setFillBackgroundColor(IndexedColors.指定顏色.getIndex());
+----
+
+
+==== 凍結儲存格
+* *說明*：凍結儲存格的行，將工作表中的某些行固定在可視範圍內。
+
+image::https://i.imgur.com/PLWwLpI.gif[width=70%, height=70%]
+
+* *使用方式*：直接呼叫方法。
+* *Method*：`freezeCell(Sheet sheet , int first, int last)`
+* *Method參數*
+  - `Sheet sheet`：凍結行列的工作表
+  - `int first`：開始凍結的行
+  - `int last`：結束凍結的行
+
+
+=== 4、公式
+****
+icon:folder[1x] FormulaHandler
+****
+
+=== 5、超連結
+****
+icon:folder[1x] HyperlinkHandler
+****
+
+==== 外部連結
+
+* *說明*：將儲存格設定為超連結，點擊後可導向指定的外部連結。
+* *Method*：`setHyperLink(String link , Cell cell , Workbook workbook)`
+* *Method參數*
+  - `link`：欲設置的外部連結（URL）
+  - `cell`：欲設置超連結的儲存格
+  - `workbook`：當前的workbook
+
+
+==== 內部連結
+* *說明*：將儲存格設定為超連結，點擊後可導向工作表中的指定內部內容。
+* *Method*：`setInternalLink(String sheetname , Cell cell , Workbook workbook)`
+* *Method參數*
+  - `sheetname`：欲連接到的工作表的名稱
+  - `cell`：欲設置超連結的儲存格
+  - `workbook`：當前的workbook
+
+
+==== 郵件連結
+* *說明*：將儲存格設定為郵件連結，點擊後可啟動預設郵件客戶端並撰寫至指定的電子郵件地址。
+
+image::https://i.imgur.com/SKcyeRW.gif[width=60%, height=60%]
+
+* *Method*：`setEmailLink(String sheetname , Cell cell , Workbook workbook)`
+* *Method參數*
+  - `email`：目標電子郵件地址
+  - `cell`：欲設置超連結的儲存格
+  - `workbook`：當前的workbook
+
+
+=== 6、圖片
+****
+icon:folder[1x] ImageHandler
+****
+
+* *說明*：在工作表中指定位置插入圖片，並對插入的圖片做調整。
+
+* *Method*：`insertImage(Sheet sheet , int col , int row , String imagepath , String imagetype)`
+* *Method參數*
+  - `sheet`：欲插入圖片的工作表
+  - `col`：圖片插入的列位置
+  - `row`：圖片插入的行位置
+  - `imagepath`：圖片檔案的路徑
+  - `imagetype`：圖片的檔案格式（如PNG、JPEG）
+
+[cols="^,^,^",options="header"]
+|===
+| 圖片格式 | 對應 Workbook.PICTURE_TYPE | 對應常數
+
+| EMF| Workbook.PICTURE_TYPE_EMF| 2
+
+| WMF| Workbook.PICTURE_TYPE_WMF| 3
+
+| PICT PCT| Workbook.PICTURE_TYPE_PICT| 4
+
+| JPG JPEG| Workbook.PICTURE_TYPE_JPEG| 5
+
+| PNG| Workbook.PICTURE_TYPE_PNG| 6
+
+| BMP DIB| Workbook.PICTURE_TYPE_DIB| 7
+|===
+
+
+== 三、減少Section setData的重複性 
+
+* 透過使用泛型減少需要寫setdata的使用次數
+
+[source,java]
+----
+import com.systex.excelgenerator.component.*;
+import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Candidate;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+public class RecruitmentExcelBuilder extends ExcelBuilder {
+
+    private Candidate candidate;
+
+    public RecruitmentExcelBuilder(Candidate candidate) {
+        this.candidate = candidate;
+    }
+
+    public void buildHeader() {
+
+        @Override
+        public void buildBody() {
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName());
+            List<Section> sectionList = new ArrayList<>();
+            initializeSection(sectionList, new PersonalInfoSection(), candidate);
+            initializeSection(sectionList, new EducationSection(), candidate.getEducationList());
+            initializeSection(sectionList, new ExperienceSection(), candidate.getExperienceList());
+            initializeSection(sectionList, new ProjectSection(), candidate.getProjects());
+            initializeSection(sectionList, new SkillSection(), candidate.getSkills());
+            for (Section section : sectionList) {
+                if (!section.isEmpty()) {
+                    sheet.addSection(section);
+                }
+            }
+        }
+
+        private void initializeSection(List<Section> sectionList, Section section, Object data) {
+            section.setData(data);
+            sectionList.add(section);
+        }
+
+        private <T> void initializeSection(List<Section> sectionList, Section section, Collection<T> data) {
+            section.setData(data);
+            sectionList.add(section);
+        }
+    }
+}
+----
+
+
