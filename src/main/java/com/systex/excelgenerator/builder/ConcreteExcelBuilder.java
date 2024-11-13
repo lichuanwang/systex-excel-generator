@@ -3,8 +3,6 @@ package com.systex.excelgenerator.builder;
 import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
-import com.systex.excelgenerator.model.Project;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ConcreteExcelBuilder extends ExcelBuilder {
 
@@ -23,19 +21,19 @@ public class ConcreteExcelBuilder extends ExcelBuilder {
     public void buildBody() {
         ExcelSheet sheet = excelFile.createSheet("Candidate Information");
 
-        PersonalInfoSection personalInfoSection = new PersonalInfoSection();
+        PersonalInfoDataSection personalInfoSection = new PersonalInfoDataSection();
         personalInfoSection.setData(candidate);
 
-        EducationSection educationSection = new EducationSection();
+        EducationDataSection educationSection = new EducationDataSection();
         educationSection.setData(candidate.getEducationList());
 
-        ExperienceSection experienceSection = new ExperienceSection();
+        ExperienceDataSection experienceSection = new ExperienceDataSection();
         experienceSection.setData(candidate.getExperienceList());
 
-        ProjectSection projectSection = new ProjectSection();
+        ProjectDataSection projectSection = new ProjectDataSection();
         projectSection.setData(candidate.getProjects());
 
-        SkillSection skillSection = new SkillSection();
+        SkillDataSection skillSection = new SkillDataSection();
         skillSection.setData(candidate.getSkills());
 
 

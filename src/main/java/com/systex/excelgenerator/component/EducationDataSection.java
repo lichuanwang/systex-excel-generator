@@ -10,11 +10,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
-public class EducationSection extends AbstractSection<Education> {
+public class EducationDataSection extends AbstractDataSection<Education> {
 
     private List<Education> educations;
 
-    public EducationSection() {
+    public EducationDataSection() {
         super("Education");
     }
 

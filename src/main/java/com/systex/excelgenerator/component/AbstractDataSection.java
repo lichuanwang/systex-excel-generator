@@ -3,12 +3,11 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public abstract class AbstractSection<T> implements Section<T> {
+public abstract class AbstractDataSection<T> implements Section<T> {
     protected String title;
 
-    public AbstractSection(String title) {
+    public AbstractDataSection(String title) {
         this.title = title;
     }
 

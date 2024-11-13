@@ -3,15 +3,14 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
-public class ProjectSection extends AbstractSection<Project> {
+public class ProjectDataSection extends AbstractDataSection<Project> {
 
     private List<Project> projects;
 
-    public ProjectSection() {
+    public ProjectDataSection() {
         super("Project");
     }
 

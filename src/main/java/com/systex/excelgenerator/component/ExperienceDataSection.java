@@ -9,12 +9,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
-public class ExperienceSection extends AbstractSection<Experience> {
+public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
     private List<Experience> experiences;
     private CellStyle clonedBlueStyle;
 
-    public ExperienceSection() {
+    public ExperienceDataSection() {
         super("Experience");
     }
 

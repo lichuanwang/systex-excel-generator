@@ -16,11 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 
-public class PersonalInfoSection extends AbstractSection<Candidate> {
+public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
     private Candidate candidate;
 
-    public PersonalInfoSection() {
+    public PersonalInfoDataSection() {
         super("Personal Information");
     }
 

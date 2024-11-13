@@ -1,17 +1,16 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.model.Project;
 import com.systex.excelgenerator.model.Skill;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.*;
 
-public class SkillSection extends AbstractSection<Skill> {
+public class SkillDataSection extends AbstractDataSection<Skill> {
 
     private List<Skill> skills;
 
-    public SkillSection() {
+    public SkillDataSection() {
         super("Skill");
     }
 
