@@ -105,13 +105,30 @@ Apache POI 是最受歡迎的開源 Java 庫，分為以下三種模式：
 
 == 選擇 API 的決策指南
 
-| 使用場景 | 推薦 API | 原因 |
-| --- | --- | --- |
-| 需要處理複雜報告、圖表和模板 | DsExcel 或 Aspose.Cells | 支持完整高級功能 |
-| 高效處理大型文件 | FastExcel 或 Apache POI (SXSSF) | 降低內存使用 |
-| 基本的 Excel 操作 | EasyXLS | 簡單易用 |
-| 處理多種 Office 格式 | DOCX4J | 支持多格式 |
-| 基於模板的報表生成 | JXLS | 模板化報告 |
+[cols="1,1,2", options="header"]
+|===
+| 使用場景 | 推薦 API | 原因
+
+| 需要處理複雜報告、圖表和模板
+| DsExcel 或 Aspose.Cells
+| 支持完整高級功能
+
+| 高效處理大型文件
+| FastExcel 或 Apache POI (SXSSF)
+| 降低內存使用
+
+| 基本的 Excel 操作
+| EasyXLS
+| 簡單易用
+
+| 處理多種 Office 格式
+| DOCX4J
+| 支持多格式
+
+| 基於模板的報表生成
+| JXLS
+| 模板化報告
+|===
 
 == 結論
 
@@ -119,49 +136,44 @@ Apache POI 是最受歡迎的開源 Java 庫，分為以下三種模式：
 
 == Apache POI 不支持的功能
 
-=== 1. Advanced Charting Features
+[cols="1,2", options="header"]
+|===
+| 功能 | 詳細說明
 
-例如：pyramid charts, radar charts, 3D charts。Aspose.Cells 支持高級圖表類型。
+| Advanced Charting Features
+| 例如：pyramid charts, radar charts, 3D charts。Aspose.Cells 支持高級圖表類型。
 
-=== 2. Pivot Table Creation and Manipulation
+| Pivot Table Creation and Manipulation
+| Apache POI 不支持生成或修改樞紐分析表。Aspose.Cells 和 Spire.XLS 支持這些功能。
 
-Apache POI 不支持生成或修改樞紐分析表。Aspose.Cells 和 Spire.XLS 支持這些功能。
+| Macros (VBA) Support
+| Apache POI 不支持宏的創建或編輯。Aspose.Cells 支持 VBA 宏。
 
-=== 3. Macros (VBA) Support
+| Advanced Formula Support
+| POI 缺少最新 Excel 動態數組等高級公式。Aspose.Cells 支持 450 多個公式。
 
-Apache POI 不支持宏的創建或編輯。Aspose.Cells 支持 VBA 宏。
+| Excel File Compression
+| POI 不支持內建壓縮。Aspose.Cells 支持壓縮。
 
-=== 4. Advanced Formula Support
+| PDF and Image Export
+| POI 僅支持 Excel 格式，不支持 PDF 和圖像導出。Aspose.Cells 支持導出 PDF、XPS 和圖像格式。
 
-POI 缺少最新 Excel 動態數組等高級公式。Aspose.Cells 支持 450 多個公式。
+| Workbook Protection Features
+| POI 的保護功能有限。Aspose.Cells 支持高級加密和數字簽名。
 
-=== 5. Excel File Compression
+| Client-Side Data Viewer and Editing
+| POI 無客戶端查看器。DsExcel 包含數據查看器。
 
-POI 不支持內建壓縮。Aspose.Cells 支持壓縮。
+| Memory Management for Large Datasets
+| SXSSF 雖可降低內存，但處理極大數據不如 EasyExcel、Aspose.Cells。
 
-=== 6. PDF and Image Export
+| Template-Based Report Generation
+| POI 支持有限，Aspose.Cells 支持高級模板。
 
-POI 僅支持 Excel 格式，不支持 PDF 和圖像導出。Aspose.Cells 支持導出 PDF、XPS 和圖像格式。
+| Custom Filtering and Conditional Formatting
+| POI 支持基本條件格式，Aspose.Cells 支持複雜的條件格式和自訂圖標。
+|===
 
-=== 7. Workbook Protection Features
-
-POI 的保護功能有限。Aspose.Cells 支持高級加密和數字簽名。
-
-=== 8. Client-Side Data Viewer and Editing
-
-POI 無客戶端查看器。DsExcel 包含數據查看器。
-
-=== 9. Memory Management for Large Datasets
-
-SXSSF 雖可降低內存，但處理極大數據不如 EasyExcel、Aspose.Cells。
-
-=== 10. Template-Based Report Generation
-
-POI 支持有限，Aspose.Cells 支持高級模板。
-
-=== 11. Custom Filtering and Conditional Formatting
-
-POI 支持基本條件格式，Aspose.Cells 支持複雜的條件格式和自訂圖標。
 
 == Excel 進階功能
 
