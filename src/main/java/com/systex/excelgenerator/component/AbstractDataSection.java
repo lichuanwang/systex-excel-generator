@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class AbstractSection<T> implements Section<T> {
+public abstract class AbstractDataSection<T> implements DataSection<T> {
     protected String title;
     protected Collection<T> content;
     protected int dataStartRow;
@@ -18,7 +18,7 @@ public abstract class AbstractSection<T> implements Section<T> {
     protected int dataEndColumn;
 
 
-    protected AbstractSection(String title) {
+    protected AbstractDataSection(String title) {
         this.title = title;
     }
 

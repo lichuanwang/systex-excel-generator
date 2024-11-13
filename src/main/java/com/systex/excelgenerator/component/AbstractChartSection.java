@@ -27,15 +27,15 @@ public abstract class AbstractChartSection implements ChartSection {
         this.row2 = endingRow + 15;
     }
 
-    public void setDataSource(Section<?> section) {
-        this.dataFirstRow = section.getDataStartRow();
-        this.dataLastRow = section.getDataEndRow();
-        this.xAxisCol = section.getDataStartCol();
-        this.yAxisCol = section.getDataEndCol();
+    public void setDataSource(DataSection<?> dataSection) {
+        this.dataFirstRow = dataSection.getDataStartRow();
+        this.dataLastRow = dataSection.getDataEndRow();
+        this.xAxisCol = dataSection.getDataStartCol();
+        this.yAxisCol = dataSection.getDataEndCol();
     }
 
-    // 決定是甚麼圖表類型
-    protected abstract XDDFChartData createChartData(XSSFChart chart, XDDFCategoryAxis categoryAxis, XDDFValueAxis valueAxis);
+    // 決定是甚麼圖表類型跟軸設定
+    protected abstract XDDFChartData createChartData(XSSFChart chart);
 
     // 各個圖表的特有設定
     protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
@@ -50,7 +50,7 @@ public abstract class AbstractChartSection implements ChartSection {
         // 設定圖表位置
         XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0, col1 , row1 , col2 , row2));
 
-        System.out.println(dataFirstRow+","+dataLastRow);
+        //System.out.println(dataFirstRow+","+dataLastRow);
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
@@ -60,14 +60,12 @@ public abstract class AbstractChartSection implements ChartSection {
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, yAxisCol, yAxisCol));
 
-        // 設定圖表的軸
-        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
-        valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-
         // 創建具體的圖表數據並配置
-        XDDFChartData data = createChartData(chart, categoryAxis, valueAxis);
-        data.addSeries(categories, values);
+        XDDFChartData data = createChartData(chart);
+
+        // bar chart如果沒有用series設定標題會出錯
+        XDDFChartData.Series series = data.addSeries(categories, values);
+        series.setTitle("no",null);
 
         // 各圖表特有的設定
         setChartItems(chart, data);
