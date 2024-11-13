@@ -8,13 +8,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Map<String, Section<?>> sectionMap = new TreeMap<>();
+    private Map<String, Section<?>> sectionMap = new HashMap<>();
     private int startingRow = 0;
     private int startingCol = 0;
     private int maxColPerRow;
@@ -73,12 +74,6 @@ public class ExcelSheet {
         deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() + 1);
     }
 
-    public Section<?> getSectionByName(String name) {
-
-        return sectionMap.get(name);
-    }
-
-
     // Method to create or get a row
     public Row createOrGetRow(int rowNum) {
         Row row = xssfSheet.getRow(rowNum);
@@ -89,18 +84,19 @@ public class ExcelSheet {
     }
 
     // add chart sections
-    public void addChartSection(AbstractChartSection chartsection , Section<?> section) {
+    public void addChartSection(AbstractChartSection chartSection, String sectionTitle) {
         // 傳section name進來再去查找
         // 邏輯有點死
         // 要有錯誤處理
         // set chart position
-        chartsection.setChartPosition(startingRow, getMaxColPerRow() + 1);
+        Section<?> section = this.sectionMap.get(sectionTitle);
+        chartSection.setChartPosition(startingRow, getMaxColPerRow() + 1, startingRow + 7, startingCol+12);
 
         // set chart data source
-        chartsection.setDataSource(section);
+        chartSection.setDataSource(section);
 
         // render chart sections
-        chartsection.render(this);
+        chartSection.render(this);
     }
 
     // Getter for the underlying XSSFSheet, if needed

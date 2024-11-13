@@ -32,7 +32,7 @@ public class ExcelGenerationService {
 
             // add chart sections to sheet
             // 改成傳section name進去,在裡面用name找
-            sheet.addChartSection(new RadarChartSection() , sheet.getSectionByName("Skill"));
+            sheet.addChartSection(new RadarChartSection() , "Skill");
 
 
             // Apply styles to sheet

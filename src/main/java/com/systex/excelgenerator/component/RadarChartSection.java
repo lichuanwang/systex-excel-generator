@@ -1,19 +1,12 @@
 package com.systex.excelgenerator.component;
 
-import com.systex.excelgenerator.excel.ExcelSheet;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xddf.usermodel.PresetColor;
 import org.apache.poi.xddf.usermodel.XDDFColor;
 import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-
-import java.util.Collection;
 
 public class RadarChartSection extends AbstractChartSection {
-
     // set chart type
     @Override
     protected XDDFChartData createChartData(XSSFChart chart, XDDFCategoryAxis categoryAxis, XDDFValueAxis valueAxis) {

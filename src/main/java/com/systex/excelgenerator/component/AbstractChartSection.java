@@ -1,13 +1,12 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 
-public abstract class AbstractChartSection {
+public abstract class AbstractChartSection implements ChartSection {
 
     protected int col1;
     protected int row1;
@@ -19,12 +18,13 @@ public abstract class AbstractChartSection {
     protected int yAxisCol;
 
     // 設定圖表的位置
-    public void setChartPosition(int col1, int row1) {
+    public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
         // default size 給使用者col2 , row2
-        this.col1 = col1;
-        this.row1 = row1;
+        this.row1 = startingRow;
+        this.col1 = startingColumn;
+
         this.col2 = col1 + 7;
-        this.row2 = row1 + 15;
+        this.row2 = endingRow + 15;
     }
 
     public void setDataSource(Section<?> section) {
@@ -41,14 +41,14 @@ public abstract class AbstractChartSection {
     protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
 
     // 各個圖表共通有的東西
+
     public void render(ExcelSheet sheet){
 
         // 設定sheet中的畫布
         XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,
-                col1 , row1 , col2 , row2));
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0, col1 , row1 , col2 , row2));
 
         System.out.println(dataFirstRow+","+dataLastRow);
 
