@@ -33,7 +33,7 @@ public class RadarChartSection extends AbstractChartSection {
         // 設定為填充式雷達圖
         ((XDDFRadarChartData) data).setStyle(RadarStyle.FILLED);
 
-        XDDFSolidFillProperties fillProperties = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.ORANGE));
+        XDDFSolidFillProperties fillProperties = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.ORANGE)); //
         ((XDDFRadarChartData.Series) data.getSeries().get(0)).setFillProperties(fillProperties);
 
         chart.getCTChart().getPlotArea().getCatAxArray(0).addNewMajorGridlines();

@@ -2,7 +2,6 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
-import com.systex.excelgenerator.utils.ChartHandler;
 import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingAndFilter;
 import org.apache.poi.ss.usermodel.Row;

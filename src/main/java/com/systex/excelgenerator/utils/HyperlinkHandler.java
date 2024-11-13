@@ -39,7 +39,6 @@ public class HyperlinkHandler {
         Hyperlink emaillink = createHelper.createHyperlink(HyperlinkType.EMAIL);
         emaillink.setAddress("mailto:" +email);
 
-        //return emaillink;
         cell.setHyperlink(emaillink);
     }
 }
