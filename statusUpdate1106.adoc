@@ -7,26 +7,6 @@
 
 = Status Update 11/06
 
-++++
-<style>
-    h1{
-        font-weight: bold;
-        color: #003060;
-    }
-    h2{
-        color: black;
-        font-weight: bold;
-    }
-    h3 {
-      font-weight: bold;
-      color: #003060;
-    }
-    h4 {
-      color: #003D79;
-    }
-
-</style>
-++++
 
 == 一、使用JSON做深拷貝
 
