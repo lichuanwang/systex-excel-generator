@@ -5,6 +5,7 @@ import com.systex.excelgenerator.model.Project;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.poi.ss.usermodel.Row;
 
+
 public class ProjectDataSection extends AbstractDataSection<Project> {
 
     private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();

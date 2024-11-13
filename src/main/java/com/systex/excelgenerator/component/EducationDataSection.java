@@ -2,10 +2,14 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
+import com.systex.excelgenerator.style.ExcelFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +52,9 @@ public class EducationDataSection extends AbstractDataSection<Education> {
     }
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
+        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+
         int rowNum = startRow; // Start from the row after the header
 
         for (Education edu : content) {
@@ -57,13 +64,13 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
             row.createCell(startCol + 3).setCellValue(edu.getStartDate());
 
-            // format date
-            row.getCell(startCol + 3).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
+            Cell dateCell =  row.createCell(startCol + 3);
+            dateCell.setCellValue(edu.getStartDate());
+            dateCell.setCellStyle(dateStyle);
+            dateCell =  row.createCell(startCol + 4);
+            dateCell.setCellValue(edu.getEndDate());
+            dateCell.setCellStyle(dateStyle);
 
-            row.createCell(startCol + 4).setCellValue(edu.getEndDate());
-
-            // format date
-            row.getCell(startCol + 4).setCellStyle(formattingHandler.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
 
 
             // 計算時間區間(解析公式)

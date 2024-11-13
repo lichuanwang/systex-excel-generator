@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelGenerationService {
@@ -24,9 +23,7 @@ public class ExcelGenerationService {
             ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
             // add sections to sheet
-            List<Candidate> candidateList = new ArrayList<>();
-            candidateList.add(candidate);
-            sheet.addSection(new PersonalInfoDataSection(), candidateList);
+            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
             sheet.addSection(new EducationDataSection(), candidate.getEducationList());
             sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
             sheet.addSection(new ProjectDataSection(), candidate.getProjects());

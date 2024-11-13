@@ -1,5 +1,7 @@
 package com.systex.excelgenerator.component;
 
+import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
@@ -8,11 +10,10 @@ import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -74,6 +75,10 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
             e.printStackTrace();
         }
 
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
+        CellStyle cloneStyle = TemplateStyle.createSpecialStyle(workbook);
+        CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
+
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getName());
@@ -88,14 +93,16 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(DateFormat.getDateInstance().format(candidate.getBirthday()));
         row = sheet.createOrGetRow(startRow++);
-        row.createCell(startCol).setCellValue(candidate.getPhone());
-
-        // format phone number
-        row.getCell(startCol).setCellStyle(formattingHandler.TextFormatting(sheet.getWorkbook()));
+        Cell phoneCell = row.createCell(startCol);
+        phoneCell.setCellValue(candidate.getPhone());
+        phoneCell.setCellStyle(cloneStyle);
+        phoneCell.setCellStyle(phoneStyle);
 
         row = sheet.createOrGetRow(startRow++);
+        Cell emailCell = row.createCell(startCol);
+        emailCell.setCellValue(candidate.getEmail());
+        emailCell.setCellStyle(cloneStyle);
         row.createCell(startCol).setCellValue(candidate.getEmail());
-
         // Set Email HyperLink
         hyperlinkHandler.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
 
