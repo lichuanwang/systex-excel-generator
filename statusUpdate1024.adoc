@@ -1,31 +1,11 @@
 = Status Update: # 10/24
+:doctype: book
+:toc: left
+:toclevels: 3
 
 == Java Excel API 全面比較與選擇指南
 
 在 Java 中處理 Excel 文件時，開發者有多個 API 可以選擇。每個 API 都有其優勢和缺點，適合不同的任務，從基本的文件操作到處理大型數據集。本文將比較幾個最常見的 Java Excel API，提供詳細的功能說明，幫助讀者根據項目需求選擇最佳的 API。
-
-== 目錄
-
-* 概述
-* 涵蓋的 API
-* 選擇 API 的關鍵因素
-* API 比較
-    * DsExcel
-    * Aspose.Cells for Java
-    * E-IceBlue (Spire.XLS for Java)
-    * EasyXLS
-    * FastExcel
-    * DOCX4J
-    * JXLS
-    * Apache POI
-        * HSSF
-        * XSSF
-        * SXSSF
-        * 事件 API
-* 選擇 API 的決策指南
-* 結論
-* Apache POI 不支持的功能
-* Excel 進階功能
 
 == 概述
 
