@@ -1,16 +1,12 @@
 package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
-import com.systex.excelgenerator.component.Section;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.poi.ss.usermodel.CellStyle;
+import com.systex.excelgenerator.component.DataSection;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,7 +14,7 @@ import java.util.TreeMap;
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Map<String, Section<?>> sectionMap;
+    private Map<String, DataSection<?>> sectionMap;
     private int startingRow = 0;
     private int startingCol = 0;
     private int maxColPerRow;
@@ -39,7 +35,7 @@ public class ExcelSheet {
         return xssfSheet.getWorkbook();
     }
 
-    public <T> void addSection(Section<T> section, Collection<T> dataCollection) {
+    public <T> void addSection(DataSection<T> dataSection, Collection<T> dataCollection) {
         // Validate that the section is not empty
         if (dataCollection == null) {
             System.out.println("Please provide data collection for your section");
@@ -47,37 +43,37 @@ public class ExcelSheet {
         }
 
         // set data for specify section
-        section.setData(dataCollection);
+        dataSection.setData(dataCollection);
 
         // add section to list
-        this.sectionMap.put(section.getTitle(), section);
+        this.sectionMap.put(dataSection.getTitle(), dataSection);
 
         // Determine starting position for the section
-        adjustLayoutForNewSection(section);
+        adjustLayoutForNewSection(dataSection);
 
         // Render the section at the calculated starting position
-        section.render(this, startingRow, startingCol);
+        dataSection.render(this, startingRow, startingCol);
 
         // Update layout positions after the section is rendered
-        updateLayoutAfterSection(section);
+        updateLayoutAfterSection(dataSection);
     }
 
-    private <T> void adjustLayoutForNewSection(Section<T> section) {
+    private <T> void adjustLayoutForNewSection(DataSection<T> dataSection) {
         // Check if adding the section would exceed maxColPerRow
-        if (startingCol + section.getWidth() > maxColPerRow) {
+        if (startingCol + dataSection.getWidth() > maxColPerRow) {
             // Move to next row if max columns exceeded, leaving a gap
             startingRow = deepestRowOnCurrentLevel + 2;
             startingCol = 0;
         }
     }
 
-    private <T> void updateLayoutAfterSection(Section<T> section) {
+    private <T> void updateLayoutAfterSection(DataSection<T> dataSection) {
         // Update layout positions for the next section
-        startingCol += section.getWidth();
-        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() + 1);
+        startingCol += dataSection.getWidth();
+        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + dataSection.getHeight() + 1);
     }
 
-    public Section<?> getSectionByName(String name) {
+    public DataSection<?> getSectionByName(String name) {
 //        Section<T> result = (Section<T>) sectionMap.get(name);
 
 
@@ -98,7 +94,7 @@ public class ExcelSheet {
     public void addChartSection(AbstractChartSection chartsection , String sectionname) {
 
         // 傳section name進來再去查找
-        Section<?> section = getSectionByName(sectionname);
+        DataSection<?> dataSection = getSectionByName(sectionname);
 
         // 邏輯有點死
         // 要有錯誤處理
@@ -107,7 +103,7 @@ public class ExcelSheet {
         chartsection.setChartPosition(getMaxColPerRow() + 1 , startingRow);
         //chartsection.setChartPosition(1, startingRow);
         // set chart data source
-        chartsection.setDataSource(section);
+        chartsection.setDataSource(dataSection);
         // render chart sections
         chartsection.render(this);
 

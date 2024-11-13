@@ -7,12 +7,12 @@ import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingAndFilter;
 import org.apache.poi.ss.usermodel.Row;
 
-public class SkillSection extends AbstractSection<Skill> {
+public class SkillDataSection extends AbstractDataSection<Skill> {
 
     private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private ChartHandler chartHandler = new ChartHandler();
 
-    public SkillSection() {
+    public SkillDataSection() {
         super("Skill");
     }
 

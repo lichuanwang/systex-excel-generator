@@ -10,12 +10,12 @@ import org.apache.poi.ss.usermodel.Row;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExperienceSection extends AbstractSection<Experience> {
+public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
     private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private FormulaHandler formulaHandler = new FormulaHandler();
 
-    public ExperienceSection() {
+    public ExperienceDataSection() {
         super("Experience");
     }
 
