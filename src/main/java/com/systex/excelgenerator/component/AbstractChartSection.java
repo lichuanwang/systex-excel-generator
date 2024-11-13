@@ -1,7 +1,6 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
@@ -27,11 +26,11 @@ public abstract class AbstractChartSection {
         this.row2 = row1 + 15;
     }
 
-    public void setDataSource(Section<?> section) {
-        this.dataFirstRow = section.getDataStartRow();
-        this.dataLastRow = section.getDataEndRow();
-        this.xAxisCol = section.getDataStartCol();
-        this.yAxisCol = section.getDataEndCol();
+    public void setDataSource(DataSection<?> dataSection) {
+        this.dataFirstRow = dataSection.getDataStartRow();
+        this.dataLastRow = dataSection.getDataEndRow();
+        this.xAxisCol = dataSection.getDataStartCol();
+        this.yAxisCol = dataSection.getDataEndCol();
     }
 
     // 決定是甚麼圖表類型跟軸設定

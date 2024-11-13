@@ -2,7 +2,6 @@ package com.systex.excelgenerator.service;
 
 import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.model.Skill;
 import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
@@ -27,11 +26,11 @@ public class ExcelGenerationService {
             // add sections to sheet
             List<Candidate> candidateList = new ArrayList<>();
             candidateList.add(candidate);
-            sheet.addSection(new PersonalInfoSection(), candidateList);
-            sheet.addSection(new EducationSection(), candidate.getEducationList());
-            sheet.addSection(new ExperienceSection(), candidate.getExperienceList());
-            sheet.addSection(new ProjectSection(), candidate.getProjects());
-            sheet.addSection(new SkillSection(), candidate.getSkills());
+            sheet.addSection(new PersonalInfoDataSection(), candidateList);
+            sheet.addSection(new EducationDataSection(), candidate.getEducationList());
+            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
+            sheet.addSection(new ProjectDataSection(), candidate.getProjects());
+            sheet.addSection(new SkillDataSection(), candidate.getSkills());
 
             // add chart sections to sheet
             // 改成傳section name進去,在裡面用name找
