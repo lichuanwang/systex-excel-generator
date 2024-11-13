@@ -23,6 +23,7 @@ public class ExcelGenerationService {
             ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
             // add sections to sheet
+            // the process of creating personalInfoSection could be a static method
             sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
             sheet.addSection(new EducationDataSection(), candidate.getEducationList());
             sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
