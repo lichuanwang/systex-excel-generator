@@ -1,35 +1,37 @@
 package com.systex.excelgenerator.excel;
 
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExcelFile {
     private final XSSFWorkbook workbook;
+    private final String fileName;
+    private Map<String, ExcelSheet> sheetMap;
 
-    private List<ExcelSheet> sheets;
-
-
-    public ExcelFile() {
-
+    public ExcelFile(String fileName) {
         this.workbook = new XSSFWorkbook();
-        this.sheets = new ArrayList<>();
+        this.fileName = fileName;
+        this.sheetMap = new HashMap<>();
     }
 
     // Method to add a new sheet
-    public ExcelSheet createSheet(String sheetName) {
-        XSSFSheet sheet = workbook.createSheet(sheetName);
-        ExcelSheet excelSheet = new ExcelSheet(sheet, 5);
-        sheets.add(excelSheet);
+    public ExcelSheet createSheet(String sheetName, int maxColPerRow) {
+        ExcelSheet excelSheet = new ExcelSheet(workbook, sheetName, maxColPerRow);
+        sheetMap.put(sheetName, excelSheet);
         return excelSheet;
     }
 
+    public ExcelSheet getExelSheet(String sheetName) {
+        sheetName = sheetName.trim();
+        return sheetMap.get(sheetName);
+    }
+
     // Method to save the Excel file to a specified path
-    public final void saveToFile(String filePath) throws IOException {
+    public final void save(String filePath) throws IOException {
         try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
             workbook.write(outputStream);
         }

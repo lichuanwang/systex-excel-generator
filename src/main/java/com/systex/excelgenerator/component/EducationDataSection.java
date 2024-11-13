@@ -6,35 +6,26 @@ import com.systex.excelgenerator.style.ExcelFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import com.systex.excelgenerator.utils.FormattingHandler;
+import com.systex.excelgenerator.utils.FormulaHandler;
+import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
 
-    private List<Education> educations;
+    private FormattingHandler formattingHandler = new FormattingHandler();
+    private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationDataSection() {
         super("Education");
     }
 
     @Override
-    public void setData(Education data) {
-        if( educations != null ) {
-            this.educations = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Education> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.educations = new ArrayList<>(dataCollection);
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        return educations == null || educations.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -46,10 +37,10 @@ public class EducationDataSection extends AbstractDataSection<Education> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return educations.size() + 2; // +2 for the header row and extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
         headerRow.createCell(startCol).setCellValue("School Name");
@@ -57,19 +48,21 @@ public class EducationDataSection extends AbstractDataSection<Education> {
         headerRow.createCell(startCol + 2).setCellValue("Grade");
         headerRow.createCell(startCol + 3).setCellValue("Start Date");
         headerRow.createCell(startCol + 4).setCellValue("End Date");
+        headerRow.createCell(startCol + 5).setCellValue("Date Interval");
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
-        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 
-        for (Education edu : educations) {
+        for (Education edu : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(edu.getSchoolName());
             row.createCell(startCol + 1).setCellValue(edu.getMajor());
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
+            row.createCell(startCol + 3).setCellValue(edu.getStartDate());
 
             Cell dateCell =  row.createCell(startCol + 3);
             dateCell.setCellValue(edu.getStartDate());
@@ -77,120 +70,28 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             dateCell =  row.createCell(startCol + 4);
             dateCell.setCellValue(edu.getEndDate());
             dateCell.setCellStyle(dateStyle);
+
+
+
+            // 計算時間區間(解析公式)
+            // 輸入公式
+            String formula = """
+                    IF(DATEDIF(${startCellRef},${endCellRef},"y")=0,"",
+                    DATEDIF(${startCellRef},${endCellRef},"y")&"年")&
+                    DATEDIF(${startCellRef},${endCellRef},"ym")&"個月"
+                    """;
+
+            // 要替換的佔位符set
+            Set<NamedCellReference> replaceSet = new HashSet<>();
+            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
+            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
+
+            // 計算過後的時間區間的值
+            row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
         }
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
-
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
+        // implement footer logic here
     }
 }
-
-
-//package com.systex.excelgenerator.component;
-//
-//import com.systex.excelgenerator.excel.ExcelSheet;
-//import com.systex.excelgenerator.model.Education;
-//import org.apache.poi.ss.usermodel.Row;
-//import org.apache.poi.xssf.usermodel.XSSFSheet;
-//
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.Collection;
-//import java.util.List;
-//
-//public class EducationSection extends AbstractSection<Education> {
-//
-//    private List<Education> educations;
-//
-//    public EducationSection() {
-//        super("Education");
-//    }
-//
-//    @Override
-//    protected void populateHeader(ExcelSheet sheet) {
-//        int rowNum = sheet.getStartingRow() + 1;
-//        int colNum = sheet.getStartingCol();
-//        Row headerRow = sheet.createOrGetRow(rowNum++);
-//        headerRow.createCell(colNum++).setCellValue("School Name");
-//        headerRow.createCell(colNum++).setCellValue("Major");
-//        headerRow.createCell(colNum++).setCellValue("Grade");
-//        headerRow.createCell(colNum++).setCellValue("Start Date");
-//        headerRow.createCell(colNum).setCellValue("End Date");
-//
-//        sheet.setStartingRow(rowNum);
-//
-//        // Update the deepest row on current level
-//        if (rowNum > sheet.getDeepestRowOnCurrentLevel()) {
-//            sheet.setDeepestRowOnCurrentLevel(rowNum);
-//        }
-//    }
-//
-//    @Override
-//    protected void populateData(ExcelSheet sheet) {
-//        int rowNum = sheet.getStartingRow();
-//        int colNum = sheet.getStartingCol();
-//        for (Education edu : educations) {
-//            Row row = sheet.createOrGetRow(rowNum++);
-//            row.createCell(colNum++).setCellValue(edu.getSchoolName());
-//            row.createCell(colNum++).setCellValue(edu.getMajor());
-//            row.createCell(colNum++).setCellValue(edu.getGrade());
-//            row.createCell(colNum++).setCellValue(edu.getStartDate());
-//            row.createCell(colNum++).setCellValue(edu.getEndDate());
-//        }
-//
-//        sheet.setStartingCol(colNum);
-//
-//        if(rowNum > sheet.getDeepestRowOnCurrentLevel()) {
-//            sheet.setDeepestRowOnCurrentLevel(rowNum);
-//        }
-//
-//    }
-//
-//    @Override
-//    protected void populateFooter(ExcelSheet sheet) {
-////        sheet.setStartingCol(sheet.getStartingCol() + 2);
-//    }
-//
-//
-//
-//    @Override
-//    public void setData(Education data) {
-//        if( educations != null ) {
-//            this.educations = Arrays.asList(data); // Check if this will return the same thing just like the one below
-//        }
-//    }
-//
-//    @Override
-//    public void setData(Collection<Education> dataCollection) {
-//        if (dataCollection != null && !dataCollection.isEmpty()) {
-//            this.educations = new ArrayList<>(dataCollection);
-//        }
-//    }
-//
-//    @Override
-//    public boolean isEmpty() {
-//        return educations == null || educations.isEmpty();
-//    }
-////    @Override
-////    public int populate(XSSFSheet sheet, int rowNum) {
-////        addHeader(sheet, rowNum);
-////        rowNum++;
-////
-////        Row headerRow = sheet.createRow(rowNum++);
-////        headerRow.createCell(0).setCellValue("School Name");
-////        headerRow.createCell(1).setCellValue("Major");
-////        headerRow.createCell(2).setCellValue("Grade");
-////        headerRow.createCell(3).setCellValue("Start Date");
-////        headerRow.createCell(4).setCellValue("End Date");
-////
-////        for (Education edu : educations) {
-////            Row row = sheet.createRow(rowNum++);
-////            row.createCell(0).setCellValue(edu.getSchoolName());
-////            row.createCell(1).setCellValue(edu.getMajor());
-////            row.createCell(2).setCellValue(edu.getGrade());
-////            row.createCell(3).setCellValue(edu.getStartDate());
-////            row.createCell(4).setCellValue(edu.getEndDate());
-////        }
-////        return rowNum;
-////    }
-//}

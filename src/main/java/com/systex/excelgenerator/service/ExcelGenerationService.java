@@ -1,55 +1,66 @@
 package com.systex.excelgenerator.service;
 
-import com.systex.excelgenerator.builder.ConcreteExcelBuilder;
-import com.systex.excelgenerator.builder.ExcelBuilder;
+import com.systex.excelgenerator.component.*;
+import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.style.StyleBuilder;
-import com.systex.excelgenerator.director.ExcelDirector;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ExcelGenerationService {
 
-    public void generateExcelForCandidate(Candidate candidate) {
-        // Build the Excel content
-        ExcelBuilder builder = new ConcreteExcelBuilder(candidate);
-        ExcelDirector director = new ExcelDirector(builder);
-        director.constructExcelFile();
+    public void generateExcelForCandidate(List<Candidate> candidates) {
 
-        ExcelFile excelFile = director.getExcelFile();
+        // Create a new file
+        ExcelFile excelFile = new ExcelFile("Candidate Information");
 
-        // Apply custom styles to the content
-        XSSFSheet sheet = excelFile.getWorkbook().getSheet("Candidate Information");
-        applyStyles(sheet);
+        for (Candidate candidate : candidates) {
+            // create a new sheet
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
-        int maxColumnIndex = 0;
-        for (int rowIndex = 0; rowIndex <= sheet.getPhysicalNumberOfRows(); rowIndex++) {
-            Row row = sheet.getRow(rowIndex);
-            if (row != null && row.getLastCellNum() > maxColumnIndex) {
-                maxColumnIndex = row.getLastCellNum();
+            // add sections to sheet
+            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
+            sheet.addSection(new EducationDataSection(), candidate.getEducationList());
+            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
+            sheet.addSection(new ProjectDataSection(), candidate.getProjects());
+            sheet.addSection(new SkillDataSection(), candidate.getSkills());
+
+            // add chart sections to sheet
+            // 改成傳section name進去,在裡面用name找
+            sheet.addChartSection(new RadarChartSection() , "Skill");
+            sheet.addChartSection(new PieChartSection() , "Skill");
+            sheet.addChartSection(new BarChartSection() , "Skill");
+            sheet.addChartSection(new LineChartSection() , "Skill");
+
+            // Apply styles to sheet
+            applyStyles(sheet);
+
+            // Auto-size all columns up to the maximum column index
+            for (int i = 0; i < sheet.getMaxColPerRow(); i++) {
+                XSSFSheet xssfSheet = sheet.getXssfSheet();
+                xssfSheet.autoSizeColumn(i);
             }
-        }
-
-        // Auto-size all columns up to the maximum column index
-        for (int i = 0; i < maxColumnIndex; i++) {
-            sheet.autoSizeColumn(i);
         }
 
         // Save the Excel file
         try {
-            excelFile.saveToFile("candidate_info_test.xlsx");
+            excelFile.save("candidate_info_test.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void applyStyles(XSSFSheet sheet) {
-        // Example: Apply styles to the first row (header)
-        Row headerRow = sheet.getRow(0);
-        StyleBuilder styleBuilder = new StyleBuilder(sheet.getWorkbook());
+    private void applyStyles(ExcelSheet sheet) {
+
+        // get the xssfsheet
+        XSSFSheet xssfSheet = sheet.getXssfSheet();
+
+        Row headerRow = xssfSheet.getRow(0);
+        StyleBuilder styleBuilder = new StyleBuilder(xssfSheet.getWorkbook());
 
         if (headerRow != null) {
             for (Cell cell : headerRow) {
@@ -60,11 +71,6 @@ public class ExcelGenerationService {
                         .build();
                 cell.setCellStyle(headerStyle);
             }
-        }
-
-        // Auto-size columns
-        for (int i = 0; i < 5; i++) {
-            sheet.autoSizeColumn(i);
         }
     }
 }

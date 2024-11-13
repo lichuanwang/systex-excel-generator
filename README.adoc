@@ -35,7 +35,7 @@ The **Builder Design Pattern** is used to separate the construction of the compl
 Defines the methods needed to construct an Excel file, such as `buildHeader()`, `buildSections()`, and `buildFooter()`.
 
 2. **ConcreteExcelBuilder (Concrete Builder)**::
-Implements the actual logic for building the content of each Excel section. It creates and populates each section, then organizes them in the final Excel file.
+Implements the actual logic for building the content of each Excel dataSection. It creates and populates each dataSection, then organizes them in the final Excel file.
 
 3. **ExcelDirector (Director)**::
 Manages the building process, ensuring that each step is completed in the correct order.
@@ -59,7 +59,7 @@ The `model` package contains classes that represent data associated with a candi
 
 === Component Package (`component`)
 
-Each class in the `component` package represents a section in the Excel file. Examples include:
+Each class in the `component` package represents a dataSection in the Excel file. Examples include:
 
 - `PersonalInfoSection`:: Populates the candidate's personal information.
 - `ExperienceSection`:: Adds rows for the candidate's work experience.
@@ -67,7 +67,7 @@ Each class in the `component` package represents a section in the Excel file. Ex
 - `ProjectSection`:: Add rows for each project that the candidate did.
 - `SkillSection`:: Add rows for each skill that the candidate have.
 
-Each section is responsible for its own content generation within the Excel sheet.
+Each dataSection is responsible for its own content generation within the Excel sheet.
 
 === Excel Package (`excel`)
 

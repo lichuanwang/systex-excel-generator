@@ -2,35 +2,21 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
-import org.apache.poi.ss.usermodel.*;
+import com.systex.excelgenerator.utils.HyperlinkHandler;
+import org.apache.poi.ss.usermodel.Row;
 
-import java.util.*;
 
 public class ProjectDataSection extends AbstractDataSection<Project> {
 
-    private List<Project> projects;
+    private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public ProjectDataSection() {
         super("Project");
     }
 
     @Override
-    public void setData(Project data) {
-        if( projects != null ) {
-            this.projects = Arrays.asList(data); // Check if this will return the same thing just like the one below
-        }
-    }
-
-    @Override
-    public void setData(Collection<Project> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.projects = new ArrayList<>(dataCollection);
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
-        return projects == null || projects.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @Override
@@ -42,10 +28,10 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
     @Override
     public int getHeight() {
         // Height based on the number of education entries
-        return projects.size() + 2; // +2 for the header row and extra row space
+        return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
         headerRow.createCell(startCol).setCellValue("Project Name");
@@ -54,88 +40,28 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
         headerRow.createCell(startCol + 3).setCellValue("Technologies Used");
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
-        for (Project project : projects) {
+        for (Project project : content) {
             Row row = sheet.createOrGetRow(rowNum++);
-            Cell projectNameCell = row.createCell(startCol);
-            projectNameCell.setCellValue(project.getProjectName());
+            row.createCell(startCol).setCellValue(project.getProjectName());
+
+            // Set Outer HyperLink
+            hyperlinkHandler.setHyperLink("https://github.com/ruanyanamy/systex-excel-generator"
+                    , row.getCell(startCol) , sheet.getWorkbook());
 
             row.createCell(startCol + 1).setCellValue(project.getRole());
+
+            // Set Internal HyperLink
+            hyperlinkHandler.setInternalLink(sheet.getSheetName(), row.getCell(startCol + 1) , sheet.getWorkbook());
+
             row.createCell(startCol + 2).setCellValue(project.getDescription());
             row.createCell(startCol + 3).setCellValue(project.getTechnologiesUsed());
         }
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
-
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
+        // implement footer logic here
     }
 }
-
-
-
-
-//package com.systex.excelgenerator.component;
-//
-//import com.systex.excelgenerator.model.Project;
-//import org.apache.poi.ss.usermodel.Row;
-//import org.apache.poi.xssf.usermodel.XSSFSheet;
-//
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.Collection;
-//import java.util.List;
-//
-//public class ProjectSection extends AbstractSection<Project> {
-//
-//    private List<Project> projects;
-//
-//    public ProjectSection() {
-//        super("Project");
-//    }
-//
-//    @Override
-//    protected int generateHeader(XSSFSheet sheet, int rowNum) {
-//        Row headerRow = sheet.createRow(rowNum++);
-//        headerRow.createCell(0).setCellValue("Project");
-//        headerRow.createCell(1).setCellValue("Role");
-//        headerRow.createCell(2).setCellValue("Description");
-//        headerRow.createCell(3).setCellValue("Technology");
-//        return rowNum;
-//    }
-//
-//    @Override
-//    protected int generateData(XSSFSheet sheet, int rowNum) {
-//        for (Project project : projects) {
-//            Row row = sheet.createRow(rowNum++);
-//            row.createCell(0).setCellValue(project.getProjectName());
-//            row.createCell(1).setCellValue(project.getRole());
-//            row.createCell(2).setCellValue(project.getDescription());
-//            row.createCell(3).setCellValue(project.getTechnologiesUsed());
-//        }
-//        return rowNum;
-//    }
-//
-//    @Override
-//    protected int generateFooter(XSSFSheet sheet, int rowNum) {
-//        return rowNum;
-//    }
-//
-//    @Override
-//    public void setData(Project data) {
-//        this.projects = Arrays.asList(data);
-//    }
-//
-//    @Override
-//    public void setData(Collection<Project> dataCollection) {
-//        if (dataCollection != null && !dataCollection.isEmpty()) {
-//            this.projects = new ArrayList<>(dataCollection);
-//        }
-//    }
-//
-//    @Override
-//    public boolean isEmpty() {
-//         return projects == null || projects.isEmpty();
-//    }
-//}
