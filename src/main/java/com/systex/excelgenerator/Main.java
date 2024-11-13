@@ -29,7 +29,7 @@ public class Main {
         Candidate candidate1 = new Candidate();
         candidate1.setName("John Doe");
         candidate1.setEmail("john.doe@gmail.com");
-        candidate1.setPhone("1234567890");
+        candidate1.setPhone("0123456789");
         candidate1.setBirthday(new Date(1999));
         candidate1.setGender("Male");
 
