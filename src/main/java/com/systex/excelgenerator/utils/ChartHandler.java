@@ -26,9 +26,9 @@ public class ChartHandler {
      * @param ChartStartRow
      * @param headerRow
      */
-    public void genPieChart(Sheet sheet, int headerRow, int dataStartRow, int dataLastRow,
-                            int xAxisCol, int yAxisCol, int ChartStartRow) {
-        System.out.println(headerRow + "," + dataStartRow + "," + dataLastRow + "," + xAxisCol + "," + yAxisCol + "," + ChartStartRow);
+    public void genPieChart(Sheet sheet, int headerRow , int dataStartRow, int dataLastRow,
+                            int xAxisCol, int yAxisCol, int ChartStartRow){
+        System.out.println(headerRow+","+dataStartRow+","+dataLastRow+","+xAxisCol+","+yAxisCol+","+ChartStartRow);
 
         // 創建圖表
         XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
@@ -57,12 +57,10 @@ public class ChartHandler {
         // 設定table title
         chart.setTitleText(valueTitle);
         chart.setTitleOverlay(false);
-        
-        // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT);
 
-        // 顯示圖表項目
+        // 顯示圖表圖例
         CTDLbls dLbls = chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDLbls();
         dLbls.addNewShowCatName().setVal(true);     // 顯示類別名稱
         dLbls.addNewShowVal().setVal(false);        // 不顯示值
@@ -184,6 +182,7 @@ public class ChartHandler {
         barChartData.setBarDirection(BarDirection.COL);
 
         // 設定資料
+        //barChartData.addSeries(categories , values);
         XDDFChartData.Series series = barChartData.addSeries(categories, values);
         series.setTitle(valueTitle, null);
 
@@ -232,13 +231,12 @@ public class ChartHandler {
         XDDFChartData data = chart.createData(ChartTypes.LINE, xAxis, yAxis);
         data.setVaryColors(true);
 
-        // 設定資料
+        // 設定資料(圖例)
         data.addSeries(categories, values);
 
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊
-        //legend.se
 
         // 顯示圖表
         chart.plot(data);

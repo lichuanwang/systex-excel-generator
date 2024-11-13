@@ -33,52 +33,61 @@ public class SkillSection extends AbstractSection<Skill> {
         return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
-        headerRow.createCell(startCol).setCellValue("Id");
-        headerRow.createCell(startCol + 1).setCellValue("Name");
-        headerRow.createCell(startCol + 2).setCellValue("Level");
+        headerRow.createCell(startCol++).setCellValue("Id");
+        this.dataStartColumn = startCol;
+        headerRow.createCell(startCol++).setCellValue("Name");
+        headerRow.createCell(startCol).setCellValue("Level");
+        this.dataEndColumn = startCol;
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
-
+        this.dataStartRow = startRow;
         for (Skill skill : content) {
+            int colNum = startCol;
             Row row = sheet.createOrGetRow(rowNum++);
-            row.createCell(startCol).setCellValue(skill.getId());
-            row.createCell(startCol + 1).setCellValue(skill.getSkillName());
+            row.createCell(colNum++).setCellValue(skill.getId());
+            row.createCell(colNum++).setCellValue(skill.getSkillName());
 
             // test data valid , set skill level between 0-5
             DataValidationHandler dataValidationHandler = new DataValidationHandler(sheet.getXssfSheet()
                     , row.getRowNum() , row.getRowNum() , startCol + 2 , startCol + 2);
             dataValidationHandler.IntegerDataValid("between" , "0" , "5");
 
-            row.createCell(startCol + 2).setCellValue(skill.getLevel());
-
+            row.createCell(colNum).setCellValue(skill.getLevel());
             // if skill level > 2 (conditional test)
             formattingAndFilter.ConditionalFormatting(sheet.getXssfSheet() , "2"
                     , row.getRowNum() , row.getRowNum() , startCol + 2);
         }
-
+        this.dataEndRow = rowNum - 1;
         // gen Pie chart
-        chartHandler.genPieChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genPieChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
 
         // gen Radar chart
-        chartHandler.genRadarChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genRadarChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+
+        //RadarChartSection radarChartSection = new RadarChartSection();
+        //radarChartSection.setChartPosition(startCol,rowNum + 2);
+        //radarChartSection.setDataSource(startRow , rowNum - 1 , startCol + 1 , startCol + 2);
+        //System.out.println("setting data source");
+
+        //radarChartSection.render(sheet);
 
         // gen Bar chart
-        chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genBarChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
 
         // gen Line chart
-        chartHandler.genLineChart(sheet.getXssfSheet(), startRow - 1
-                , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
+        //chartHandler.genLineChart(sheet.getXssfSheet(), startRow - 1
+        //        , startRow , rowNum - 1 , startCol + 1 , startCol + 2 , rowNum + 2);
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
     }
 }

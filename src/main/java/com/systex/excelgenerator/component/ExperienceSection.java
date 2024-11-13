@@ -36,7 +36,7 @@ public class ExperienceSection extends AbstractSection<Experience> {
         return content.size() + 1; // +1 for the header row
     }
 
-    protected void populateHeader(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
         headerRow.createCell(startCol).setCellValue("Company");
@@ -47,7 +47,7 @@ public class ExperienceSection extends AbstractSection<Experience> {
         headerRow.createCell(startCol + 5).setCellValue("Date Interval");
     }
 
-    protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         int rowNum = startRow; // Start from the row after the header
 
         for (Experience exp : content) {
@@ -83,7 +83,7 @@ public class ExperienceSection extends AbstractSection<Experience> {
         }
     }
 
-    protected void populateFooter(ExcelSheet sheet, int startRow, int startCol) {
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
     }
 }
