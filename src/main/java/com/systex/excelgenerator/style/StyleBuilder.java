@@ -7,8 +7,7 @@ public class StyleBuilder {
     private CellStyle cellStyle;
     private Font font;
 
-    public StyleBuilder(Workbook workbook) {
-        this.cellStyle = workbook.createCellStyle();
+    public StyleBuilder(Workbook workbook) {        this.cellStyle = workbook.createCellStyle();
         this.font = workbook.createFont();
     }
 

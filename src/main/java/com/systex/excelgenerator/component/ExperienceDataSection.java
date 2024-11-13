@@ -69,7 +69,7 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
             row.createCell(startCol).setCellValue(exp.getCompanyName());
             Cell jobTitleCell = row.createCell(startCol + 1);
             jobTitleCell.setCellValue(exp.getJobTitle());
-            jobTitleCell.setCellStyle(clonedBlueStyle );
+            jobTitleCell.setCellStyle(clonedBlueStyle);
 
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
