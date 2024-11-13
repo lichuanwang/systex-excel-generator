@@ -2,9 +2,8 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
-import com.systex.excelgenerator.style.CustomStyle;
+import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
-import com.systex.excelgenerator.style.ExcelStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -62,12 +61,10 @@ public class ExperienceSection extends AbstractSection<Experience> {
 
     protected void populateBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getUnderlyingSheet().getWorkbook();
+        CellStyle initialStyle = TemplateStyle.createSpecialStyle(workbook);
+        clonedBlueStyle = workbook.createCellStyle();
+        clonedBlueStyle.cloneStyleFrom(initialStyle);
 
-        // 1. 創建並clone預設樣式
-        CellStyle initialStyle = CustomStyle.createSpecialStyle(workbook);
-        clonedBlueStyle  = ExcelStyle.cloneStyle(workbook, initialStyle);
-
-        // 2. 修改clone樣式的背景色為寶石藍
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
         clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 

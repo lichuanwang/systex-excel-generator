@@ -2,9 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
-import com.systex.excelgenerator.style.CustomStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
-import com.systex.excelgenerator.style.ExcelStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
