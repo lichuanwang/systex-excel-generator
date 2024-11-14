@@ -1,0 +1,831 @@
+:toc:
+:toclevels: 1
+:source-highlighter: highlight.js
+:highlightjs-theme: atom-one-dark-reasonable
+:icons: font
+
+= Excel進度報告
+
+++++
+<style>
+    h2{
+        color: black;
+        font-weight: bold;
+    }
+    h3 {
+      font-weight: bold;
+      color: #003060;
+    }
+    h4 {
+      color: #003D79;
+    }
+
+</style>
+++++
+
+== 一、上次討論內容（SAX（Simple API for XML））
+
+=== 簡介
+
+SAX 是一種基於事件的 XML 解析 API，專為高效處理大型 XML 檔案而設計。它的事件驅動和逐行讀取特性使其在記憶體效率方面具有明顯優勢，非常適合處理大型數據和即時流式處理的場景。然而，SAX 解析器只能進行前向掃描，無法進行隨機訪問，因此在需要頻繁操作或隨機訪問 XML 節點的應用中，DOM 解析器可能更合適。
+
+=== .xlsx檔案分析
+
+以student.xlsx爲例
+
+image::https://i.imgur.com/uJFWD1O.png[]
+
+將副檔名改爲.zip
+
+image::https://i.imgur.com/zVG4SlV.png[]
+
+解壓縮後的資料夾透過**tree /f**指令可以查看結構
+
+image::https://i.imgur.com/GRlJ28m.png[]
+
+* [Content_Types].xml：定義了資料夾中各個 XML 檔案的類型，例如工作表、共享字串等。
+
+image::https://i.imgur.com/v4C3er0.png[]
+
+* _rels/.rels：包含檔案間的關聯信息，用於描述文檔中各部分的關係。
+
+image::https://i.imgur.com/JAMCt5r.png[]
+
+* docProps：包含文檔屬性（如作者、創建時間等）。
+
+- app.xml 和 core.xml：描述應用程序屬性和文檔的核心屬性。
+
+image::https://i.imgur.com/hOhKblG.png[]
+
+image::https://i.imgur.com/clNg101.png[]
+
+* xl：包含主要的 Excel 數據部分。
+- sharedStrings.xml：保存所有在工作表中使用的字串。
+
+image::https://i.imgur.com/yFCEFho.png[]
+
+- styles.xml：描述cell樣式的信息。
+
+image::https://i.imgur.com/rLMjoUF.png[]
+
+- workbook.xml：包含工作簿的結構和基本信息，如工作表的名稱和順序。
+
+image::https://i.imgur.com/hJGrxa5.png[]
+
+- worksheets/sheet1.xml：工作表 1 的數據，包含cell信息。
+
+image::https://i.imgur.com/NpfmnQT.png[]
+
+- _rels/workbook.xml.rels：描述工作簿和其他資源之間的關聯。
+
+image::https://i.imgur.com/tyN2jZE.png[]
+
+===  SAX 的主要特點
+
+* 基於事件驅動：SAX 解析 XML 檔案的時候會依次讀取每一行，並在遇到特定標記（例如元素的開始、結束、屬性等）時觸發對應的事件。例如，當讀取到元素的開始標籤時會觸發 startElement() 方法，當遇到結束標籤時會觸發 endElement() 方法。
+
+* 只進行前向讀取：SAX 只會前向讀取 XML 檔案，因此是一種"只讀"模式。它不會將整個文檔加載到記憶體中，因此可以用很少的記憶體來處理大型 XML 檔案。
+
+* 記憶體效率高：由於 SAX 是基於事件的逐行解析，不需要在記憶體中構建整個 XML 樹狀結構，這使得它非常適合處理大數據量的 XML 檔案。
+
+==== 事件驅動
+
+Apache POI 的事件驅動（Event-Driven）模型是一種高效、低記憶體占用的方式來處理 Excel 檔案，特別是 .xlsx 檔案（Office Open XML）。這種方式被稱為 SAX 解析，因為它基於 SAX（Simple API for XML）模型來逐行處理 Excel 檔案中的 XML 結構，而不是將整個檔案加載到記憶體中。因此，事件驅動的模型非常適合用來處理大型 Excel 檔案。
+
+==== SAX 模型的基本工作原理
+
+逐行解析 XML 檔案：SAX 逐行讀取 Excel 中的 XML 結構，當遇到特定的標籤（如 <sheetData>、<row>、<c> 等）時，會觸發相應的事件。
+事件處理器：通過定義事件處理器（Handler），對這些事件進行處理，如解析工作表中的行、列、數據等。
+記憶體高效：因為它不會將整個檔案加載到記憶體中，只在記憶體中保留當前處理的數據，特別適合用於處理大檔案。
+
+==== 主要的事件驅動類別
+
+在 Apache POI 中，處理 .xlsx 檔案的事件驅動 API 包括以下幾個類別：
+
+* OPCPackage：用來打開 .xlsx 檔案並讀取其內容，這是一個壓縮包格式。
+* XSSFReader：用於讀取 Excel 檔案中的各個部分，如工作表、樣式表等。
+* ReadOnlySharedStringsTable：用於處理 Excel 檔案中的共享字串，所有字串都存儲在這個表中。
+* XMLReader (SAX)：用來逐行解析 XML 檔案，處理工作表中的數據。
+
+=== 流
+
+在 SAX（Simple API for XML）解析中，"流" 的概念體現為流式處理 XML 檔案的方式，這與 Java 中的其他流（如 I/O 流或 Stream API）有所不同。SAX 中的流式處理指的是逐行讀取和處理 XML 文檔中的數據，以事件驅動的方式逐步解析，並且只在記憶體中保留當前處理的部分數據，從而達到高效記憶體利用的目的。
+
+[cols="1,1,1", options="header"]
+|===
+| 特性                   | SAX (事件驅動模型)              | I/O 流                      
+
+| **解析方式**          | 逐行解析 XML 檔案，基於事件驅動處理 | 逐字節或逐字符讀寫，順序處理數據 
+| **記憶體使用**          | 低，僅保留當前解析部分，記憶體占用小 | 低，逐步讀取或寫入，不需要全部加載 
+| **訪問方式**          | 順序訪問，無法隨機訪問已處理部分   | 順序訪問，逐字節或逐字符處理數據 
+| **適合場景**          | 大型 XML 檔案的逐行掃描和解析    | 檔案、網絡、記憶體的讀取和寫入           
+| **操作靈活性**        | 靈活性較低，只能在遇到事件時進行處理 | 靈活性較高，可以讀取、寫入和跳過數據 
+| **使用的 Java 類**     | `XMLReader`，`ContentHandler`   | `InputStream`，`OutputStream`，`Reader`，`Writer` 
+|===
+
+
+
+=== 使用事件驅動 API 的步驟
+
+[source,java]
+----
+public void readExcel(String filePath) throws Exception {
+    long start = System.currentTimeMillis();
+    try (OPCPackage opcPackage = OPCPackage.open(new FileInputStream(filePath))) {
+        ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(opcPackage);
+        XSSFReader xssfReader = new XSSFReader(opcPackage);
+        StylesTable styles = xssfReader.getStylesTable();
+
+        XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
+        while (iter.hasNext()) {
+            try (InputStream stream = iter.next()) {
+                String sheetName = iter.getSheetName();
+                System.out.println("Sheet Name: " + sheetName);
+                processSheet(styles, strings, stream);
+            }
+        }
+    }
+    long end = System.currentTimeMillis();
+    System.out.println((end - start) + "ms");
+}
+----
+
+* OPCPackage opcPackage：OPCPackage 用於打開 .xlsx 檔案，OPC 是 Open Packaging Conventions 的縮寫，它是 .xlsx 檔案的核心包裝方式。
+
+* ReadOnlySharedStringsTable strings：ReadOnlySharedStringsTable 用於存取共享字串表，Excel 中的所有字串被存儲在這個表中，這樣可以減少重複數據，節省空間。
+
+* XSSFReader xssfReader：XSSFReader 用於從 .xlsx 檔案中讀取不同部分，例如工作表、樣式表等。
+
+* StylesTable styles：讀取 Excel 檔案中的樣式信息。
+
+* XSSFReader.SheetIterator iter：SheetIterator 用於遍歷 Excel 檔案中的所有工作表。
+
+對於每個工作表，調用 processSheet() 方法來進行處理。
+
+image::https://i.imgur.com/xHTZsMc.png[]
+
+* OPCPackage：OPCPackage 是代表 Office Open XML 包裝格式的核心類，它用於處理 .xlsx、.docx 等檔案。
+* new ZipPackage(in, PackageAccess.READ_WRITE)：創建一個ZipPackage，這是一個 OPCPackage 的子類，專門用來處理壓縮包格式（如 .xlsx 這種基於 ZIP 的檔案格式）。它的參數包括：
+- InputStream in：輸入的數據流，通常是 Excel 檔案的二進制數據。
+- PackageAccess.READ_WRITE：指定訪問模式，這裡是讀寫模式，可以讀取和修改包中的內容。
+* if (pack.partList == null)：partList 是包中的各個部分（Part）的列表。如果 partList 為 null，表示該包還沒有加載其內容，因此需要加載它。
+
+* pack.getParts()：調用 getParts() 方法來加載 .xlsx 檔案中的所有部分。這些部分包括工作表（sheet）、共享字串（sharedStrings）、樣式（styles）等 XML 檔案。
+
+* catch (InvalidFormatException | RuntimeException e)：
+
+- 捕獲可能拋出的異常，其中包括 InvalidFormatException 和 RuntimeException。
+- IOUtils.closeQuietly(pack)：這一行代碼用於在發生異常時關閉打開的 OPCPackage，以確保資源被正確釋放。closeQuietly 會悄無聲息地關閉資源，即使發生錯誤也不會影響後續代碼。
+- throw e：在捕獲異常後，重新將異常拋出，使得調用者知道發生了什麼問題。
+
+[source,java]
+----
+private void processSheet(StylesTable styles, ReadOnlySharedStringsTable strings, InputStream sheetInputStream)
+        throws ParserConfigurationException, SAXException, IOException {
+    InputSource sheetSource = new InputSource(sheetInputStream);
+    org.xml.sax.XMLReader sheetParser = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
+    ContentHandler handler = new ContentHandler(styles, strings);
+    sheetParser.setContentHandler(handler);
+    sheetParser.parse(sheetSource);
+}
+----
+
+* InputSource sheetSource：InputSource 包裝了工作表的輸入流。
+* XMLReader sheetParser：是基於 SAX 的 XML 解析器，它是**流式**的，逐行處理 XML 檔案，並且只在記憶體中保留當前正在處理的部分。
+* ContentHandler handler：自定義的事件處理器，用於處理 XML 中的不同標籤。
+* 設置事件處理器後，調用 parse() 方法來解析工作表。
+
+[source,java]
+----
+private static class ContentHandler extends DefaultHandler {
+    private final StylesTable stylesTable;
+    private final ReadOnlySharedStringsTable sharedStringsTable;
+    private String cellValue;
+    private boolean isString;
+    private int rowNum;
+
+    public ContentHandler(StylesTable styles, ReadOnlySharedStringsTable strings) {
+        this.stylesTable = styles;
+        this.sharedStringsTable = strings;
+    }
+
+    @Override
+    public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+        if (name.equals("row")) {
+            rowNum = Integer.parseInt(attributes.getValue("r")); // 讀取行號
+        } else if (name.equals("c")) { // cell標籤
+            String cellType = attributes.getValue("t");
+            isString = (cellType != null && cellType.equals("s")); // 判斷cell是否是共享字串類型
+        }
+        cellValue = ""; // 重置cell值
+    }
+
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
+        cellValue += new String(ch, start, length); // 收集文本內容
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String name) throws SAXException {
+        if (name.equals("v")) { // 當標籤結束為 <v> 時，即cell的值
+            if (isString) {
+                int idx = Integer.parseInt(cellValue);
+                cellValue = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx)).toString(); // 轉換共享字串為實際值
+            }
+            System.out.print(cellValue + "\t"); // printcell值
+        } else if (name.equals("row")) {
+            System.out.println(); // 行結束，換行
+        }
+    }
+}
+----
+
+這個類負責處理 XML 的每個標籤，根據標籤的不同執行不同的操作。
+
+* 成員變量：
+- StylesTable stylesTable：存儲 Excel 的樣式信息，但在這裡未使用。
+- ReadOnlySharedStringsTable sharedStringsTable：共享字串表，用於存儲 Excel 中所有的字串。
+- cellValue：用於保存當前cell的值。
+- isString：標記當前cell是否是共享字串類型。
+
+* startElement() 方法：
+- 當 SAX 解析器讀到一個 XML 開始標籤時（如 <row> 或 <c>），它會觸發 startElement() 事件。這是一種流式的處理，逐行讀取、逐行判斷，每次只處理當前的部分。
+- 當遇到 <row> 標籤時，讀取行號。
+- 當遇到 <c> 標籤時，根據屬性 t 判斷該cell是否為共享字串。
+- 重置 cellValue，以便開始讀取新的cell值。
+
+* characters() 方法：
+
+- 收集當前標籤中的文本內容，可能是一個部分，因為 SAX 解析是逐塊進行的。
+- 當讀取到標籤之間的文本內容時，會觸發 characters() 事件，這種方式允許**逐塊**處理文本。
+- 每當讀到文本片段時，就將它附加到 cellValue 中，這也是**逐行、逐部分**地處理數據的一種體現。
+
+
+* endElement() 方法：
+
+- 當讀到標籤的結束標誌時，會觸發 endElement() 事件，這是一種典型的**流式**處理方式，因為它只在需要時處理結束的元素，不會保留整個 XML 樹。例如，當標籤結束為 <v> 時（代表cell的值結束），程序處理當前cell的值並將其print出來。
+
+- 當遇到 </v> 標籤（表示cell的值結束）時，如果是共享字串，則從共享字串表中獲取實際值。
+- 當遇到 </row> 標籤時，表示行結束，換行輸出。
+
+[cols="1,1,1", options="header"]
+|===
+| 特性                   | XSSFWorkbook (DOM 模型)          | SAX (事件驅動模型)
+| **解析方式**          | 將整個檔案加載到記憶體中，構建完整的樹狀結構 | 逐行解析 XML 檔案，基於事件驅動處理 
+| **記憶體使用**        | 高，占用記憶體大，特別是處理大型檔案時可能導致 OutOfMemoryError | 低，僅保留當前解析部分，記憶體占用小 
+| **訪問方式**          | 支持隨機訪問，可以隨時訪問和修改任意節點 | 僅支持順序訪問，無法隨機訪問已經處理的部分
+| **適合場景**          | 適合處理小型檔案或需要頻繁隨機訪問和修改數據的場景 | 適合處理大型檔案，批量導入/導出和逐行掃描數據
+| **實現難度**          | 簡單，操作直觀，代碼量少           | 較複雜，需要編寫事件處理器來逐行解析和處理 XML 標籤
+| **性能**              | 對於小檔案性能良好，但大檔案會因記憶體問題影響性能 | 對於大型檔案性能更優，能高效處理大數據量
+| **操作靈活性**        | 高，支持對文檔的各種操作，如增、刪、改、查 | 靈活性較低，只能在遇到事件時進行相應處理
+| **使用的 Apache POI 類** | `XSSFWorkbook`                  | `XSSFReader`，`XMLReader`，`ContentHandler`
+| **加載速度**          | 慢，需要將整個檔案加載到記憶體中     | 快，只需逐行讀取，適合快速掃描大檔案
+| **錯誤處理**          | 容易發現和修復，由於整個文檔在記憶體中，可以方便地進行錯誤排查 | 較難，需要處理異常情況並確保解析過程不會中斷
+| **檔案修改能力**      | 支持完整的檔案修改，包括添加、刪除和更新 | 不支持修改，只適合讀取操作
+| **記憶體效率**        | 低，特別是對於大型檔案，容易導致記憶體不足 | 高，記憶體佔用小，適合處理超大檔案
+| **學習曲線**          | 平緩，API 使用簡單，類似於操作集合 | 陡峭，需要熟悉事件驅動模型和 XML 標籤的處理
+|===
+
+
+
+== 二、專案概述
+這個專案是一個 Java 應用程式，用於根據候選人的履歷資料生成 Excel 文件。每個文件包含個人資訊、教育背景、工作經歷、技能和專案等多個部分。該 Excel 文件的生成使用了 **Apache POI** 庫，同時實現了 **建造者模式** (Builder Design Pattern)，使得文件的內容建構變得模組化和易於維護。
+
+image::https://imgur.com/BInHb8M.png[width=45%, height=45%]
+
+
+=== 使用技術
+* Java
+* Apache POI（用於 Excel 文件生成）
+* AsciiDoc（用於文件說明）
+
+=== 專案結構
+本專案的結構分為幾個主要套件：
+
+- `builder`:: 包含用於建造者設計模式的類別，負責 Excel 文件的建構流程。
+- `model`:: 保存候選人的資料模型，包括 `Candidate`、`Education`、`Experience` 等。
+- `component`:: 定義 Excel 文件的各個部分，例如 `PersonalInfoSection` 和 `ExperienceSection`。
+- `excel`:: 管理 `ExcelFile` 類別，用於封裝 Apache POI 的工作簿創建。
+- `style`:: 實現 `StyleBuilder`，用於在內容生成後對 Excel 單元格進行流暢的自定義樣式設定。
+- `service`:: 包含 `ExcelGenerationService`，負責組織 Excel 文件的生成並應用樣式。
+
+=== 設計模式：建造者模式
+我們在這個專案中選擇使用 **建造者模式**，原因在於它能將複雜 Excel 文件物件的構建過程與表現形式分離。這種設計方法能夠讓 Excel 文件生成邏輯保持靈活且模組化，使得我們可以輕鬆地新增、移除或修改生成邏輯，而不影響程式碼的其他部分。
+
+==== 選擇建造者模式的過程
+我在選擇設計模式的過程中，首先諮詢了 ChatGPT，以了解哪些設計模式可能最適合這個專案的需求。ChatGPT 建議我們使用建造者模式，因為它特別適合需要逐步構建多個不同部分的複雜物件。隨後，我進一步查閱了建造者模式與其他創建模式的比較，確認了建造者模式在這個專案中最為合適，以下是具體原因：
+
+1. **工廠模式 (Factory Pattern)**：工廠模式旨在簡化單一物件的創建過程，根據傳入參數來決定創建哪種類型的物件。這種模式適用於生成特定類型的物件，而非具有多步驟、多部分的組合物件。在這個專案中，Excel 文件包含多個具體部分（例如個人資訊、教育、工作經歷等），每一部分有不同的數據和格式需求，因此工廠模式並不適合。
+
+2. **抽象工廠模式 (Abstract Factory Pattern)**：抽象工廠模式能夠生成一組相互關聯的物件，並根據具體環境產生不同的物件組合。這個模式更適合需要同時創建多個相互關聯的類別，通常用於跨平台的情況。然而，本專案並非要創建一組變體物件，而是逐步構建具有多個部分的單一物件，因此抽象工廠模式並不適用。
+
+3. **單例模式 (Singleton Pattern)**：單例模式的目的是確保一個類別只有一個實例，適合全域共享的情境。然而，在構建多個段落的 Excel 文件時，不需要僅限於單一實例，因此單例模式不適合用於此專案。
+
+4. **原型模式 (Prototype Pattern)**：原型模式通過複製現有的物件來生成新物件，適用於創建新物件成本較高的情境。由於每個候選人文件的內容是唯一的，並且需要根據動態資料生成，因此單純的複製並不符合需求，原型模式也不適用。
+
+TIP: **建造者模式 (Builder Pattern)** 在此專案中是最合適的選擇，因為它允許將一個複雜物件的構建過程拆分為多個步驟。在我們的場景中，Excel 文件需要分部分逐步生成，並且各部分的資料和格式不同。使用建造者模式，我們能夠模組化地構建 Excel 文件的每一部分，保持生成過程的靈活性。此外，建造者模式可以將構建過程與 Excel 文件的最終表現分離，這意味著可以在不改變整體生成流程的情況下，自由修改或新增文件中的具體部分。
+
+=== 建造者模式的組成部分
+- **ExcelBuilder (抽象建造者)**:: 定義了建構 Excel 文件所需的方法，如 `buildHeader()`、`buildSections()` 和 `buildFooter()`。
+- **ConcreteExcelBuilder (具體建造者)**:: 實現各個 Excel 部分的具體生成邏輯。它創建並填充每個部分，然後將其組織成最終的 Excel 文件。
+- **ExcelDirector (指導者)**:: 管理建構過程，確保每個步驟按正確的順序完成。
+- **ExcelFile (產品)**:: 封裝了 Apache POI 的工作簿，並提供創建工作表和保存文件的方法。
+
+TIP: 這種設計模式增強了模組化，使得程式碼在新增 Excel 部分或格式時更加靈活且易於擴展。
+
+=== 專案組成部分
+
+==== 模型套件 (`model`)
+`model` 套件包含代表候選人相關資料的類別，包括：
+
+- `Candidate`:: 包含候選人具體資訊，例如姓名、地址，以及教育、工作經歷、技能和專案的列表。
+
+- `Education`:: 存儲候選人的教育背景，包括學校名稱、學位、`LocalDate` 開始和結束日期。
+
+- `Experience`:: 表示候選人的工作經歷，包括公司名稱、職位、開始和結束日期等。
+
+- `Skill` 和 `Project`:: 分別儲存候選人的技能和專案經歷。
+
+- `Address`:: 儲存地址的詳細資訊，例如街道、城市、郵遞區號和國家。
+
+==== 組件套件 (`component`)
+
+`component` 套件中的每個類別代表 Excel 文件中的一個部分。這些類別繼承自一個抽象的 `Section` 類別，每個具體部分類別都實現了自己的內容生成邏輯。這些類別包括：
+
+- `PersonalInfoSection`:: 填充候選人的個人資訊。
+
+- `ExperienceSection`:: 添加候選人的工作經歷行。
+
+- `EducationSection`:: 添加每個學歷背景的行。
+
+- `ProjectSection`:: 添加每個候選人所完成的專案行。
+
+- `SkillSection`:: 添加每項技能行。
+
+TIP: 每個部分都負責其在 Excel 表中的內容生成。
+
+==== Excel 套件 (`excel`)
+`ExcelFile` 類別封裝了 Apache POI 的 `XSSFWorkbook`，並提供管理工作簿的方法，例如創建工作表和將文件保存到磁碟。
+
+==== 樣式套件 (`style`)
+此套件中的 `StyleBuilder` 類別提供了一個用於自定義 Excel 單元格的樣式。這種方法可以輕鬆地設定樣式，例如加粗標題、調整字體大小、設定邊框等。樣式是在內容生成後應用的，這樣使數據和展示風格能夠清晰分離。
+
+==== 服務套件 (`service`)
+`ExcelGenerationService` 類別負責整個 Excel 生成過程，包括：
+
+. 初始化建造者和指導者來建構文件。
+. 使用 `StyleBuilder` 為部分和單元格應用一致的樣式。
+. 保存生成的文件。
+
+=== 專案運行方式
+要運行此專案：
+
+1. `clone` 專案倉庫並導航到專案目錄。
+2. 確保已安裝所需的依賴。
+3. 運行 `Main` 類別，以生成包含示例數據的 Excel 文件。
+4. 應該在專案目錄中看到生成的文件 `candidate_info.xlsx`。
+
+=== 未來改進
+該專案的潛在擴展方向包括：
+
+- 增加對更多部分的支持，例如認證或獎項。
+- 強化 `StyleBuilder`，以支持更多樣式，例如單元格背景顏色或自定義字體。
+- 實施候選人數據的驗證規則，以確保數據的完整性和準確性。
+
+=== 結論
+本專案展示了 **建造者模式** 的有效應用，用於結構化且模組化地構建複雜的 Excel 文件。此模式結合了流暢的 `StyleBuilder`，使數據生成和展示風格分離清晰，從而讓專案更易於維護、擴展和自定義。
+
+== 三、樣式部分（生成Excel -Style）
+
+=== 簡介
+提供可以依照個人需求選擇的Style選項。
+
+==== 1. `StyleBuilder` 類別
+`StyleBuilder` 用來設定 Excel 儲存格樣式的核心類別。可以自訂字體大小、顏色、對齊方式、邊框等，並透過鏈式調用來方便地應用多種樣式。
+
+[source, java]
+----
+public class StyleBuilder {
+
+    private Workbook workbook;
+    private CellStyle cellStyle;
+    private Font font;
+
+    public StyleBuilder(Workbook workbook) {
+        this.workbook = workbook;
+        this.cellStyle = workbook.createCellStyle();
+        this.font = workbook.createFont();
+    }
+
+    // 設定字體大小
+    public StyleBuilder setFontSize(short size) {
+        font.setFontHeightInPoints(size);
+        return this;
+    }
+
+    // 設定字體樣式（粗體、斜體、底線等）
+    public StyleBuilder setFontStyle(FontStyle... styles) {
+        for (FontStyle style : styles) {
+            style.applyFontStyle(font);
+        }
+        return this;
+    }
+
+    // 設定字體顏色
+    public StyleBuilder setFontColor(short color) {
+        font.setColor(color);
+        return this;
+    }
+
+    // 設定背景顏色
+    public StyleBuilder setBackgroundColor(short color) {
+        cellStyle.setFillForegroundColor(color);
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return this;
+    }
+
+    // 設定文字對齊方式
+    public StyleBuilder setTextAlign(TextAlign... aligns) {
+        for (TextAlign align : aligns) {
+            align.applyTextAlign(cellStyle);
+        }
+        return this;
+    }
+
+    // 設定邊框樣式
+    public StyleBuilder setBorderStyle(CustomBorderStyle... styles) {
+        for (CustomBorderStyle style : styles) {
+            style.applyBorderStyle(cellStyle);
+        }
+        return this;
+    }
+
+    // 合併儲存格
+    public StyleBuilder mergeCells(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
+        sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+        return this;
+    }
+
+    // 建立樣式
+    public CellStyle build() {
+        cellStyle.setFont(font);
+        return cellStyle;
+    }
+}
+----
+
+==== 2. `StyleEnums` 類別
+`StyleEnums` 類別定義多個Enum區別常見的樣式選項，包括字體樣式（粗體、斜體等）、文字對齊方式（左對齊、居中對齊等）及邊框樣式（實線、虛線等）。增加擴充性
+
+[source, java]
+----
+public class StyleEnums {
+
+    // 字體樣式列舉
+    public enum FontStyle {
+        BOLD {
+            @Override
+            public void applyFontStyle(Font font) {
+                font.setBold(true);
+            }
+        },
+        ITALIC {
+            @Override
+            public void applyFontStyle(Font font) {
+                font.setItalic(true);
+            }
+        },
+        UNDERLINE {
+            @Override
+            public void applyFontStyle(Font font) {
+                font.setUnderline(Font.U_SINGLE);
+            }
+        },
+        NORMAL {
+            @Override
+            public void applyFontStyle(Font font) {
+                // 預設不做變更
+            }
+        };
+
+        public abstract void applyFontStyle(Font font);
+    }
+
+    // 文字對齊方式列舉
+    public enum TextAlign {
+        LEFT {
+            @Override
+            public void applyTextAlign(CellStyle style) {
+                style.setAlignment(HorizontalAlignment.LEFT);
+            }
+        },
+        CENTER {
+            @Override
+            public void applyTextAlign(CellStyle style) {
+                style.setAlignment(HorizontalAlignment.CENTER);
+            }
+        },
+        RIGHT {
+            @Override
+            public void applyTextAlign(CellStyle style) {
+                style.setAlignment(HorizontalAlignment.RIGHT);
+            }
+        };
+
+        public abstract void applyTextAlign(CellStyle style);
+    }
+
+    // 邊框樣式列舉
+    public enum CustomBorderStyle {
+        SOLID {
+            @Override
+            public void applyBorderStyle(CellStyle style) {
+                style.setBorderTop(BorderStyle.THIN);
+                style.setBorderBottom(BorderStyle.THIN);
+                style.setBorderLeft(BorderStyle.THIN);
+                style.setBorderRight(BorderStyle.THIN);
+            }
+        },
+        DASHED {
+            @Override
+            public void applyBorderStyle(CellStyle style) {
+                style.setBorderTop(BorderStyle.DASHED);
+                style.setBorderBottom(BorderStyle.DASHED);
+                style.setBorderLeft(BorderStyle.DASHED);
+                style.setBorderRight(BorderStyle.DASHED);
+            }
+        },
+        DOTTED {
+            @Override
+            public void applyBorderStyle(CellStyle style) {
+                style.setBorderTop(BorderStyle.DOTTED);
+                style.setBorderBottom(BorderStyle.DOTTED);
+                style.setBorderLeft(BorderStyle.DOTTED);
+                style.setBorderRight(BorderStyle.DOTTED);
+            }
+        };
+
+        public abstract void applyBorderStyle(CellStyle style);
+    }
+}
+----
+
+==== 3. 應用於 `PersonalInfoSection` 類別
+`PersonalInfoSection` 用來填充 Excel 表中的個人資料區段。它依賴 `StyleBuilder` 來設定每個儲存格的樣式，並將資料填入相應的欄位中。
+
+[source, java]
+----
+public class PersonalInfoSection extends Section {
+
+    private Candidate candidate;
+
+    public PersonalInfoSection(Candidate candidate) {
+        super("Personal Information");
+        this.candidate = candidate;
+    }
+
+    @Override
+    public int populate(XSSFSheet sheet, int rowNum) {
+        // 創建 StyleBuilder
+        StyleBuilder styleBuilder = new StyleBuilder(sheet.getWorkbook());
+
+        // 設置不同的樣式
+        CellStyle headerStyle = createHeaderStyle(styleBuilder);
+        CellStyle dataStyle = createDataStyle(styleBuilder);
+        CellStyle emailStyle = createEmailStyle(styleBuilder);
+        CellStyle leftColumnStyle = createLeftColumnStyle(styleBuilder);
+
+        // 合併儲存格
+        sheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 1));
+        Row headerRow = sheet.createRow(rowNum++);
+        createStyledCell(headerRow, 0, "Personal Information", headerStyle);
+
+        // 填充個人數據
+        Row row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Name", leftColumnStyle);
+        createStyledCell(row, 1, candidate.getName(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Gender", leftColumnStyle);
+        createStyledCell(row, 1, candidate.getGender(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Birthday", leftColumnStyle);
+        createStyledCell(row, 1, new SimpleDateFormat("yyyy-MM-dd").format(candidate.getBirthday()), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Phone", leftColumnStyle);
+        createStyledCell(row, 1, candidate.getPhone(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Email", leftColumnStyle);
+        createStyledCell(row, 1, candidate.getEmail(), emailStyle); // 使用 Email 特殊樣式
+
+        return rowNum;
+    }
+
+    // 方法：創建帶樣式的儲存格
+    private void createStyledCell(Row row, int column, String value, CellStyle style) {
+        row.createCell(column).setCellValue(value);
+        row.getCell(column).setCellStyle(style);
+    }
+
+    private CellStyle createHeaderStyle(StyleBuilder styleBuilder) {
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setTextAlign(StyleEnums.TextAlign.CENTER) // 水平居中
+                .setFontSize((short) 16)
+                .setBorderStyle(StyleEnums.CustomBorderStyle.SOLID)
+                .build();
+    }
+
+    private CellStyle createDataStyle(StyleBuilder styleBuilder) {
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.NORMAL)
+                .setTextAlign(StyleEnums.TextAlign.CENTER) // 水平居中
+                .setFontSize((short) 10)
+                .setBorderStyle(StyleEnums.CustomBorderStyle.SOLID)
+                .build();
+    }
+
+    private CellStyle createEmailStyle(StyleBuilder styleBuilder) {
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.ITALIC)
+                .setTextAlign(StyleEnums.TextAlign.CENTER) // 水平居中
+                .setFontSize((short) 20)
+                .setFontColor(IndexedColors.BLUE.getIndex())
+                .build();
+    }
+
+    private CellStyle createLeftColumnStyle(StyleBuilder styleBuilder) {
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setTextAlign(StyleEnums.TextAlign.CENTER) // 水平居中
+                .setFontSize((short) 12)
+                .setBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex())
+                .setBorderStyle(StyleEnums.CustomBorderStyle.SOLID)
+                .build();
+    }
+}
+----
+
+==== 4. Excel 生成例子
+
+[source, java]
+----
+XSSFSheet sheet = workbook.createSheet("Candidate Info");
+PersonalInfoSection personalInfoSection = new PersonalInfoSection(candidate);
+personalInfoSection.populate(sheet, 0);
+----
+
+=== 未來改進
+
+這是目前的規劃與設定方式，後面預計的方向是將常見的樣式模組化，像是將常見的樣式如大標題、小標題、內容資訊樣式等進行明確區分。
+
+例如：
+
+
+[source, java]
+----
+// 大標題樣式 (14號字，粗體，置中)
+private CellStyle createHeaderStyle(Workbook workbook) {
+    StyleBuilder styleBuilder = new StyleBuilder(workbook);
+    return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+            .setFontSize((short) 14) 
+            .setTextAlign(StyleEnums.TextAlign.CENTER)
+            .build();
+}
+----
+
+
+[source, java]
+----
+// 小標題樣式 (12號字，粗體，背景黃色，置中)
+private CellStyle createLabelStyle(Workbook workbook) {
+    StyleBuilder styleBuilder = new StyleBuilder(workbook);
+    return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+            .setFontSize((short) 12)
+            .setTextAlign(StyleEnums.TextAlign.CENTER)
+            .setBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex())
+            .build();
+}
+----
+
+
+[source, java]
+----
+// 內容資訊樣式 (12號字，正常字體，置中)
+private CellStyle createInfoStyle(Workbook workbook) {
+    StyleBuilder styleBuilder = new StyleBuilder(workbook);
+    return styleBuilder.setFontStyle(StyleEnums.FontStyle.NORMAL)
+            .setFontSize((short) 12)
+            .setTextAlign(StyleEnums.TextAlign.CENTER)
+            .build();
+}
+----
+
+=== 改進效益
+
+這樣的改進可以減少重複的樣式設定邏輯，讓程式碼更加清晰、易於維護，同時也能提升樣式應用的靈活性。透過這樣的方式，可以快速地為不同的 Excel 區段設置適當的樣式，並且在後續的開發中能夠更方便地調整或擴充樣式。
+
+
+== 四、功能部分
+
+=== 進度
+
+image::https://imgur.com/w5WEx5A.png[width=70%, height=70%]
+
+- 把功能**封裝**起來，依照相似作用分為五類
+
+- **新增**：超連結、條件式格式、凍結窗格
+
+=== 依功能分五類封裝
+
+. 資料驗證與篩選 DataValidationHandler
+.. 資料驗證（數值或日期範圍、下拉式選單）
+.. 篩選器
+
+. 格式類 FormattingHandler
+.. 格式設定
+.. 條件式格式
+.. 合併儲存格
+.. 凍結儲存格
+
+. 圖表類 ChartHandler
+.. 圖表
+* 圓餅圖
+* 長條圖
+* 雷達圖
+* 折線圖
+
+. 超連結類 HyperlinkHandler
+.. 超連結
+* 外部連結
+* 內部連結
+
+. 圖片類 ImageHandler
+* 圖片大小、定位待研究
+* 預設：兩吋大小圖片插入的method
+
+=== 新增功能
+
+. 超連結
+
+[source,java]
+----
+// 設定文字外部超連結
+public void setHyperLink(String link , Cell cell , Workbook workbook) {
+    createHelper = workbook.getCreationHelper();
+
+    // 設定文字中的連結 , 導到設定的連結網址
+    Hyperlink hyperlink = createHelper.createHyperlink(HyperlinkType.URL);
+    hyperlink.setAddress(link);
+    cell.setHyperlink(hyperlink);
+}
+
+// 設定文字內部超連結
+public void setInternalLink(String sheetname ,Cell cell , Workbook workbook) {
+     createHelper = workbook.getCreationHelper();
+
+    // 設定文字中的連結 , 導到同個excel的不同sheet
+    Hyperlink internallink = createHelper.createHyperlink(HyperlinkType.DOCUMENT);
+    internallink.setAddress("'"+sheetname+"'!A1");
+    cell.setHyperlink(internallink);
+}
+----
+
+[start=2]
+. 條件式格式
+
+[source,java]
+----
+// 條件式格式
+public void ConditionalFormatting(Sheet sheet , String conditionalvalue ,
+                                  int startRow , int endRow , int col){
+    // set conditional rule
+    // if skill level > 2 -> fill cell background color
+    SheetConditionalFormatting sheetcf = sheet.getSheetConditionalFormatting();
+    ConditionalFormattingRule rule = sheetcf.createConditionalFormattingRule(ComparisonOperator.GT , conditionalvalue);
+
+    // 填充顏色example(也可以改變文字顏色)
+    PatternFormatting fill = rule.createPatternFormatting();
+    fill.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
+    // FontFormatting fontFormat = rule.createFontFormatting();
+    // fontFormat.setFontColorIndex(IndexedColors.RED.getIndex());
+
+    // 設定條件式cell範圍
+    String startCellRef = new CellReference(startRow, col).formatAsString();
+    String endCellRef = new CellReference(endRow, col).formatAsString();
+    String range = startCellRef + ":" + endCellRef;
+
+    CellRangeAddress[] regions = { CellRangeAddress.valueOf(range) };
+    sheetcf.addConditionalFormatting(regions, rule);
+}
+----
+
+[start=3]
+. 凍結窗格
+
+[source,java]
+----
+public void freezeCell(Sheet sheet , int firstRow, int lastRow){
+    // 凍結儲存格的某一列到某一列
+    sheet.createFreezePane(firstRow, lastRow);
+}
+----
