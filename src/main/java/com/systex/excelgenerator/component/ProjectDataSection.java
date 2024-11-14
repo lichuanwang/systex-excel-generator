@@ -2,8 +2,13 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
+import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 
 public class ProjectDataSection extends AbstractDataSection<Project> {
 
@@ -56,7 +61,11 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
             hyperlinkHandler.setInternalLink(sheet.getSheetName(), row.getCell(startCol + 1) , sheet.getWorkbook());
 
             row.createCell(startCol + 2).setCellValue(project.getDescription());
-            row.createCell(startCol + 3).setCellValue(project.getTechnologiesUsed());
+            XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
+            CellStyle initialStyle = TemplateStyle.createSpecialStyle(workbook);
+            Cell TechnologiesUsed = row.createCell(startCol + 1);
+            TechnologiesUsed.setCellValue(project.getTechnologiesUsed());
+            TechnologiesUsed.setCellStyle(initialStyle);
         }
     }
 

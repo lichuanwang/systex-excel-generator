@@ -2,18 +2,20 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
-import com.systex.excelgenerator.utils.FormattingAndFilter;
+import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
-    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
     private FormulaHandler formulaHandler = new FormulaHandler();
+    private CellStyle clonedBlueStyle;
 
     public ExperienceDataSection() {
         super("Experience");
@@ -48,14 +50,35 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
     }
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
+        CellStyle initialStyle = TemplateStyle.createSpecialStyle(workbook);
+        clonedBlueStyle = workbook.createCellStyle();
+        clonedBlueStyle.cloneStyleFrom(initialStyle);
+
+        clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+        clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+
         int rowNum = startRow; // Start from the row after the header
 
         for (Experience exp : content) {
             Row row = sheet.createOrGetRow(rowNum++);
             row.createCell(startCol).setCellValue(exp.getCompanyName());
-            row.createCell(startCol + 1).setCellValue(exp.getJobTitle());
+            Cell jobTitleCell = row.createCell(startCol + 1);
+            jobTitleCell.setCellValue(exp.getJobTitle());
+            jobTitleCell.setCellStyle(clonedBlueStyle);
+
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());
+            row.createCell(startCol + 4).setCellValue(exp.getEndDate());
+            Cell dateCell =  row.createCell(startCol + 3);
+            dateCell.setCellValue(exp.getStartDate());
+            dateCell.setCellStyle(dateStyle);
+            dateCell =  row.createCell(startCol + 4);
+            dateCell.setCellValue(exp.getEndDate());
+            dateCell.setCellStyle(dateStyle);
+
 
             // 計算時間區間(解析公式)
             // 輸入公式

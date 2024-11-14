@@ -6,7 +6,7 @@ import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 
-public abstract class AbstractChartSection {
+public abstract class AbstractChartSection implements ChartSection {
 
     protected int col1;
     protected int row1;
@@ -18,12 +18,12 @@ public abstract class AbstractChartSection {
     protected int yAxisCol;
 
     // 設定圖表的位置
-    public void setChartPosition(int col1, int row1) {
+    public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
         // default size 給使用者col2 , row2
-        this.col1 = col1;
-        this.row1 = row1;
-        this.col2 = col1 + 7;
-        this.row2 = row1 + 15;
+        this.row1 = startingRow;
+        this.col1 = startingColumn;
+        this.row2 = endingRow;
+        this.col2 = endingColumn;
     }
 
     public void setDataSource(DataSection<?> dataSection) {
@@ -40,16 +40,14 @@ public abstract class AbstractChartSection {
     protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
 
     // 各個圖表共通有的東西
+
     public void render(ExcelSheet sheet){
 
         // 設定sheet中的畫布
         XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
 
         // 設定圖表位置
-        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0,
-                col1 , row1 , col2 , row2));
-
-        //System.out.println(dataFirstRow+","+dataLastRow);
+        XSSFChart chart = drawing.createChart(drawing.createAnchor(0,0,0,0, col1 , row1 , col2 , row2));
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(
@@ -63,6 +61,7 @@ public abstract class AbstractChartSection {
         XDDFChartData data = createChartData(chart);
 
         // bar chart如果沒有用series設定標題會出錯
+        // title可以之後套用進來
         XDDFChartData.Series series = data.addSeries(categories, values);
         series.setTitle("no",null);
 

@@ -8,13 +8,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Map<String, DataSection<?>> sectionMap;
+    private Map<String, DataSection<?>> sectionMap = new HashMap<>();
     private int startingRow = 0;
     private int startingCol = 0;
     private int maxColPerRow;
@@ -24,7 +25,6 @@ public class ExcelSheet {
         this.sheetName = sheetName;
         this.xssfSheet = workbook.createSheet(sheetName);
         this.maxColPerRow = maxColPerRow;
-        this.sectionMap = new TreeMap<>();
     }
 
     public String getSheetName() {
@@ -91,23 +91,18 @@ public class ExcelSheet {
     }
 
     // add chart sections
-    public void addChartSection(AbstractChartSection chartsection , String sectionname) {
-
+    public void addChartSection(AbstractChartSection chartSection, String sectionTitle) {
         // 傳section name進來再去查找
-        DataSection<?> dataSection = getSectionByName(sectionname);
-
-        // 邏輯有點死
-        // 要有錯誤處理
+        DataSection<?> dataSection = getSectionByName(sectionTitle);
 
         // set chart position
-        chartsection.setChartPosition(getMaxColPerRow() + 1 , startingRow);
-        //chartsection.setChartPosition(1, startingRow);
-        // set chart data source
-        chartsection.setDataSource(dataSection);
-        // render chart sections
-        chartsection.render(this);
+        chartSection.setChartPosition(startingRow, getMaxColPerRow() + 1, startingRow + 7, startingCol+12);
 
-        // 要更新每個圖表生成的位置(還沒做)
+        // set chart data source
+        chartSection.setDataSource(dataSection);
+
+        // render chart sections
+        chartSection.render(this);
     }
 
     // Getter for the underlying XSSFSheet, if needed

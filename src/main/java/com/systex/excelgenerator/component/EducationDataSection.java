@@ -2,17 +2,21 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Education;
-import com.systex.excelgenerator.utils.FormattingAndFilter;
+import com.systex.excelgenerator.style.ExcelFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
 
-    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
+    private FormattingHandler formattingHandler = new FormattingHandler();
     private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationDataSection() {
@@ -48,6 +52,9 @@ public class EducationDataSection extends AbstractDataSection<Education> {
     }
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
+        XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
+        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+
         int rowNum = startRow; // Start from the row after the header
 
         for (Education edu : content) {
@@ -56,6 +63,15 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             row.createCell(startCol + 1).setCellValue(edu.getMajor());
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
             row.createCell(startCol + 3).setCellValue(edu.getStartDate());
+
+            Cell dateCell =  row.createCell(startCol + 3);
+            dateCell.setCellValue(edu.getStartDate());
+            dateCell.setCellStyle(dateStyle);
+            dateCell =  row.createCell(startCol + 4);
+            dateCell.setCellValue(edu.getEndDate());
+            dateCell.setCellStyle(dateStyle);
+
+
 
             // 計算時間區間(解析公式)
             // 輸入公式
@@ -73,9 +89,6 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             // 計算過後的時間區間的值
             row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
         }
-        // test 篩選器
-        // 只需要header就好
-        formattingAndFilter.CellFilter(sheet.getXssfSheet(),startRow-1,rowNum-1,startCol,startCol + 5);
     }
 
     protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {

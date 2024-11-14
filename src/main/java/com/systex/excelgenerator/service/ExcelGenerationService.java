@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelGenerationService {
@@ -24,16 +23,14 @@ public class ExcelGenerationService {
             ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
             // add sections to sheet
-            List<Candidate> candidateList = new ArrayList<>();
-            candidateList.add(candidate);
-            sheet.addSection(new PersonalInfoDataSection(), candidateList);
+            // the process of creating personalInfoSection could be a static method
+            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
             sheet.addSection(new EducationDataSection(), candidate.getEducationList());
             sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
             sheet.addSection(new ProjectDataSection(), candidate.getProjects());
             sheet.addSection(new SkillDataSection(), candidate.getSkills());
 
             // add chart sections to sheet
-            // 改成傳section name進去,在裡面用name找
             sheet.addChartSection(new RadarChartSection() , "Skill");
             sheet.addChartSection(new PieChartSection() , "Skill");
             sheet.addChartSection(new BarChartSection() , "Skill");

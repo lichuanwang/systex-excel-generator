@@ -49,3 +49,6 @@ Thumbs.db
 # Optionally, ignore temp Excel files (starting with ~)
 ~$*.xlsx
 ~$*.xls
+
+# Remove the following additional file
+cellStyle.ser

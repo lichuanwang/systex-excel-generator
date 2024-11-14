@@ -1,0 +1,337 @@
+= Status Update: # 10/24
+:doctype: book
+:toc: left
+:toclevels: 3
+
+== Java Excel API 全面比較與選擇指南
+
+在 Java 中處理 Excel 文件時，開發者有多個 API 可以選擇。每個 API 都有其優勢和缺點，適合不同的任務，從基本的文件操作到處理大型數據集。本文將比較幾個最常見的 Java Excel API，提供詳細的功能說明，幫助讀者根據項目需求選擇最佳的 API。
+
+== 概述
+
+Java 中處理 Excel 文件的 API 有多種選擇，每個 API 都適合不同的需求和應用場景。本文涵蓋了以下 API 並比較其特性，從而幫助您選擇最適合的 API。
+
+== 涵蓋的 API
+
+1. DsExcel
+2. Aspose.Cells for Java
+3. E-IceBlue (Spire.XLS for Java)
+4. EasyXLS
+5. FastExcel
+6. DOCX4J
+7. JXLS
+8. Apache POI
+
+== 選擇 API 的關鍵因素
+
+在選擇合適的 Excel API 時，需要考慮以下幾個方面：
+
+1. 支持的文件格式：是否支持 `.xls` 和 `.xlsx` 格式等。
+2. 性能：處理大型 Excel 文件時的內存和速度。
+3. 高級功能：是否支持圖表、樞紐分析表、條件格式化等。
+4. 易用性：學習曲線及開發難度。
+5. 成本和授權：是否開源或需要付費授權。
+
+== API 比較
+
+=== 1. DsExcel (Document Solutions for Excel, Java Edition)
+
+* **優點**：支持圖表、模板和跨平台數據查看器。
+* **缺點**：性能不如輕量級 API。
+* **最佳使用場景**：適合需要複雜報告和可視化功能的應用。
+
+=== 2. Aspose.Cells for Java
+
+* **優點**：支持多種 Excel 格式，擅長高級功能和大文件處理。
+* **缺點**：學習曲線較陡峭，授權費用高。
+* **最佳使用場景**：企業應用和對高級功能有需求的項目。
+
+=== 3. E-IceBlue (Spire.XLS for Java)
+
+* **優點**：支持圖表、條件格式化和多工作表管理。
+* **缺點**：處理極大文件時性能不佳。
+* **最佳使用場景**：適合需要高級 Excel 功能的中大型項目。
+
+=== 4. EasyXLS
+
+* **優點**：易於上手，適合小文件和基本操作。
+* **缺點**：不適合大型文件或高級功能。
+* **最佳使用場景**：小型應用和簡單數據處理。
+
+=== 5. FastExcel
+
+* **優點**：針對大型文件進行性能優化，無需外部依賴。
+* **缺點**：缺乏高級 Excel 功能。
+* **最佳使用場景**：處理大型 Excel 文件但不需要複雜功能的應用。
+
+=== 6. DOCX4J
+
+* **優點**：支持多種 Office 格式，靈活處理 XML。
+* **缺點**：Excel 功能支持較弱。
+* **最佳使用場景**：需要處理多種 Office 文件的應用。
+
+=== 7. JXLS
+
+* **優點**：基於模板快速生成報表，穩定性好。
+* **缺點**：僅適用於報表生成。
+* **最佳使用場景**：基於模板的報表生成。
+
+=== 8. Apache POI
+
+Apache POI 是最受歡迎的開源 Java 庫，分為以下三種模式：
+
+==== HSSF (Horrible Spreadsheet Format)
+
+* **用途**：處理 `.xls` 文件。
+* **API**：`HSSFWorkbook`, `HSSFSheet`, `HSSFRow`, `HSSFCell`。
+* **最佳使用場景**：處理舊版 `.xls` 文件。
+
+==== XSSF (XML Spreadsheet Format)
+
+* **用途**：處理 `.xlsx` 文件。
+* **API**：`XSSFWorkbook`, `XSSFSheet`, `XSSFRow`, `XSSFCell`。
+* **最佳使用場景**：高級功能 `.xlsx` 文件處理。
+
+==== SXSSF (Streaming XML Spreadsheet Format)
+
+* **用途**：適合生成大型 `.xlsx` 文件。
+* **API**：`SXSSFWorkbook`, `SXSSFSheet`, `SXSSFRow`, `SXSSFCell`。
+* **最佳使用場景**：生成大型 Excel 文件。
+
+==== 事件 API
+
+* **用途**：逐步讀取大型 Excel 文件，降低內存。
+* **最佳使用場景**：讀取超大型文件而內存有限。
+
+== 選擇 API 的決策指南
+
+[cols="1,1,2", options="header"]
+|===
+| 使用場景 | 推薦 API | 原因
+
+| 需要處理複雜報告、圖表和模板
+| DsExcel 或 Aspose.Cells
+| 支持完整高級功能
+
+| 高效處理大型文件
+| FastExcel 或 Apache POI (SXSSF)
+| 降低內存使用
+
+| 基本的 Excel 操作
+| EasyXLS
+| 簡單易用
+
+| 處理多種 Office 格式
+| DOCX4J
+| 支持多格式
+
+| 基於模板的報表生成
+| JXLS
+| 模板化報告
+|===
+
+== API 結論
+
+選擇適合的 API 取決於項目需求。Apache POI 是靈活的開源解決方案，對於大文件建議使用 SXSSF 和事件 API。
+
+== Apache POI 不支持的功能
+
+[cols="1,2", options="header"]
+|===
+| 功能 | 詳細說明
+
+| Advanced Charting Features
+| 例如：pyramid charts, radar charts, 3D charts。Aspose.Cells 支持高級圖表類型。
+
+| Pivot Table Creation and Manipulation
+| Apache POI 不支持生成或修改樞紐分析表。Aspose.Cells 和 Spire.XLS 支持這些功能。
+
+| Macros (VBA) Support
+| Apache POI 不支持宏的創建或編輯。Aspose.Cells 支持 VBA 宏。
+
+| Advanced Formula Support
+| POI 缺少最新 Excel 動態數組等高級公式。Aspose.Cells 支持 450 多個公式。
+
+| Excel File Compression
+| POI 不支持內建壓縮。Aspose.Cells 支持壓縮。
+
+| PDF and Image Export
+| POI 僅支持 Excel 格式，不支持 PDF 和圖像導出。Aspose.Cells 支持導出 PDF、XPS 和圖像格式。
+
+| Workbook Protection Features
+| POI 的保護功能有限。Aspose.Cells 支持高級加密和數字簽名。
+
+| Client-Side Data Viewer and Editing
+| POI 無客戶端查看器。DsExcel 包含數據查看器。
+
+| Memory Management for Large Datasets
+| SXSSF 雖可降低內存，但處理極大數據不如 EasyExcel、Aspose.Cells。
+
+| Template-Based Report Generation
+| POI 支持有限，Aspose.Cells 支持高級模板。
+
+| Custom Filtering and Conditional Formatting
+| POI 支持基本條件格式，Aspose.Cells 支持複雜的條件格式和自訂圖標。
+|===
+
+== 轉EXCEL基礎方法
+
+=== 1. 創建新的 Excel 檔案
+
+```java
+XSSFWorkbook workbook = new XSSFWorkbook();
+XSSFSheet sheet = workbook.createSheet("New");
+```
+=== 2. 寫入欄位名 (先創建)
+
+```java
+XSSFRow row = sheet.createRow(0);
+XSSFCell cell = row.createCell(0);
+cell.setCellValue("姓名");
+cell = row.createCell(1);
+cell.setCellValue("畢業學校");
+cell = row.createCell(2);
+cell.setCellValue("工作年資");
+```
+
+=== 3. 寫入數據
+
+```java
+row = sheet.createRow(1);
+row.createCell(0).setCellValue("Alice");
+row.createCell(1).setCellValue("ABC大學");
+row.createCell(2).setCellValue(6);
+
+row = sheet.createRow(2);
+row.createCell(0).setCellValue("Bob");
+row.createCell(1).setCellValue("CDE研究所");
+row.createCell(2).setCellValue(4);
+```
+
+=== 4. 寫入公式
+```
+row = sheet.createRow(3);
+row.createCell(0).setCellValue("Total =");
+cell = row.createCell(1);
+cell.setCellFormula("SUM(B2:B3)"); // 動態設置和操作公式
+```
+
+=== 5. 文字置中
+
+- setAlignment(): 水平對齊方式
+- setVerticalAlignment(): 垂直對齊方式
+
+=== 6. HorizontalAlignment 的常見值：
+
+- HorizontalAlignment.LEFT: 水平左對齊。
+- HorizontalAlignment.CENTER: 水平居中對齊。
+- HorizontalAlignment.RIGHT: 水平右對齊。
+- HorizontalAlignment.JUSTIFY: 水平兩端對齊。
+
+=== 7. VerticalAlignment 的常見值：
+
+- VerticalAlignment.TOP: 垂直頂端對齊。
+- VerticalAlignment.CENTER: 垂直居中對齊。
+- VerticalAlignment.BOTTOM: 垂直底部對齊。
+- VerticalAlignment.JUSTIFY: 垂直兩端對齊。
+
+Apache POI 設置 Excel 單元格樣式的範例：
+```java
+CellStyle centeredStyle = workbook.createCellStyle();
+centeredStyle.setAlignment(HorizontalAlignment.CENTER); // 水平置中
+centeredStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 垂直置中
+
+for (int i = 0; i < 3; i++) {
+    row.getCell(i).setCellStyle(centeredStyle);
+}
+```
+
+=== 8. 邊框或背景顏色
+
+BorderStyle.THIN: 細線條
+BorderStyle.DASHED: 虛線邊框
+BorderStyle.MEDIUM: 中等粗線條
+BorderStyle.DOUBLE: 雙線條邊框
+```java
+CellStyle borderStyle = workbook.createCellStyle();
+borderStyle.setBorderBottom(BorderStyle.THIN);
+borderStyle.setBorderTop(BorderStyle.DASHED);
+borderStyle.setBorderLeft(BorderStyle.DOUBLE);
+borderStyle.setBorderRight(BorderStyle.THIN);
+borderStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+borderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND); // 儲存格的填充模式
+row.getCell(0).setCellStyle(borderStyle); // 設置第一個儲存格的樣式
+```
+
+=== 9. 字體設定
+
+- setFontHeightInPoints(): 設定字體大小
+- setBold(true): 設定字體為粗體
+- setItalic(true): 設置斜體
+- setUnderline(): 設置底線
+
+```java
+Font defaultFont = workbook.createFont();
+defaultFont.setFontHeightInPoints((short) 12); // 字體大小12
+```
+
+=== 8. 最後將設定寫到 Excel 內
+```java
+FileOutputStream fileOut = new FileOutputStream(new File("Demo.xlsx")); // 創建一個名為 "Demo.xlsx" 的文件，準備將數據寫入
+workbook.write(fileOut); // 數據寫入到 "Demo.xlsx"
+fileOut.close();
+```
+
+== Excel 進階功能
+
+=== 1. 合併儲存格
+
+```java
+addMergedRegion(CellRangeAddress region)
+CellRangeAddress(int firstRow, int lastRow, int firstCol, int lastCol)
+sheet.addMergedRegion(new CellRangeAddress(1, 1, 1, 2));
+```
+
+=== 2. 計算時間區間
+
+```java
+CreationHelper createHelper = wb.getCreationHelper();
+CellStyle dateCellStyle = wb.createCellStyle();
+dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/mm/dd"));
+
+Cell totalyear = row.createCell(4);
+String formula = "IF(DATEDIF(A1, B1, \"y\")=0, \"\", " +
+"DATEDIF(A1, B1, \"y\") & \"年\") & " +
+"DATEDIF(A1, B1, \"ym\") & \"個月\"";
+totalyear.setCellFormula(formula);
+```
+
+=== 3. 圖表
+
+```java
+XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(1, 3, 0, 0));
+XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 3, 1, 1));
+```
+
+=== 4. 插入圖片
+
+```java
+FileInputStream inputStream = new FileInputStream("example.jpg");
+byte[] bytes = IOUtils.toByteArray(inputStream);
+int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
+inputStream.close();
+```
+=== 5. 資料驗證：下拉式選單
+
+```java
+DataValidationHelper validationHelper = sheet.getDataValidationHelper();
+DataValidationConstraint dvConstraint = validationHelper.createExplicitListConstraint(new String[]{"男", "女"});
+```
+=== 6. 篩選器
+
+```java
+sheet.setAutoFilter(new CellRangeAddress(0, 0, 1, 3));
+```
+
+== 總結
+Apache POI 提供了出色的靈活性，特別是在處理大型文件時的事件 API 和 SXSSF，但在高級功能方面相對受限。根據您的需求選擇合適的 API。
