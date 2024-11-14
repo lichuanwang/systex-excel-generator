@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Row;
 public class SkillDataSection extends AbstractDataSection<Skill> {
 
     private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
-    private ChartHandler chartHandler = new ChartHandler();
 
     public SkillDataSection() {
         super("Skill");

@@ -90,9 +90,6 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getPhone());
 
-        // format phone number
-        row.getCell(startCol).setCellStyle(formattingAndFilter.TextFormatting(sheet.getWorkbook()));
-
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getEmail());
 

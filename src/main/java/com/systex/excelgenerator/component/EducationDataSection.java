@@ -57,15 +57,6 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
             row.createCell(startCol + 3).setCellValue(edu.getStartDate());
 
-            // format date
-            row.getCell(startCol + 3).setCellStyle(formattingAndFilter.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
-
-            row.createCell(startCol + 4).setCellValue(edu.getEndDate());
-
-            // format date
-            row.getCell(startCol + 4).setCellStyle(formattingAndFilter.DateFormatting(edu.getStartDate() , sheet.getWorkbook()));
-
-
             // 計算時間區間(解析公式)
             // 輸入公式
             String formula = """
