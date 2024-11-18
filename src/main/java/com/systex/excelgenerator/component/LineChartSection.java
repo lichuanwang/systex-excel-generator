@@ -16,10 +16,7 @@ public class LineChartSection extends AbstractChartSection{
         XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
         XDDFValueAxis yAxis = chart.createValueAxis(AxisPosition.LEFT);
 
-        // 設定圖表類型為折線圖
-        XDDFChartData Linedata = chart.createData(ChartTypes.LINE, xAxis, yAxis);
-
-        return Linedata;
+        return chart.createData(ChartTypes.LINE, xAxis, yAxis);
     }
 
     @Override

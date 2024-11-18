@@ -3,13 +3,12 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
 import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.FormattingHandler;
 import org.apache.poi.ss.usermodel.Row;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 
 public class SkillDataSection extends AbstractDataSection<Skill> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
-
+    private FormattingAndFilter formattingAndfilter = new FormattingAndFilter();
     public SkillDataSection() {
         super("Skill");
     }
@@ -57,7 +56,7 @@ public class SkillDataSection extends AbstractDataSection<Skill> {
 
             row.createCell(colNum).setCellValue(skill.getLevel());
             // if skill level > 2 (conditional test)
-            formattingHandler.ConditionalFormatting(sheet.getXssfSheet() , "2"
+            formattingAndfilter.ConditionalFormatting(sheet.getXssfSheet() , "2"
                     , row.getRowNum() , row.getRowNum() , startCol + 2);
         }
         this.dataEndRow = rowNum - 1;
