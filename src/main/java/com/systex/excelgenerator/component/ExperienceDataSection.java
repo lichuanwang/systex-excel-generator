@@ -4,7 +4,6 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
-import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.*;
@@ -15,7 +14,6 @@ import java.util.Set;
 
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
     private FormulaHandler formulaHandler = new FormulaHandler();
     private CellStyle clonedBlueStyle;
 

@@ -1,0 +1,540 @@
+:toc:
+:toclevels: 1
+:source-highlighter: highlight.js
+:highlightjs-theme: atom-one-dark-reasonable
+:icons: font
+
+= *Status Update 1104*
+
+++++
+<style>
+    h2{
+        color: black;
+        font-weight: bold;
+    }
+    h3 {
+      font-weight: bold;
+      color: #003060;
+    }
+    h4 {
+      color: #003D79;
+    }
+
+</style>
+++++
+
+== 架構修改：ExcelSheet
+
+=== 主要改動
+
+1. 修改Section
+2. 新增ExcelSheet
+
+=== ExcelSheet功能
+
+1. 控制Section生成時放置位置
+2. 透過Sheet去管理section生成位置和記錄section設置到哪裡
+3. 透過ExcelSheet設定並限制頁寬
+
+修改Section
+
+[source,java]
+----
+package com.systex.excelgenerator.component;
+
+import com.systex.excelgenerator.excel.ExcelSheet;
+
+import java.util.Collection;
+
+public interface Section<T> {
+    void setData(T data);
+    void setData(Collection<T> dataCollection);
+    boolean isEmpty();
+    int getWidth();
+    int getHeight();
+    void render(ExcelSheet sheet, int startRow, int startCol);
+}
+----
+
+新增ExcelSheet來管理sheet中的section
+
+[source,java]
+----
+package com.systex.excelgenerator.excel;
+import com.systex.excelgenerator.component.Section;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+public class ExcelSheet {
+    private final XSSFSheet xssfSheet;
+    private int startingRow = 0;
+    private int startingCol = 0;
+    private final int maxColPerRow;
+    private int deepestRowOnCurrentLevel = 0;
+    public ExcelSheet(XSSFSheet sheet, int maxColPerRow) {
+        this.xssfSheet = sheet;
+        this.maxColPerRow = maxColPerRow;
+    }
+    public void addSection(Section section) {
+        // Check if adding the section would exceed maxColPerRow
+        if (startingCol + section.getWidth() > maxColPerRow) {
+            // Move to next row if max columns exceeded
+            startingRow = deepestRowOnCurrentLevel + 2;
+            startingCol = 0;
+        }
+        // Set section start point and render the section
+        section.render(this, startingRow, startingCol);
+        // Update layout positions
+        startingCol += section.getWidth();
+        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + section.getHeight() - 1);
+    }
+    // Method to create or get a row
+    public Row createOrGetRow(int rowNum) {
+        Row row = xssfSheet.getRow(rowNum);
+        if (row == null) {
+            row = xssfSheet.createRow(rowNum);
+        }
+        return row;
+    }
+    // Getter for the underlying XSSFSheet, if needed
+    public XSSFSheet getUnderlyingSheet() {
+        return xssfSheet;
+    }
+    public XSSFSheet getXssfSheet() {
+        return xssfSheet;
+    }
+    public int getStartingRow() {
+        return startingRow;
+    }
+    public void setStartingRow(int startingRow) {
+        this.startingRow = startingRow;
+    }
+    public int getStartingCol() {
+        return startingCol;
+    }
+    public void setStartingCol(int startingCol) {
+        this.startingCol = startingCol;
+    }
+    public int getMaxColPerRow() {
+        return maxColPerRow;
+    }
+    public int getDeepestRowOnCurrentLevel() {
+        return deepestRowOnCurrentLevel;
+    }
+    public void setDeepestRowOnCurrentLevel(int deepestRowOnCurrentLevel) {
+        this.deepestRowOnCurrentLevel = deepestRowOnCurrentLevel;
+    }
+}
+----
+
+
+== Excel Style樣式設計
+
+image::https://hackmd.io/_uploads/Skg69Phxkl.png[align="center"]
+
+在style內做，import到上面component
+
+=== 1. **定義 `StyleBuilder`**
+
+=== 設計 Enum
+[source,java]
+----
+public enum TextAlign {
+    LEFT, CENTER, RIGHT;
+}
+
+public enum FontStyle {
+    BOLD, ITALIC, UNDERLINE;
+}
+----
+
+(鏈式調用 + 部分 Enum) 首先，你可以定義一個 `StyleBuilder` 類，用來設置不同的樣式，例如字體、顏色等。
+
+[source,java]
+----
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class StyleBuilder {
+    private Workbook workbook;
+    private CellStyle style;
+    private Font font;
+
+    public StyleBuilder(Workbook workbook) {
+        this.workbook = workbook;
+        this.style = workbook.createCellStyle();
+        this.font = workbook.createFont();
+    }
+
+    // 設置字體大小
+    public StyleBuilder fontSize(short size) {
+        font.setFontHeightInPoints(size);
+        return this;
+    }
+
+    // 設置字體樣式
+    public StyleBuilder fontStyle(FontStyle... styles) {
+        for (FontStyle style : styles) {
+            switch (style) {
+                case BOLD:
+                    font.setBold(true);
+                    break;
+                case ITALIC:
+                    font.setItalic(true);
+                    break;
+                case UNDERLINE:
+                    font.setUnderline(Font.U_SINGLE);
+                    break;
+            }
+        }
+        return this;
+    }
+
+    // 設置字體顏色
+    public StyleBuilder fontColor(short color) {
+        font.setColor(color);
+        return this;
+    }
+
+    // 設置背景顏色
+    public StyleBuilder backgroundColor(short color) {
+        style.setFillForegroundColor(color);
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return this;
+    }
+
+    // 設置儲存格對齊方式
+    public StyleBuilder textAlign(TextAlign align) {
+        switch (align) {
+            case LEFT:
+                style.setAlignment(HorizontalAlignment.LEFT);
+                break;
+            case CENTER:
+                style.setAlignment(HorizontalAlignment.CENTER);
+                break;
+            case RIGHT:
+                style.setAlignment(HorizontalAlignment.RIGHT);
+                break;
+        }
+        return this;
+    }
+
+    // 設置儲存格邊框
+    public StyleBuilder border() {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        return this;
+    }
+
+    // 合併儲存格
+    public StyleBuilder mergeCells(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
+        sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+        return this;
+    }
+
+    public CellStyle build() {
+        style.setFont(font);
+        return style;
+    }
+}
+----
+
+=== 2. **應用 `StyleBuilder` 到 `PersonalInfoSection`**
+
+接下來，你可以將樣式應用到每個單元格，而不是寫死樣式設定。下面是更新後的 `PersonalInfoSection`：
+
+[source,java]
+----
+import com.systex.excelgenerator.model.Candidate;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+
+import java.text.SimpleDateFormat;
+
+public class PersonalInfoSection extends Section {
+
+    private Candidate candidate;
+    private Workbook workbook;  // 新增Workbook參數
+
+    public PersonalInfoSection(Candidate candidate, Workbook workbook) {
+        super("Personal Information");
+        this.candidate = candidate;
+        this.workbook = workbook;  // 初始化
+    }
+
+    @Override
+    public int populate(XSSFSheet sheet, int rowNum) {
+        addHeader(sheet, rowNum);
+        rowNum++;
+
+        // 使用 StyleBuilder 應用樣式
+        CellStyle headerStyle = new StyleBuilder(workbook).bold().fontSize((short) 12).build();
+        CellStyle dataStyle = new StyleBuilder(workbook).fontSize((short) 10).build();
+
+        Row row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Name", headerStyle);
+        createStyledCell(row, 1, candidate.getName(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Gender", headerStyle);
+        createStyledCell(row, 1, candidate.getGender(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Birthday", headerStyle);
+        createStyledCell(row, 1, SimpleDateFormat.getDateInstance().format(candidate.getBirthday()), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Phone", headerStyle);
+        createStyledCell(row, 1, candidate.getPhone(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Email", headerStyle);
+        createStyledCell(row, 1, candidate.getEmail(), dataStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Address", headerStyle);
+        createStyledCell(row, 1, candidate.getAddress().toString(), dataStyle);
+
+        return rowNum;
+    }
+
+    // Helper method to create styled cell
+    private void createStyledCell(Row row, int column, String value, CellStyle style) {
+        Cell cell = row.createCell(column);
+        cell.setCellValue(value);
+        cell.setCellStyle(style);
+    }
+}
+----
+
+=== 3. **優點**
+- **靈活性**：你可以根據不同的需求靈活定義樣式，例如字體顏色、大小、加粗等，樣式的邏輯和業務邏輯分開，便於修改和擴展。
+- **重用性**：`StyleBuilder` 可以在其他部分重用，避免樣式的重複代碼。
+- **清晰性**：代碼更清晰，將樣式設定和資料填充邏輯分開，使每個部分的責任單一。
+
+[source,java]
+----
+package com.systex.excelgenerator.component;
+
+import com.systex.excelgenerator.model.Candidate;
+import com.systex.excelgenerator.component.Section;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import com.systex.excelgenerator.style.StyleEnums;
+
+import java.text.SimpleDateFormat;
+
+
+public class PersonalInfoSection extends Section {
+
+    private Candidate candidate;
+    private Workbook workbook;
+
+    private CellStyle headerStyle;
+    private CellStyle labelStyle;
+    private CellStyle infoStyle;
+
+    public PersonalInfoSection(Candidate candidate, Workbook workbook) {
+        super("Personal Information");
+        this.candidate = candidate;
+        this.workbook = workbook;
+        StyleBuilder styleBuilder = new StyleBuilder(workbook);
+        
+        this.headerStyle = styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setFontSize((short) 14)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .build();
+
+        this.labelStyle = styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setFontSize((short) 12)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .setBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex())
+                .build();
+
+        this.infoStyle = styleBuilder.setFontStyle(StyleEnums.FontStyle.NORMAL)
+                .setFontSize((short) 12)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .build();
+    }
+
+    @Override
+    public int populate(XSSFSheet sheet, int rowNum) {
+        // 合併 "Personal Information" 標題跨越兩列
+        Row headerRow = sheet.createRow(rowNum++);
+        createStyledCell(headerRow, 0, "Personal Information", headerStyle);
+
+        Row row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Name", labelStyle);
+        createStyledCell(row, 1, candidate.getName(), infoStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Gender", labelStyle);
+        createStyledCell(row, 1, candidate.getGender(), infoStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Birthday", labelStyle);
+        createStyledCell(row, 1, SimpleDateFormat.getDateInstance().format(candidate.getBirthday()), infoStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Phone", labelStyle);
+        createStyledCell(row, 1, candidate.getPhone(), infoStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Email", labelStyle);
+        createStyledCell(row, 1, candidate.getEmail(), infoStyle);
+
+        row = sheet.createRow(rowNum++);
+        createStyledCell(row, 0, "Address", labelStyle);
+        createStyledCell(row, 1, candidate.getAddress().toString(), infoStyle);
+
+        return rowNum;
+    }
+
+    // 幫助方法：創建應用樣式的單元格
+    private void createStyledCell(Row row, int column, String value, CellStyle style) {
+        row.createCell(column).setCellValue(value);
+        row.getCell(column).setCellStyle(style);
+    }
+
+    // 大標題樣式 (14號字，粗體，居中)
+    private CellStyle createHeaderStyle(Workbook workbook) {
+        StyleBuilder styleBuilder = new StyleBuilder(workbook);
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setFontSize((short) 14)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .build();
+    }
+
+    // 小標題樣式 (12號字，粗體，背景黃色，居中)
+    private CellStyle createLabelStyle(Workbook workbook) {
+        StyleBuilder styleBuilder = new StyleBuilder(workbook);
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.BOLD)
+                .setFontSize((short) 12)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .setBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex())
+                .build();
+    }
+
+    // 資訊樣式 (12號字，正常字體，居中)
+    private CellStyle createInfoStyle(Workbook workbook) {
+        StyleBuilder styleBuilder = new StyleBuilder(workbook);
+        return styleBuilder.setFontStyle(StyleEnums.FontStyle.NORMAL)
+                .setFontSize((short) 12)
+                .setTextAlign(StyleEnums.TextAlign.CENTER)
+                .build();
+    }
+}
+----
+
+== 功能修改：公式
+
+*公式使用分為兩種情況：*
+
+1. 使用者知道在Excel中的資料的範圍
+2. 使用者不知道資料的範圍，只知道資料是第幾個row和第幾個column
+
+*新增``NamedCellReference``來實現reference*
+
+[source,java]
+----
+package com.systex.excelgenerator.utils;
+
+import java.util.Map;
+import java.util.Set;
+
+public class FormulaHandler {
+
+    // 解析公式
+    // 使用者知道資料的範圍(Excel中)
+    public String parseFormula1(Map<String, String> parameters, String formula){
+        String template = "";
+        if (formula == null) {
+            return template;
+        } else{
+            template = formula;
+        }
+
+        // 解析文字 [使用者輸入公式去抓取替換的參數]
+        // 替換${},把它變成Excel中的格子(ex:A4)
+        for (Map.Entry<String, String> entry : parameters.entrySet()){
+            String target = "${" + entry.getKey() + "}";
+            String replacement = entry.getValue();
+            template = template.replace(target , replacement); //如果使用formula每次只會替換一個,但下一次替換的時候上一次替換的就不會被替換
+        }
+
+        return template;
+    }
+
+    // 解析公式
+    // 使用者不知道資料的範圍只知道資料是第幾個row和第幾個column
+    public String parseFormula2(Set<NamedCellReference> cellRefs , String formula){
+        String template = formula;
+
+        for (NamedCellReference cellRef : cellRefs) {
+            String target = "${" + cellRef.getCellName() + "}";
+            String replacement = cellRef.formatAsString();
+            template = template.replace(target, replacement);
+        }
+        return template;
+    }
+}
+----
+
+[source,java]
+----
+package com.systex.excelgenerator.utils;
+
+import org.apache.poi.ss.util.CellReference;
+
+import java.util.Objects;
+
+public class NamedCellReference {
+
+    private final String cellName;
+    private final CellReference cellReference;
+
+    public NamedCellReference(String cellName, int pRow, int pCol) {
+        this(cellName, null, pRow, pCol, false, false);
+    }
+
+    // Apache POI CellReference Constructor 所有功能 , 多了一個cellName(?)
+    public NamedCellReference(String cellName, String pSheetName, int pRow, int pCol, boolean pAbsRow, boolean pAbsCol) {
+        this.cellReference = new CellReference(pSheetName, pRow, pCol, pAbsRow, pAbsCol);
+        this.cellName = cellName;
+    }
+
+    public String getCellName() {
+        return cellName;
+    }
+
+    public CellReference getCellReference() {
+        return cellReference;
+    }
+
+    public String formatAsString() {
+        return cellReference.formatAsString();
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NamedCellReference that)) return false;
+
+        return Objects.equals(cellName, that.cellName) && Objects.equals(cellReference, that.cellReference);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(cellName);
+        result = 31 * result + Objects.hashCode(cellReference);
+        return result;
+    }
+}
+----

@@ -6,9 +6,8 @@ import org.apache.poi.ss.util.CellReference;
 
 import java.time.LocalDate;
 
-public class FormattingHandler {
+public class FormattingAndFilter {
 
-    // 格式設定
     // 條件式格式
     public void ConditionalFormatting(Sheet sheet , String conditionalvalue ,
                                       int startRow , int endRow , int col){

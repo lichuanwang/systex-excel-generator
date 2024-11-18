@@ -10,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
@@ -74,8 +73,6 @@ public class ExcelSheet {
     }
 
     public DataSection<?> getSectionByName(String name) {
-//        Section<T> result = (Section<T>) sectionMap.get(name);
-
 
         return sectionMap.get(name);
     }

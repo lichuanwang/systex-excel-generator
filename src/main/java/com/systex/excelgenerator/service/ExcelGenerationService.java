@@ -2,7 +2,6 @@ package com.systex.excelgenerator.service;
 
 import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.poi.ss.usermodel.*;
@@ -60,16 +59,21 @@ public class ExcelGenerationService {
         XSSFSheet xssfSheet = sheet.getXssfSheet();
 
         Row headerRow = xssfSheet.getRow(0);
-        StyleBuilder styleBuilder = new StyleBuilder(xssfSheet.getWorkbook());
+        Workbook wb = sheet.getWorkbook();
 
         if (headerRow != null) {
             for (Cell cell : headerRow) {
-                CellStyle headerStyle = styleBuilder.setBold(true)
-                        .setFontSize((short) 14)
-                        .setAlignment(HorizontalAlignment.CENTER)
-                        .setBorder(BorderStyle.THIN)
-                        .build();
-                cell.setCellStyle(headerStyle);
+                CellStyle style = wb.createCellStyle();
+                Font font = wb.createFont();
+                font.setBold(true);
+                font.setFontHeightInPoints((short) 14);
+                style.setFont(font);
+                style.setAlignment(HorizontalAlignment.CENTER);
+                style.setBorderBottom(BorderStyle.THIN);
+                style.setBorderLeft(BorderStyle.THIN);
+                style.setBorderRight(BorderStyle.THIN);
+                style.setBorderTop(BorderStyle.THIN);
+                cell.setCellStyle(style);
             }
         }
     }
