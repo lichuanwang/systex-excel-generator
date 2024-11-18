@@ -11,12 +11,9 @@
 ----
 package com.systex.excelgenerator.service;
 
-import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.style.StyleBuilder;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
