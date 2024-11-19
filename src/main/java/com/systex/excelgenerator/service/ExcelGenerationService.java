@@ -41,13 +41,13 @@ public class ExcelGenerationService {
             // the process of creating personalInfoSection could be a static method
             sheet.addSectionAt("A1", personalInfoDataSection);
             sheet.addSectionAt("D1", educationDataSection);
-            sheet.addSectionAt("A13", experienceDataSection);
-            sheet.addSectionAt("D7", projectDataSection);
-            sheet.addSectionAt("B21", skillDataSection);
-            sheet.addSectionAt("A2", personalInfoDataSection);
+            sheet.addSectionAt("A8", experienceDataSection);
+//            sheet.addSectionAt("D7", projectDataSection);
+            sheet.addSectionAt("Z150", skillDataSection);
+//            sheet.addSectionAt("A2", personalInfoDataSection);
 
             // add chart sections to sheet
-//            sheet.addChartSection(new RadarChartSection() , "Skill");
+            sheet.addChartSection(new RadarChartSection() , "Skill", "A10");
 //            sheet.addChartSection(new PieChartSection() , "Skill");
 //            sheet.addChartSection(new BarChartSection() , "Skill");
 //            sheet.addChartSection(new LineChartSection() , "Skill");

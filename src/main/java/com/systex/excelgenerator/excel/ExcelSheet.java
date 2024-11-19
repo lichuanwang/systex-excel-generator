@@ -1,5 +1,6 @@
 package com.systex.excelgenerator.excel;
 
+import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,18 +52,50 @@ public class ExcelSheet {
         int sectionWidth = dataSection.getWidth();
 
         // Validate placement
-        if (!canPlaceSection(startRow, startCol, sectionHeight, sectionWidth)) {
+        if (!canPlaceSection(startRow, startCol, startRow + sectionHeight - 1, startCol + sectionWidth - 1)) {
             throw new IllegalArgumentException("Cannot place section at " + cellReference + ": overlaps with existing content.");
         }
 
         // Mark cells as occupied
-        markCellsOccupied(startRow, startCol, sectionHeight, sectionWidth);
+        markCellsOccupied(startRow, startCol, startRow + sectionHeight - 1, startCol + sectionWidth - 1);
 
         // Render the section
         dataSection.render(this, startRow, startCol);
 
         // Add section to the map for tracking
         sectionMap.put(dataSection.getTitle(), dataSection);
+    }
+
+    public void addChartSection(AbstractChartSection chartSection, String sectionTitle, String cellReference) {
+        // Parse cell reference
+        int[] indices = parseCellReference(cellReference);
+        int startRow = indices[0];
+        int startCol = indices[1];
+
+        // Define chart dimensions (7 rows, 12 columns)
+        int endRow = startRow + 7;
+        int endCol = startCol + 12;
+
+        // Check if the chart can fit without overlap
+        if (!canPlaceSection(startRow, startCol, endRow, endCol)) {
+            throw new IllegalArgumentException("Cannot place chart at " + cellReference + ": overlaps with existing content.");
+        }
+
+        // Mark cells as occupied
+        markCellsOccupied(startRow, startCol, endRow, endCol);
+
+        // Retrieve associated data section
+        DataSection<?> dataSection = getSectionByName(sectionTitle);
+        if (dataSection == null) {
+            throw new IllegalArgumentException("Data section with title '" + sectionTitle + "' does not exist.");
+        }
+
+        // Set chart position and data source
+        chartSection.setChartPosition(startRow, startCol, endRow, endCol);
+        chartSection.setDataSource(dataSection);
+
+        // Render the chart
+        chartSection.render(this);
     }
 
     public <T> DataSection<T> getSectionByName(String name) {
@@ -85,9 +118,9 @@ public class ExcelSheet {
     }
 
     // Check if a section can fit without overlapping existing content
-    private boolean canPlaceSection(int startRow, int startCol, int height, int width) {
-        for (int r = startRow; r < startRow + height; r++) {
-            for (int c = startCol; c < startCol + width; c++) {
+    private boolean canPlaceSection(int startRow, int startCol, int endRow, int endCol) {
+        for (int r = startRow; r <= endRow; r++) {
+            for (int c = startCol; c <= endCol; c++) {
                 if (r >= maxRows || c >= maxCols || grid[r][c]) {
                     return false; // Out of bounds or overlap detected
                 }
@@ -97,9 +130,9 @@ public class ExcelSheet {
     }
 
     // Mark cells in the grid as occupied
-    private void markCellsOccupied(int startRow, int startCol, int height, int width) {
-        for (int r = startRow; r < startRow + height; r++) {
-            for (int c = startCol; c < startCol + width; c++) {
+    private void markCellsOccupied(int startRow, int startCol, int endRow, int endCol) {
+        for (int r = startRow; r <= endRow; r++) {
+            for (int c = startCol; c <= endCol; c++) {
                 grid[r][c] = true;
             }
         }
