@@ -37,15 +37,7 @@ public class ExcelSheet {
         return xssfSheet.getWorkbook();
     }
 
-    public <T> void addSection(DataSection<T> dataSection, Collection<T> dataCollection) {
-        // Validate that the section is not empty
-        if (dataCollection == null) {
-            log.info("Please provide data collection for your section");
-            return;
-        }
-
-        // set data for specify section
-        dataSection.setData(dataCollection);
+    public <T> void addSection(DataSection<T> dataSection) {
 
         // add section to list
         this.sectionMap.put(dataSection.getTitle(), dataSection);

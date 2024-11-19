@@ -22,13 +22,28 @@ public class ExcelGenerationService {
             // create a new sheet
             ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
+            PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
+            personalInfoDataSection.setData(List.of(candidate));
+
+            EducationDataSection educationDataSection = new EducationDataSection();
+            educationDataSection.setData(candidate.getEducationList());
+
+            ExperienceDataSection experienceDataSection = new ExperienceDataSection();
+            experienceDataSection.setData(candidate.getExperienceList());
+
+            ProjectDataSection projectDataSection = new ProjectDataSection();
+            projectDataSection.setData(candidate.getProjects());
+
+            SkillDataSection skillDataSection = new SkillDataSection();
+            skillDataSection.setData(candidate.getSkills());
+
             // add sections to sheet
             // the process of creating personalInfoSection could be a static method
-            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
-            sheet.addSection(new EducationDataSection(), candidate.getEducationList());
-            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
-            sheet.addSection(new ProjectDataSection(), candidate.getProjects());
-            sheet.addSection(new SkillDataSection(), candidate.getSkills());
+            sheet.addSection(personalInfoDataSection);
+            sheet.addSection(educationDataSection);
+            sheet.addSection(experienceDataSection);
+            sheet.addSection(projectDataSection);
+            sheet.addSection(skillDataSection);
 
             // add chart sections to sheet
             sheet.addChartSection(new RadarChartSection() , "Skill");
