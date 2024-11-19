@@ -4,6 +4,7 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -52,6 +53,29 @@ public class ExcelGenerationService {
             e.printStackTrace();
         }
     }
+
+    public enum SectionType {
+        PERSONAL_INFO {
+            @Override
+            public AbstractDataSection<?> getInstance() {
+                return new PersonalInfoDataSection();
+            }
+        },
+        EDUCATION {
+            @Override
+            public AbstractDataSection<?> getInstance() {
+                return new EducationDataSection();
+            }
+        };
+
+        public abstract AbstractDataSection<?> getInstance();
+    }
+
+    public static void main(String[] args) {
+        AbstractDataSection<?> instance = SectionType.PERSONAL_INFO.getInstance();
+        instance.setData(List.of());
+    }
+
 
     private void applyStyles(ExcelSheet sheet) {
 

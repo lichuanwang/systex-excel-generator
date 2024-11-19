@@ -2,6 +2,8 @@ package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExcelSheet {
+    private static final Logger log = LogManager.getLogger(ExcelSheet.class);
     private final XSSFSheet xssfSheet;
     private final String sheetName;
     private Map<String, DataSection<?>> sectionMap = new HashMap<>();
@@ -37,7 +40,7 @@ public class ExcelSheet {
     public <T> void addSection(DataSection<T> dataSection, Collection<T> dataCollection) {
         // Validate that the section is not empty
         if (dataCollection == null) {
-            System.out.println("Please provide data collection for your section");
+            log.info("Please provide data collection for your section");
             return;
         }
 
@@ -72,9 +75,9 @@ public class ExcelSheet {
         deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + dataSection.getHeight() + 1);
     }
 
-    public DataSection<?> getSectionByName(String name) {
+    public <T> DataSection<T> getSectionByName(String name) {
 
-        return sectionMap.get(name);
+        return (DataSection<T>) sectionMap.get(name);
     }
 
 
