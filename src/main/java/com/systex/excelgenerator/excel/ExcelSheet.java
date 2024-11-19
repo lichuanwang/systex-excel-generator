@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -44,15 +45,15 @@ public class ExcelSheet {
 
     public <T> void addSectionAt(String cellReference, DataSection<T> dataSection) {
         // Parse the cell reference
-        int[] indices = parseCellReference(cellReference);
-        int startRow = indices[0];
-        int startCol = indices[1];
+        CellReference cellRef = new CellReference(cellReference);
+        int startRow = cellRef.getRow();
+        int startCol = cellRef.getCol();
 
         int sectionHeight = dataSection.getHeight();
         int sectionWidth = dataSection.getWidth();
 
         // Validate placement
-        if (!canPlaceSection(startRow, startCol, startRow + sectionHeight , startCol + sectionWidth )) {
+        if (!canPlaceSection(startRow, startCol, startRow + sectionHeight,startCol + sectionWidth )) {
             throw new IllegalArgumentException("Cannot place section at " + cellReference + ": overlaps with existing content.");
         }
 
@@ -68,9 +69,9 @@ public class ExcelSheet {
 
     public void addChartSection(AbstractChartSection chartSection, String sectionTitle, String cellReference) {
         // Parse cell reference
-        int[] indices = parseCellReference(cellReference);
-        int startRow = indices[0];
-        int startCol = indices[1];
+        CellReference cellRef = new CellReference(cellReference);
+        int startRow = cellRef.getRow();
+        int startCol = cellRef.getCol();
 
         // Define chart dimensions (7 rows, 12 columns)
         int endRow = startRow + 7;
@@ -100,21 +101,6 @@ public class ExcelSheet {
 
     public <T> DataSection<T> getSectionByName(String name) {
         return (DataSection<T>) sectionMap.get(name);
-    }
-
-    // Parse Excel-style cell references like "A1", "B3" into row and column indices
-    private int[] parseCellReference(String cellReference) {
-        String column = cellReference.replaceAll("\\d", ""); // Extract letters
-        String row = cellReference.replaceAll("\\D", ""); // Extract numbers
-
-        int colIndex = 0;
-        for (int i = 0; i < column.length(); i++) {
-            colIndex = colIndex * 26 + (column.charAt(i) - 'A' + 1);
-        }
-        colIndex--; // Convert to zero-based index
-
-        int rowIndex = Integer.parseInt(row) - 1; // Convert to zero-based index
-        return new int[]{rowIndex, colIndex};
     }
 
     // Check if a section can fit without overlapping existing content
