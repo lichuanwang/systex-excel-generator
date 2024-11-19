@@ -19,8 +19,8 @@ public class ExcelFile {
     }
 
     // Method to add a new sheet
-    public ExcelSheet createSheet(String sheetName, int maxColPerRow) {
-        ExcelSheet excelSheet = new ExcelSheet(workbook, sheetName, maxColPerRow);
+    public ExcelSheet createSheet(String sheetName, int maxRow, int maxColumn) {
+        ExcelSheet excelSheet = new ExcelSheet(workbook, sheetName, maxRow, maxColumn);
         sheetMap.put(sheetName, excelSheet);
         return excelSheet;
     }

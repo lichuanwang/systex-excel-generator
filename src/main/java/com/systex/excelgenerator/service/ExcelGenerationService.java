@@ -20,7 +20,7 @@ public class ExcelGenerationService {
 
         for (Candidate candidate : candidates) {
             // create a new sheet
-            ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 1000, 1000);
 
             PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
             personalInfoDataSection.setData(List.of(candidate));
@@ -39,57 +39,58 @@ public class ExcelGenerationService {
 
             // add sections to sheet
             // the process of creating personalInfoSection could be a static method
-            sheet.addSection(personalInfoDataSection);
-            sheet.addSection(educationDataSection);
-            sheet.addSection(experienceDataSection);
-            sheet.addSection(projectDataSection);
-            sheet.addSection(skillDataSection);
+            sheet.addSectionAt("A1", personalInfoDataSection);
+            sheet.addSectionAt("D1", educationDataSection);
+            sheet.addSectionAt("A13", experienceDataSection);
+            sheet.addSectionAt("D7", projectDataSection);
+            sheet.addSectionAt("B21", skillDataSection);
+            sheet.addSectionAt("A2", personalInfoDataSection);
 
             // add chart sections to sheet
-            sheet.addChartSection(new RadarChartSection() , "Skill");
-            sheet.addChartSection(new PieChartSection() , "Skill");
-            sheet.addChartSection(new BarChartSection() , "Skill");
-            sheet.addChartSection(new LineChartSection() , "Skill");
+//            sheet.addChartSection(new RadarChartSection() , "Skill");
+//            sheet.addChartSection(new PieChartSection() , "Skill");
+//            sheet.addChartSection(new BarChartSection() , "Skill");
+//            sheet.addChartSection(new LineChartSection() , "Skill");
 
             // Apply styles to sheet
             applyStyles(sheet);
 
             // Auto-size all columns up to the maximum column index
-            for (int i = 0; i < sheet.getMaxColPerRow(); i++) {
-                XSSFSheet xssfSheet = sheet.getXssfSheet();
-                xssfSheet.autoSizeColumn(i);
-            }
+//            for (int i = 0; i < sheet.getMaxColPerRow(); i++) {
+//                XSSFSheet xssfSheet = sheet.getXssfSheet();
+//                xssfSheet.autoSizeColumn(i);
+//            }
         }
 
         // Save the Excel file
         try {
-            excelFile.save("candidate_info_test.xlsx");
+            excelFile.save("candidate_info_test_layout.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public enum SectionType {
-        PERSONAL_INFO {
-            @Override
-            public AbstractDataSection<?> getInstance() {
-                return new PersonalInfoDataSection();
-            }
-        },
-        EDUCATION {
-            @Override
-            public AbstractDataSection<?> getInstance() {
-                return new EducationDataSection();
-            }
-        };
+//    public enum SectionType {
+//        PERSONAL_INFO {
+//            @Override
+//            public AbstractDataSection<?> getInstance() {
+//                return new PersonalInfoDataSection();
+//            }
+//        },
+//        EDUCATION {
+//            @Override
+//            public AbstractDataSection<?> getInstance() {
+//                return new EducationDataSection();
+//            }
+//        };
+//
+//        public abstract AbstractDataSection<?> getInstance();
+//    }
 
-        public abstract AbstractDataSection<?> getInstance();
-    }
-
-    public static void main(String[] args) {
-        AbstractDataSection<?> instance = SectionType.PERSONAL_INFO.getInstance();
-        instance.setData(List.of());
-    }
+//    public static void main(String[] args) {
+//        AbstractDataSection<?> instance = SectionType.PERSONAL_INFO.getInstance();
+//        instance.setData(List.of());
+//    }
 
 
     private void applyStyles(ExcelSheet sheet) {

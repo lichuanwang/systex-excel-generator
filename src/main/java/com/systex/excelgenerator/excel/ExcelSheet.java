@@ -1,6 +1,5 @@
 package com.systex.excelgenerator.excel;
 
-import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,24 +8,25 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExcelSheet {
     private static final Logger log = LogManager.getLogger(ExcelSheet.class);
+
     private final XSSFSheet xssfSheet;
     private final String sheetName;
     private Map<String, DataSection<?>> sectionMap = new HashMap<>();
-    private int startingRow = 0;
-    private int startingCol = 0;
-    private int maxColPerRow;
-    private int deepestRowOnCurrentLevel = 0;
+    private boolean[][] grid; // Grid to track cell occupancy
+    private final int maxRows;
+    private final int maxCols;
 
-    public ExcelSheet(XSSFWorkbook workbook, String sheetName, int maxColPerRow) {
+    public ExcelSheet(XSSFWorkbook workbook, String sheetName, int maxRows, int maxCols) {
         this.sheetName = sheetName;
         this.xssfSheet = workbook.createSheet(sheetName);
-        this.maxColPerRow = maxColPerRow;
+        this.grid = new boolean[maxRows][maxCols];
+        this.maxRows = maxRows;
+        this.maxCols = maxCols;
     }
 
     public String getSheetName() {
@@ -37,43 +37,75 @@ public class ExcelSheet {
         return xssfSheet.getWorkbook();
     }
 
-    public <T> void addSection(DataSection<T> dataSection) {
-
-        // add section to list
-        this.sectionMap.put(dataSection.getTitle(), dataSection);
-
-        // Determine starting position for the section
-        adjustLayoutForNewSection(dataSection);
-
-        // Render the section at the calculated starting position
-        dataSection.render(this, startingRow, startingCol);
-
-        // Update layout positions after the section is rendered
-        updateLayoutAfterSection(dataSection);
+    public XSSFSheet getXssfSheet() {
+        return xssfSheet;
     }
 
-    private <T> void adjustLayoutForNewSection(DataSection<T> dataSection) {
-        // Check if adding the section would exceed maxColPerRow
-        if (startingCol + dataSection.getWidth() > maxColPerRow) {
-            // Move to next row if max columns exceeded, leaving a gap
-            startingRow = deepestRowOnCurrentLevel + 2;
-            startingCol = 0;
+    public <T> void addSectionAt(String cellReference, DataSection<T> dataSection) {
+        // Parse the cell reference
+        int[] indices = parseCellReference(cellReference);
+        int startRow = indices[0];
+        int startCol = indices[1];
+
+        int sectionHeight = dataSection.getHeight();
+        int sectionWidth = dataSection.getWidth();
+
+        // Validate placement
+        if (!canPlaceSection(startRow, startCol, sectionHeight, sectionWidth)) {
+            throw new IllegalArgumentException("Cannot place section at " + cellReference + ": overlaps with existing content.");
         }
-    }
 
-    private <T> void updateLayoutAfterSection(DataSection<T> dataSection) {
-        // Update layout positions for the next section
-        startingCol += dataSection.getWidth();
-        deepestRowOnCurrentLevel = Math.max(deepestRowOnCurrentLevel, startingRow + dataSection.getHeight() + 1);
+        // Mark cells as occupied
+        markCellsOccupied(startRow, startCol, sectionHeight, sectionWidth);
+
+        // Render the section
+        dataSection.render(this, startRow, startCol);
+
+        // Add section to the map for tracking
+        sectionMap.put(dataSection.getTitle(), dataSection);
     }
 
     public <T> DataSection<T> getSectionByName(String name) {
-
         return (DataSection<T>) sectionMap.get(name);
     }
 
+    // Parse Excel-style cell references like "A1", "B3" into row and column indices
+    private int[] parseCellReference(String cellReference) {
+        String column = cellReference.replaceAll("\\d", ""); // Extract letters
+        String row = cellReference.replaceAll("\\D", ""); // Extract numbers
 
-    // Method to create or get a row
+        int colIndex = 0;
+        for (int i = 0; i < column.length(); i++) {
+            colIndex = colIndex * 26 + (column.charAt(i) - 'A' + 1);
+        }
+        colIndex--; // Convert to zero-based index
+
+        int rowIndex = Integer.parseInt(row) - 1; // Convert to zero-based index
+        return new int[]{rowIndex, colIndex};
+    }
+
+    // Check if a section can fit without overlapping existing content
+    private boolean canPlaceSection(int startRow, int startCol, int height, int width) {
+        for (int r = startRow; r < startRow + height; r++) {
+            for (int c = startCol; c < startCol + width; c++) {
+                if (r >= maxRows || c >= maxCols || grid[r][c]) {
+                    return false; // Out of bounds or overlap detected
+                }
+            }
+        }
+        return true;
+    }
+
+    // Mark cells in the grid as occupied
+    private void markCellsOccupied(int startRow, int startCol, int height, int width) {
+        for (int r = startRow; r < startRow + height; r++) {
+            for (int c = startCol; c < startCol + width; c++) {
+                grid[r][c] = true;
+            }
+        }
+    }
+
+    // Create or get a row
     public Row createOrGetRow(int rowNum) {
         Row row = xssfSheet.getRow(rowNum);
         if (row == null) {
@@ -82,60 +114,15 @@ public class ExcelSheet {
         return row;
     }
 
-    // add chart sections
-    public void addChartSection(AbstractChartSection chartSection, String sectionTitle) {
-        // 傳section name進來再去查找
-        DataSection<?> dataSection = getSectionByName(sectionTitle);
-
-        // set chart position
-        chartSection.setChartPosition(startingRow, getMaxColPerRow() + 1, startingRow + 7, startingCol+12);
-
-        // set chart data source
-        chartSection.setDataSource(dataSection);
-
-        // render chart sections
-        chartSection.render(this);
-    }
-
-    // Getter for the underlying XSSFSheet, if needed
-    public XSSFSheet getXssfSheet() {
-        return xssfSheet;
-    }
-
-
-    public int getStartingRow() {
-        return startingRow;
-    }
-
-    public void setStartingRow(int startingRow) {
-        this.startingRow = startingRow;
-    }
-
-    public int getStartingCol() {
-        return startingCol;
-    }
-
-    public void setStartingCol(int startingCol) {
-        this.startingCol = startingCol;
-    }
-
-    public int getMaxColPerRow() {
-        return maxColPerRow;
-    }
-
-    public int getDeepestRowOnCurrentLevel() {
-        return deepestRowOnCurrentLevel;
-    }
-
-    public void setDeepestRowOnCurrentLevel(int deepestRowOnCurrentLevel) {
-        this.deepestRowOnCurrentLevel = deepestRowOnCurrentLevel;
-    }
-
-    public void setMaxColPerRow(int maxColPerRow) {
-        this.maxColPerRow = maxColPerRow;
-    }
-
-    public int getMaxColPerRow(int maxColPerRow) {
-        return maxColPerRow;
+    // Debugging utility to log the grid state
+    private void logGridState(int rows, int cols) {
+        StringBuilder sb = new StringBuilder("Grid State:\n");
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                sb.append(grid[r][c] ? "X " : ". ");
+            }
+            sb.append("\n");
+        }
+        log.info(sb.toString());
     }
 }
