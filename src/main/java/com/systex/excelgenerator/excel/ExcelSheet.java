@@ -52,12 +52,12 @@ public class ExcelSheet {
         int sectionWidth = dataSection.getWidth();
 
         // Validate placement
-        if (!canPlaceSection(startRow, startCol, startRow + sectionHeight - 1, startCol + sectionWidth - 1)) {
+        if (!canPlaceSection(startRow, startCol, startRow + sectionHeight , startCol + sectionWidth )) {
             throw new IllegalArgumentException("Cannot place section at " + cellReference + ": overlaps with existing content.");
         }
 
         // Mark cells as occupied
-        markCellsOccupied(startRow, startCol, startRow + sectionHeight - 1, startCol + sectionWidth - 1);
+        markCellsOccupied(startRow, startCol, startRow + sectionHeight , startCol + sectionWidth );
 
         // Render the section
         dataSection.render(this, startRow, startCol);

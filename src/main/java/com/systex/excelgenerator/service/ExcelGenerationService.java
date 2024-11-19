@@ -39,8 +39,8 @@ public class ExcelGenerationService {
 
             // add sections to sheet
             // the process of creating personalInfoSection could be a static method
-            sheet.addSectionAt("A1", personalInfoDataSection);
-            sheet.addSectionAt("D1", educationDataSection);
+            sheet.addSectionAt("F40", personalInfoDataSection);
+            sheet.addSectionAt("D15", educationDataSection);
             sheet.addSectionAt("A8", experienceDataSection);
 //            sheet.addSectionAt("D7", projectDataSection);
             sheet.addSectionAt("Z150", skillDataSection);
