@@ -7,7 +7,7 @@ import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 
 public class RadarChartSection extends AbstractChartSection {
-    // set chart type
+
     @Override
     protected XDDFChartData createChartData(XSSFChart chart) {
         // 設定圖表的軸

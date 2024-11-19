@@ -23,11 +23,11 @@ public class ExcelGenerationService {
             ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
 
             // add sections to sheet
-            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate));
-            sheet.addSection(new EducationDataSection(), candidate.getEducationList());
-            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList());
-            sheet.addSection(new ProjectDataSection(), candidate.getProjects());
-            sheet.addSection(new SkillDataSection(), candidate.getSkills());
+            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate) , "A2");
+            sheet.addSection(new EducationDataSection(), candidate.getEducationList() , "A4");
+            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList() , "B6");
+            sheet.addSection(new ProjectDataSection(), candidate.getProjects() , "F1");
+            sheet.addSection(new SkillDataSection(), candidate.getSkills() , "A5");
 
             // add chart sections to sheet
             sheet.addChartSection(new RadarChartSection() , "Skill");

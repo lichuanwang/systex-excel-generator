@@ -25,7 +25,6 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
     private static final Logger log = LogManager.getLogger(PersonalInfoDataSection.class);
     private Candidate candidate;
-    private FormattingHandler formattingHandler = new FormattingHandler();
     private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public PersonalInfoDataSection() {

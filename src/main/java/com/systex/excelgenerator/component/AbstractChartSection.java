@@ -19,7 +19,6 @@ public abstract class AbstractChartSection implements ChartSection {
 
     // 設定圖表的位置
     public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
-        // default size 給使用者col2 , row2
         this.row1 = startingRow;
         this.col1 = startingColumn;
 

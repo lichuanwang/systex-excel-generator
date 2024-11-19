@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Education;
 import com.systex.excelgenerator.style.ExcelFormat;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,7 +17,6 @@ import java.util.Set;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
     private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationDataSection() {
@@ -70,8 +70,6 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             dateCell =  row.createCell(startCol + 4);
             dateCell.setCellValue(edu.getEndDate());
             dateCell.setCellStyle(dateStyle);
-
-
 
             // 計算時間區間(解析公式)
             // 輸入公式

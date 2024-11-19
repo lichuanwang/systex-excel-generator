@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
@@ -15,7 +16,6 @@ import java.util.Set;
 
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
-    private FormattingHandler formattingHandler = new FormattingHandler();
     private FormulaHandler formulaHandler = new FormulaHandler();
     private CellStyle clonedBlueStyle;
 

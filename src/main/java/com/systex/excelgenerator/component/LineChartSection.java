@@ -8,7 +8,6 @@ import org.apache.poi.xssf.usermodel.XSSFChart;
 
 public class LineChartSection extends AbstractChartSection{
 
-    // set chart type
     @Override
     protected XDDFChartData createChartData(XSSFChart chart) {
 

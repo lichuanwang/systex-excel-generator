@@ -8,30 +8,6 @@ import java.time.LocalDate;
 
 public class FormattingHandler {
 
-    // 格式設定
-    // date format
-    public CellStyle DateFormatting(LocalDate date, Workbook workbook) {
-        // 共用workbook , cellStyle
-        CellStyle cellstyle = workbook.createCellStyle();
-
-        // 日期格式設定:yyyy/mm/dd
-        //CreationHelper createHelper = workbook.getCreationHelper();
-        cellstyle.setDataFormat(workbook.createDataFormat().getFormat("yyyy/mm/dd"));
-
-        return cellstyle;
-    }
-
-    // 文字格式設定(ex: phone number)
-    public CellStyle TextFormatting(Workbook workbook){
-        // 共用workbook , sheet , cellStyle ...blablabla
-        CellStyle cellstyle = workbook.createCellStyle();
-
-        // "@" : 文字格式
-        cellstyle.setDataFormat(workbook.createDataFormat().getFormat("@"));
-
-        return cellstyle;
-    }
-
     // 條件式格式
     public void ConditionalFormatting(Sheet sheet , String conditionalvalue ,
                                       int startRow , int endRow , int col){

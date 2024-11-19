@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Skill;
 import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingHandler;
