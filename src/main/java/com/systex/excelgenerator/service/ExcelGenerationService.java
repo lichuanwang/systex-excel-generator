@@ -36,12 +36,18 @@ public class ExcelGenerationService {
             SkillDataSection skillDataSection = new SkillDataSection();
             skillDataSection.setData(candidate.getSkills());
 
+            ImageDataSection imageDataSection = new ImageDataSection();
+            imageDataSection.setData(candidate.getImagepath());
+
             // add sections to sheet
             sheet.addSection(personalInfoDataSection, "A1");
             sheet.addSection(educationDataSection, "H1");
             sheet.addSection(experienceDataSection, "A9");
             sheet.addSection(projectDataSection, "H9");
             sheet.addSection(skillDataSection, "A15");
+
+            // add image section to sheet
+            sheet.addImageSection(imageDataSection , "png" , "G30");
 
             // add chart sections to sheet
             sheet.addChartSection("A30", new RadarChartSection(), "Skill", 6, 6);

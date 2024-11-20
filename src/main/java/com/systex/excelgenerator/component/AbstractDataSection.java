@@ -32,6 +32,9 @@ public abstract class AbstractDataSection<T> implements DataSection<T> {
     // problem with pass by value, should we use a rowNum or primitive type to determine in this way
     // probably using pass by reference could be better
     public void render(ExcelSheet sheet, int startRow, int startCol) {
+        if (content == null || content.isEmpty()) {
+            return;
+        }
         addSectionTitle(sheet, startRow, startCol);
         renderHeader(sheet, startRow + 1, startCol);
         renderBody(sheet, startRow + 2, startCol);
