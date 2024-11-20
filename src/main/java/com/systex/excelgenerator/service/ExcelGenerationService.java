@@ -5,7 +5,6 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
@@ -92,20 +91,3 @@ public class ExcelGenerationService {
         return maxColumns;
     }
 }
-
-
-
-// Determine the maximum number of columns
-//            int maxColumns = 0;
-//            XSSFSheet xssfSheet = sheet.getXssfSheet();
-//            for (int rowIndex = 0; rowIndex <= xssfSheet.getLastRowNum(); rowIndex++) {
-//                XSSFRow currentRow = xssfSheet.getRow(rowIndex);
-//                if (currentRow != null && currentRow.getLastCellNum() > maxColumns) {
-//                    maxColumns = currentRow.getLastCellNum();
-//                }
-//            }
-//
-//            // Autosize all columns based on the maximum column count
-//            for (int columnIndex = 0; columnIndex < maxColumns; columnIndex++) {
-//                xssfSheet.autoSizeColumn(columnIndex);
-//            }
