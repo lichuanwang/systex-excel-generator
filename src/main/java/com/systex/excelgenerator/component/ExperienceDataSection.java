@@ -1,9 +1,8 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Experience;
-import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.StyleTemplate;
 import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
@@ -52,7 +51,7 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-        CellStyle initialStyle = TemplateStyle.createSpecialStyle(workbook);
+        CellStyle initialStyle = StyleTemplate.createCommonStyle(workbook);
         clonedBlueStyle = workbook.createCellStyle();
         clonedBlueStyle.cloneStyleFrom(initialStyle);
 

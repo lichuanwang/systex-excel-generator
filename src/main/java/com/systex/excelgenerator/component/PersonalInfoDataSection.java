@@ -1,22 +1,16 @@
 package com.systex.excelgenerator.component;
 
-import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.StyleTemplate;
 import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import java.text.DateFormat;
 import java.util.Collection;
@@ -70,7 +64,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-        CellStyle cloneStyle = TemplateStyle.createSpecialStyle(workbook);
+        CellStyle cloneStyle = StyleTemplate.createCommonStyle(workbook);
         CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
 
         // Fill in the data
@@ -110,7 +104,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     }
 
     @Override
-    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol){
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
     }
 
