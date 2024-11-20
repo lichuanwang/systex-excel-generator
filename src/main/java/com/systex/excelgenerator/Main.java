@@ -123,7 +123,7 @@ public class Main {
         // Add Projects data for Candidate 2
         Project project2 = new Project();
         project2.setProjectName("Market Analysis Platform");
-        project2.setDescription("Led the development of a platform for market data analysis.");
+        project2.setDescription("Led the development of a platform for market data analysis.Led the development of a platform for market data analysis.");
         project2.setRole("Team Lead");
         project2.setTechnologiesUsed("Python, Tableau");
         candidate2.setProjects(Arrays.asList(project2));
