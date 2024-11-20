@@ -2,7 +2,7 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
-import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.StyleTemplate;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -62,7 +62,7 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
 
             row.createCell(startCol + 2).setCellValue(project.getDescription());
             XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-            CellStyle initialStyle = TemplateStyle.createSpecialStyle(workbook);
+            CellStyle initialStyle = StyleTemplate.createCommonStyle(workbook);
             Cell TechnologiesUsed = row.createCell(startCol + 1);
             TechnologiesUsed.setCellValue(project.getTechnologiesUsed());
             TechnologiesUsed.setCellStyle(initialStyle);
