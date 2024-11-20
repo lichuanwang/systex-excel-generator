@@ -2,6 +2,7 @@ package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
+import com.systex.excelgenerator.component.ImageDataSection;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
@@ -65,6 +66,21 @@ public class ExcelSheet {
 
         // render chart sections
         chartSection.render(this);
+    }
+
+    // add image sections
+    public <T> void addImageSection(ImageDataSection dataSection, String imageType , String cellReference){
+        int[] startingPoint = parseCellReference(cellReference);
+
+        // Cell is empty or not empty can add section
+        if (isEmptyCell(dataSection, startingPoint)) {
+            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        }
+
+        // set image type
+        dataSection.setImageType(imageType);
+
+        dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
     // 判斷儲存格內是否有資料

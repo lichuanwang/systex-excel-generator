@@ -70,7 +70,7 @@ public class DataValidationHandler {
         switch (operator.toUpperCase()) {
             case "BETWEEN":
                 return DataValidationConstraint.OperatorType.BETWEEN;
-            case  "NOT BETWEEN":
+            case "NOT BETWEEN":
                 return DataValidationConstraint.OperatorType.NOT_BETWEEN;
             case "EQUAL":
                 return DataValidationConstraint.OperatorType.EQUAL;

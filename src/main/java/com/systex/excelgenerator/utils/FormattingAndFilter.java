@@ -32,13 +32,13 @@ public class FormattingAndFilter {
     }
 
     // 凍結儲存格
-    public void freezeCell(Sheet sheet , int first, int last){
-        // 凍結儲存格的某一列到某一列
-        sheet.createFreezePane(first, last);
+    public void freezeCell(Sheet sheet , int startCol , int startRow){
+        // 凍結儲存格的某一列到某一列或是某一行到某一行
+        sheet.createFreezePane(startCol, startRow);
     }
 
     // 篩選器
-    public void CellFilter (Sheet sheet , int firstRow ,  int lastRow , int firstCol , int lastCol){
-        sheet.setAutoFilter(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+    public void CellFilter (Sheet sheet , int startRow ,  int endRow , int startCol , int endCol){
+        sheet.setAutoFilter(new CellRangeAddress(startRow, endRow, startCol, endCol));
     }
 }
