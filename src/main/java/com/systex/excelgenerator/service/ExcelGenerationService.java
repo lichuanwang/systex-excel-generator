@@ -47,7 +47,7 @@ public class ExcelGenerationService {
 //            sheet.addSectionAt("A2", personalInfoDataSection);
 
             // add chart sections to sheet
-            sheet.addChartSection(new RadarChartSection() , "Skill", "A10");
+            sheet.addChartSection(new RadarChartSection() , "Skill", "A20");
 //            sheet.addChartSection(new PieChartSection() , "Skill");
 //            sheet.addChartSection(new BarChartSection() , "Skill");
 //            sheet.addChartSection(new LineChartSection() , "Skill");

@@ -67,6 +67,27 @@ public class ExcelSheet {
         sectionMap.put(dataSection.getTitle(), dataSection);
     }
 
+    // Check if a section can fit without overlapping existing content
+    private boolean canPlaceSection(int startRow, int startCol, int endRow, int endCol) {
+        for (int r = startRow; r <= endRow; r++) {
+            for (int c = startCol; c <= endCol; c++) {
+                if (r >= maxRows || c >= maxCols || grid[r][c]) {
+                    return false; // Out of bounds or overlap detected
+                }
+            }
+        }
+        return true;
+    }
+
+    // Mark cells in the grid as occupied
+    private void markCellsOccupied(int startRow, int startCol, int endRow, int endCol) {
+        for (int r = startRow; r <= endRow; r++) {
+            for (int c = startCol; c <= endCol; c++) {
+                grid[r][c] = true;
+            }
+        }
+    }
+
     public void addChartSection(AbstractChartSection chartSection, String sectionTitle, String cellReference) {
         // Parse cell reference
         CellReference cellRef = new CellReference(cellReference);
@@ -103,26 +124,7 @@ public class ExcelSheet {
         return (DataSection<T>) sectionMap.get(name);
     }
 
-    // Check if a section can fit without overlapping existing content
-    private boolean canPlaceSection(int startRow, int startCol, int endRow, int endCol) {
-        for (int r = startRow; r <= endRow; r++) {
-            for (int c = startCol; c <= endCol; c++) {
-                if (r >= maxRows || c >= maxCols || grid[r][c]) {
-                    return false; // Out of bounds or overlap detected
-                }
-            }
-        }
-        return true;
-    }
 
-    // Mark cells in the grid as occupied
-    private void markCellsOccupied(int startRow, int startCol, int endRow, int endCol) {
-        for (int r = startRow; r <= endRow; r++) {
-            for (int c = startCol; c <= endCol; c++) {
-                grid[r][c] = true;
-            }
-        }
-    }
 
     // Create or get a row
     public Row createOrGetRow(int rowNum) {
