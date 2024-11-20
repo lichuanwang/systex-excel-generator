@@ -13,7 +13,7 @@ public class NamedCellReference {
         this(cellName, null, pRow, pCol, false, false);
     }
 
-    // Apache POI CellReference Constructor 所有功能 , 多了一個cellName(?)
+    // Apache POI CellReference Constructor 所有功能
     public NamedCellReference(String cellName, String pSheetName, int pRow, int pCol, boolean pAbsRow, boolean pAbsCol) {
         this.cellReference = new CellReference(pSheetName, pRow, pCol, pAbsRow, pAbsCol);
         this.cellName = cellName;

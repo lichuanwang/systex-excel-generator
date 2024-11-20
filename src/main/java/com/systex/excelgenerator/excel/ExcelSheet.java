@@ -6,9 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class ExcelSheet {
     private int startingCol = 0;
     private int maxColPerRow;
     private int deepestRowOnCurrentLevel = 0;
+    private final List<SectionRange> sectionRanges = new ArrayList<>();
 
     public ExcelSheet(XSSFWorkbook workbook, String sheetName, int maxColPerRow) {
         this.sheetName = sheetName;
@@ -37,13 +40,26 @@ public class ExcelSheet {
         return xssfSheet.getWorkbook();
     }
 
-    public <T> void addSection(DataSection<T> dataSection) {
+    public <T> void addSection(DataSection<T> dataSection, Collection<T> dataCollection, String dataStart) {
+        // Validate that the section is not empty
+        if (dataCollection == null) {
+            System.out.println("Please provide data collection for your section");
+            return;
+        }
+
+        // set data for specify section
+        dataSection.setData(dataCollection);
 
         // add section to list
         this.sectionMap.put(dataSection.getTitle(), dataSection);
 
+        // Cell is empty or not empty can add section
+        if (!isCellEmpty(dataSection , dataStart)) {
+            throw new IllegalArgumentException("資料重疊在"+dataStart);
+        }
+
         // Determine starting position for the section
-        adjustLayoutForNewSection(dataSection);
+        adjustLayoutForNewSection(dataStart);
 
         // Render the section at the calculated starting position
         dataSection.render(this, startingRow, startingCol);
@@ -52,13 +68,51 @@ public class ExcelSheet {
         updateLayoutAfterSection(dataSection);
     }
 
-    private <T> void adjustLayoutForNewSection(DataSection<T> dataSection) {
-        // Check if adding the section would exceed maxColPerRow
-        if (startingCol + dataSection.getWidth() > maxColPerRow) {
-            // Move to next row if max columns exceeded, leaving a gap
-            startingRow = deepestRowOnCurrentLevel + 2;
-            startingCol = 0;
+    // 判斷儲存格內是否有資料
+    private <T> boolean isCellEmpty(DataSection<T> dataSection , String data) {
+
+        CellReference dataStart = new CellReference(data);
+
+        int startRow = dataStart.getRow();
+        int startCol = dataStart.getCol();
+        int endRow = startRow + dataSection.getHeight();
+        int endCol = startCol + dataSection.getWidth();
+
+        if (isCellRangeOverlap(startRow, startCol, endRow, endCol)) {
+            return false;
         }
+
+        // 如果沒有交集的話再把section的位置加入之後要比對的section range list裡面
+        this.sectionRanges.add(new SectionRange(startRow, startCol, endRow, endCol));
+        return true;
+    }
+
+    // 跟每個section去做比對
+    private boolean isCellRangeOverlap(int startRow, int startCol, int endRow, int endCol) {
+        for (SectionRange range : sectionRanges) {
+            if (isOverlap(range.startRow, range.startCol, range.endRow, range.endCol, startRow, startCol, endRow, endCol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 判斷兩個範圍是否有交集
+    private boolean isOverlap(int startRow1, int startCol1, int endRow1, int endCol1,
+                              int startRow2, int startCol2, int endRow2, int endCol2) {
+        // 最晚開始的row or col <= 最早結束的row or col
+        boolean isRowOverlap = Math.max(startRow1, startRow2) <= Math.min(endRow1, endRow2);
+        boolean isColOverlap = Math.max(startCol1, startCol2) <= Math.min(endCol1, endCol2);
+
+        // row and col都有交集才是有重疊到
+        return isRowOverlap && isColOverlap;
+    }
+
+    private void adjustLayoutForNewSection(String dataStart) {
+        CellReference data = new CellReference(dataStart);
+        startingRow = data.getRow();
+        startingCol = data.getCol();
+
     }
 
     private <T> void updateLayoutAfterSection(DataSection<T> dataSection) {
@@ -137,5 +191,17 @@ public class ExcelSheet {
 
     public int getMaxColPerRow(int maxColPerRow) {
         return maxColPerRow;
+    }
+
+    // Section 範圍記錄類
+    private static class SectionRange {
+        int startRow, startCol, endRow, endCol;
+
+        public SectionRange(int startRow, int startCol, int endRow, int endCol) {
+            this.startRow = startRow;
+            this.startCol = startCol;
+            this.endRow = endRow;
+            this.endCol = endCol;
+        }
     }
 }

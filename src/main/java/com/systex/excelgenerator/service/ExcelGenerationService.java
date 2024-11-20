@@ -4,7 +4,6 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -38,12 +37,11 @@ public class ExcelGenerationService {
             skillDataSection.setData(candidate.getSkills());
 
             // add sections to sheet
-            // the process of creating personalInfoSection could be a static method
-            sheet.addSection(personalInfoDataSection);
-            sheet.addSection(educationDataSection);
-            sheet.addSection(experienceDataSection);
-            sheet.addSection(projectDataSection);
-            sheet.addSection(skillDataSection);
+            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate) , "A2");
+            sheet.addSection(new EducationDataSection(), candidate.getEducationList() , "A4");
+            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList() , "B6");
+            sheet.addSection(new ProjectDataSection(), candidate.getProjects() , "F1");
+            sheet.addSection(new SkillDataSection(), candidate.getSkills() , "A5");
 
             // add chart sections to sheet
             sheet.addChartSection(new RadarChartSection() , "Skill");
@@ -68,29 +66,6 @@ public class ExcelGenerationService {
             e.printStackTrace();
         }
     }
-
-    public enum SectionType {
-        PERSONAL_INFO {
-            @Override
-            public AbstractDataSection<?> getInstance() {
-                return new PersonalInfoDataSection();
-            }
-        },
-        EDUCATION {
-            @Override
-            public AbstractDataSection<?> getInstance() {
-                return new EducationDataSection();
-            }
-        };
-
-        public abstract AbstractDataSection<?> getInstance();
-    }
-
-    public static void main(String[] args) {
-        AbstractDataSection<?> instance = SectionType.PERSONAL_INFO.getInstance();
-        instance.setData(List.of());
-    }
-
 
     private void applyStyles(ExcelSheet sheet) {
 

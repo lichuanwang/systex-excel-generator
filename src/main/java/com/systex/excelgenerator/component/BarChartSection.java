@@ -5,7 +5,6 @@ import org.apache.poi.xssf.usermodel.XSSFChart;
 
 public class BarChartSection extends AbstractChartSection {
 
-    // set chart type
     @Override
     protected XDDFChartData createChartData(XSSFChart chart) {
         // 設定類別軸和數值軸

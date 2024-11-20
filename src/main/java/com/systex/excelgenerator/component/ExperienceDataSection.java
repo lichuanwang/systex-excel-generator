@@ -1,6 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
+import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
