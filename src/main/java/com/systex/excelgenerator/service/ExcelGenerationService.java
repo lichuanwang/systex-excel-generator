@@ -19,7 +19,7 @@ public class ExcelGenerationService {
 
         for (Candidate candidate : candidates) {
             // create a new sheet
-            ExcelSheet sheet = excelFile.createSheet(candidate.getName(), 10);
+            ExcelSheet sheet = excelFile.createSheet(candidate.getName());
 
             PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
             personalInfoDataSection.setData(List.of(candidate));
@@ -37,23 +37,23 @@ public class ExcelGenerationService {
             skillDataSection.setData(candidate.getSkills());
 
             // add sections to sheet
-            sheet.addSection(new PersonalInfoDataSection(), List.of(candidate) , "A2");
-            sheet.addSection(new EducationDataSection(), candidate.getEducationList() , "A4");
-            sheet.addSection(new ExperienceDataSection(), candidate.getExperienceList() , "B6");
-            sheet.addSection(new ProjectDataSection(), candidate.getProjects() , "F1");
-            sheet.addSection(new SkillDataSection(), candidate.getSkills() , "A5");
+            sheet.addSection(personalInfoDataSection, "A1");
+            sheet.addSection(educationDataSection, "H1");
+            sheet.addSection(experienceDataSection, "A9");
+            sheet.addSection(projectDataSection, "H9");
+            sheet.addSection(skillDataSection, "A15");
 
             // add chart sections to sheet
-            sheet.addChartSection(new RadarChartSection() , "Skill");
-            sheet.addChartSection(new PieChartSection() , "Skill");
-            sheet.addChartSection(new BarChartSection() , "Skill");
-            sheet.addChartSection(new LineChartSection() , "Skill");
+            sheet.addChartSection("A30", new RadarChartSection(), "Skill", 6, 6);
+            sheet.addChartSection("A50", new PieChartSection(), "Skill", 6, 6);
+            sheet.addChartSection("A70", new BarChartSection(), "Skill",  6, 6);
+            sheet.addChartSection("A90", new LineChartSection(), "Skill", 6, 6);
 
             // Apply styles to sheet
             applyStyles(sheet);
 
             // Auto-size all columns up to the maximum column index
-            for (int i = 0; i < sheet.getMaxColPerRow(); i++) {
+            for (int i = 0; i < 100; i++) {
                 XSSFSheet xssfSheet = sheet.getXssfSheet();
                 xssfSheet.autoSizeColumn(i);
             }
