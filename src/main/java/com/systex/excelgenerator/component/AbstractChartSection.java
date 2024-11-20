@@ -16,6 +16,11 @@ public abstract class AbstractChartSection implements ChartSection {
     protected int dataLastRow;
     protected int xAxisCol;
     protected int yAxisCol;
+    protected String chartTitle;
+
+    public void setChartTitle(String chartTitle) {
+        this.chartTitle = chartTitle;
+    }
 
     // 設定圖表的位置
     public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
@@ -60,9 +65,8 @@ public abstract class AbstractChartSection implements ChartSection {
         XDDFChartData data = createChartData(chart);
 
         // bar chart如果沒有用series設定標題會出錯
-        // title可以之後套用進來
         XDDFChartData.Series series = data.addSeries(categories, values);
-        series.setTitle("no",null);
+        series.setTitle(chartTitle,null);
 
         // 各圖表特有的設定
         setChartItems(chart, data);

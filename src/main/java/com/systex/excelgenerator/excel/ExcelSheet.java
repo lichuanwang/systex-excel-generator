@@ -141,6 +141,9 @@ public class ExcelSheet {
         // set chart data source
         chartSection.setDataSource(dataSection);
 
+        // set chart title
+        chartSection.setChartTitle(sectionTitle);
+
         // render chart sections
         chartSection.render(this);
     }
