@@ -67,12 +67,6 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     @Override
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
-//        try {
-//            addImageToSheet(sheet);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle cloneStyle = TemplateStyle.createSpecialStyle(workbook);
         CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
@@ -112,29 +106,6 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     protected void renderFooter(ExcelSheet sheet, int startRow, int startCol){
         // implement footer logic here
     }
-
-//    private void addImageToSheet(ExcelSheet sheet) throws IOException {
-//        // Load the image file
-//        try (FileInputStream imageStream = new FileInputStream("profile.jpg")) {
-//            byte[] bytes = IOUtils.toByteArray(imageStream);
-//            int pictureIdx = sheet.getXssfSheet().getWorkbook().addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
-//
-//            // Create an anchor to position the image
-//            XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
-//            anchor.setCol1(sheet.getMaxColPerRow() + 1);
-//            anchor.setRow1(sheet.getStartingRow());
-//            anchor.setCol2(sheet.getMaxColPerRow() + 3);
-//            anchor.setRow2(sheet.getStartingRow() + 7);
-//
-//            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
-//
-//            // Insert the image into the sheet
-//            XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
-//            drawing.createPicture(anchor, pictureIdx);
-//
-//            log.info("Image added");
-//        }
-//    }
 
     @Override
     public void render(ExcelSheet sheet, int startRow, int startCol) {
