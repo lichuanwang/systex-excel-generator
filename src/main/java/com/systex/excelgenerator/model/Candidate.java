@@ -14,6 +14,7 @@ public class Candidate {
     private List<Experience> experienceList;
     private List<Skill> skills;
     private List<Project> projects;
+    private List<String> imagepath;
 
     // Getters and Setters
     public String getName() {
@@ -95,4 +96,8 @@ public class Candidate {
     public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
+
+    public List<String> getImagepath() { return imagepath; }
+
+    public void setImagepath(List<String> imagepath) { this.imagepath = imagepath; }
 }

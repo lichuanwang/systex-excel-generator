@@ -1,21 +1,16 @@
 package com.systex.excelgenerator.component;
 
-import com.systex.excelgenerator.style.TemplateStyle;
+import com.systex.excelgenerator.style.StyleTemplate;
 import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
+import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import java.text.DateFormat;
 import java.util.Collection;
@@ -25,6 +20,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     private static final Logger log = LogManager.getLogger(PersonalInfoDataSection.class);
     private Candidate candidate;
     private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
+    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
 
     public PersonalInfoDataSection() {
         super("Personal Information");
@@ -67,19 +63,17 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     @Override
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
-        try {
-            addImageToSheet(sheet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-        CellStyle cloneStyle = TemplateStyle.createSpecialStyle(workbook);
+        CellStyle cloneStyle = StyleTemplate.createCommonStyle(workbook);
         CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
 
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getName());
+
+        // freeze cell
+        formattingAndFilter.freezeCell(sheet.getXssfSheet() , startCol , startRow);
+
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(candidate.getGender());
 
@@ -101,6 +95,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         emailCell.setCellValue(candidate.getEmail());
         emailCell.setCellStyle(cloneStyle);
         row.createCell(startCol).setCellValue(candidate.getEmail());
+
         // Set Email HyperLink
         hyperlinkHandler.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
 
@@ -109,31 +104,8 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
     }
 
     @Override
-    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol){
+    protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
         // implement footer logic here
-    }
-
-    private void addImageToSheet(ExcelSheet sheet) throws IOException {
-        // Load the image file
-        try (FileInputStream imageStream = new FileInputStream("profile.jpg")) {
-            byte[] bytes = IOUtils.toByteArray(imageStream);
-            int pictureIdx = sheet.getXssfSheet().getWorkbook().addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
-
-            // Create an anchor to position the image
-            XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
-            anchor.setCol1(sheet.getMaxColPerRow() + 1);
-            anchor.setRow1(sheet.getStartingRow());
-            anchor.setCol2(sheet.getMaxColPerRow() + 3);
-            anchor.setRow2(sheet.getStartingRow() + 7);
-
-            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
-
-            // Insert the image into the sheet
-            XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
-            drawing.createPicture(anchor, pictureIdx);
-
-            log.info("Image added");
-        }
     }
 
     @Override
