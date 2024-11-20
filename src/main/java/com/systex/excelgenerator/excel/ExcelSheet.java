@@ -41,6 +41,7 @@ public class ExcelSheet {
             return;
         }
 
+        // set data for specify section
         dataSection.setData(dataCollection);
 
         // add section to list
@@ -115,8 +116,6 @@ public class ExcelSheet {
     }
 
     public DataSection<?> getSectionByName(String name) {
-//        Section<T> result = (Section<T>) sectionMap.get(name);
-
 
         return sectionMap.get(name);
     }
