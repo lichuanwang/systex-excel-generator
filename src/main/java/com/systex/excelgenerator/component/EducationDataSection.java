@@ -7,7 +7,6 @@ import com.systex.excelgenerator.style.ExcelFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

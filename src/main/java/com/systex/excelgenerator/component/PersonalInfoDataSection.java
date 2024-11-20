@@ -5,7 +5,6 @@ import com.systex.excelgenerator.style.ExcelFormat;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.LogManager;

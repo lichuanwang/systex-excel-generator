@@ -5,7 +5,6 @@ import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.TemplateStyle;
 import com.systex.excelgenerator.style.ExcelFormat;
-import com.systex.excelgenerator.utils.FormattingHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.*;
@@ -69,7 +68,7 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
             row.createCell(startCol).setCellValue(exp.getCompanyName());
             Cell jobTitleCell = row.createCell(startCol + 1);
             jobTitleCell.setCellValue(exp.getJobTitle());
-            jobTitleCell.setCellStyle(clonedBlueStyle );
+            jobTitleCell.setCellStyle(clonedBlueStyle);
 
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
             row.createCell(startCol + 3).setCellValue(exp.getStartDate());

@@ -21,9 +21,8 @@ public abstract class AbstractChartSection implements ChartSection {
     public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
         this.row1 = startingRow;
         this.col1 = startingColumn;
-
-        this.col2 = col1 + 7;
-        this.row2 = endingRow + 15;
+        this.row2 = endingRow;
+        this.col2 = endingColumn;
     }
 
     public void setDataSource(DataSection<?> dataSection) {

@@ -8,8 +8,7 @@ public class PieChartSection extends AbstractChartSection {
 
     @Override
     protected XDDFChartData createChartData(XSSFChart chart) {
-        XDDFChartData pieData = chart.createData(ChartTypes.PIE, null , null);
-        return pieData;
+        return chart.createData(ChartTypes.PIE, null , null);
     }
 
     @Override
