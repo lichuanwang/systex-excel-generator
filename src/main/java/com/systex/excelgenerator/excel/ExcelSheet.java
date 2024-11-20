@@ -2,7 +2,6 @@ package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
-import com.systex.excelgenerator.model.Candidate;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
@@ -42,7 +41,6 @@ public class ExcelSheet {
             return;
         }
 
-        // set data for specify section
         dataSection.setData(dataCollection);
 
         // add section to list
@@ -54,7 +52,6 @@ public class ExcelSheet {
         }
 
         // Determine starting position for the section
-        //adjustLayoutForNewSection(dataSection);
         adjustLayoutForNewSection(dataStart);
 
         // Render the section at the calculated starting position
@@ -83,7 +80,7 @@ public class ExcelSheet {
         return true;
     }
 
-    // 判斷是否與現有範圍有交集(跟每個section)
+    // 跟每個section去做比對
     private boolean isCellRangeOverlap(int startRow, int startCol, int endRow, int endCol) {
         for (SectionRange range : sectionRanges) {
             if (isOverlap(range.startRow, range.startCol, range.endRow, range.endCol, startRow, startCol, endRow, endCol)) {
@@ -93,7 +90,7 @@ public class ExcelSheet {
         return false;
     }
 
-    // 判斷兩個範圍是否重疊
+    // 判斷兩個範圍是否有交集
     private boolean isOverlap(int startRow1, int startCol1, int endRow1, int endCol1,
                               int startRow2, int startCol2, int endRow2, int endCol2) {
         // 最晚開始的row or col <= 最早結束的row or col
@@ -104,15 +101,7 @@ public class ExcelSheet {
         return isRowOverlap && isColOverlap;
     }
 
-//    private <T> void adjustLayoutForNewSection(DataSection<T> dataSection) {
     private void adjustLayoutForNewSection(String dataStart) {
-        // Check if adding the section would exceed maxColPerRow
-//        if (startingCol + dataSection.getWidth() > maxColPerRow) {
-//            // Move to next row if max columns exceeded, leaving a gap
-//            startingRow = deepestRowOnCurrentLevel + 2;
-//            startingCol = 0;
-//        }
-
         CellReference data = new CellReference(dataStart);
         startingRow = data.getRow();
         startingCol = data.getCol();
