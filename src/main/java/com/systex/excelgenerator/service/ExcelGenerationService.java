@@ -4,7 +4,7 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
@@ -49,13 +49,19 @@ public class ExcelGenerationService {
             sheet.addChartSection("A70", new BarChartSection(), "Skill",  6, 6);
             sheet.addChartSection("A90", new LineChartSection(), "Skill", 6, 6);
 
-            // Apply styles to sheet
-            applyStyles(sheet);
+            // Determine the maximum number of columns
+            int maxColumns = 0;
+            XSSFSheet xssfSheet = sheet.getXssfSheet();
+            for (int rowIndex = 0; rowIndex <= xssfSheet.getLastRowNum(); rowIndex++) {
+                XSSFRow currentRow = xssfSheet.getRow(rowIndex);
+                if (currentRow != null && currentRow.getLastCellNum() > maxColumns) {
+                    maxColumns = currentRow.getLastCellNum();
+                }
+            }
 
-            // Auto-size all columns up to the maximum column index
-            for (int i = 0; i < 100; i++) {
-                XSSFSheet xssfSheet = sheet.getXssfSheet();
-                xssfSheet.autoSizeColumn(i);
+            // Autosize all columns based on the maximum column count
+            for (int columnIndex = 0; columnIndex < maxColumns; columnIndex++) {
+                xssfSheet.autoSizeColumn(columnIndex);
             }
         }
 
@@ -64,31 +70,6 @@ public class ExcelGenerationService {
             excelFile.save("candidate_info_test.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void applyStyles(ExcelSheet sheet) {
-
-        // get the xssfsheet
-        XSSFSheet xssfSheet = sheet.getXssfSheet();
-
-        Row headerRow = xssfSheet.getRow(0);
-        Workbook wb = sheet.getWorkbook();
-
-        if (headerRow != null) {
-            for (Cell cell : headerRow) {
-                CellStyle style = wb.createCellStyle();
-                Font font = wb.createFont();
-                font.setBold(true);
-                font.setFontHeightInPoints((short) 14);
-                style.setFont(font);
-                style.setAlignment(HorizontalAlignment.CENTER);
-                style.setBorderBottom(BorderStyle.THIN);
-                style.setBorderLeft(BorderStyle.THIN);
-                style.setBorderRight(BorderStyle.THIN);
-                style.setBorderTop(BorderStyle.THIN);
-                cell.setCellStyle(style);
-            }
         }
     }
 }
