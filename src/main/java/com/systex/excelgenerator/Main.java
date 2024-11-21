@@ -82,8 +82,8 @@ public class Main {
 
         // Add ImagePath for Candidate 1
         List<String> imagepathList = new ArrayList<>();
-        imagepathList.add("C:\\Users\\2400823\\Downloads\\test.jpg");
-        imagepathList.add("C:\\Users\\2400823\\Downloads\\SSU_Kirby_artwork.png");
+//        imagepathList.add("C:\\Users\\2400847\\Downloads\\test.jpg");
+//        imagepathList.add("C:\\Users\\2400847\\Downloads\\SSU_Kirby_artwork.png");
         candidate1.setImagepath(imagepathList);
 
         // Step 2: Create another mock Candidate with different data
