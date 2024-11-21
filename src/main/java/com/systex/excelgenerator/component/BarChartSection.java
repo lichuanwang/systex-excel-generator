@@ -3,25 +3,29 @@ package com.systex.excelgenerator.component;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BarChartSection extends AbstractChartSection {
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
-        // 設定類別軸和數值軸
-        XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-        XDDFValueAxis yAxis = chart.createValueAxis(AxisPosition.LEFT);
+    protected List<Object> getChartData() {
+        List<Object> data = new ArrayList<>();
 
-        // 設為3DBarChart (XDDF'Bar3DChartData'比XDDF'ChartData'有更多細節設定)
-        XDDFBar3DChartData barChartData = (XDDFBar3DChartData) chart.createData(ChartTypes.BAR3D, xAxis, yAxis);
-        // 可以改成直條圖(改方向)
-        barChartData.setBarDirection(BarDirection.COL);
+        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
 
-        return barChartData;
+        data.add(ChartTypes.BAR3D);
+        data.add(categoryAxis);
+        data.add(valueAxis);
+
+        return data;
     }
 
     @Override
     protected void setChartItems(XSSFChart chart, XDDFChartData data) {
         data.setVaryColors(true);
+        ((XDDFBar3DChartData) data).setBarDirection(BarDirection.COL);
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊

@@ -3,6 +3,7 @@ package com.systex.excelgenerator.excel;
 import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
 import com.systex.excelgenerator.component.ImageDataSection;
+import com.systex.excelgenerator.component.Section;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
@@ -35,7 +36,7 @@ public class ExcelSheet {
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
-        if (isEmptyCell(dataSection, startingPoint)) {
+        if (!isEmptyCell(dataSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
@@ -51,7 +52,7 @@ public class ExcelSheet {
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
-        if (isEmptyCell(dataSection, startingPoint)) {
+        if (!isEmptyCell(dataSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
@@ -68,13 +69,16 @@ public class ExcelSheet {
 
         int[] startingPoint = parseCellReference(cellReference);
 
-        // Cell is empty or not empty can add section
-        if (!isEmptyCell(dataSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
-        }
+        chartSection.setHeight(chartHeight);
+        chartSection.setWidth(chartWidth);
 
         // set chart position
-        chartSection.setChartPosition(startingPoint[0], startingPoint[1], startingPoint[0] + chartHeight, startingPoint[1]+chartWidth);
+        chartSection.setChartPosition(startingPoint[0], startingPoint[1]);
+
+        // Cell is empty or not empty can add section
+        if (!isEmptyCell(chartSection, startingPoint)) {
+            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        }
 
         // set chart data source
         chartSection.setDataSource(dataSection);
@@ -84,12 +88,12 @@ public class ExcelSheet {
     }
 
     // 判斷儲存格內是否有資料
-    private <T> boolean isEmptyCell(DataSection<T> dataSection , int[] startingPoint) {
+    private <T> boolean isEmptyCell(Section section , int[] startingPoint) {
 
         int startRow = startingPoint[0];
         int startCol = startingPoint[1];
-        int endRow = startRow + dataSection.getHeight();
-        int endCol = startCol + dataSection.getWidth();
+        int endRow = startRow + section.getHeight();
+        int endCol = startCol + section.getWidth();
 
         // 跟每個Section去做比對
         for (ExcelSectionRange range : sectionRanges) {

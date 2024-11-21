@@ -6,19 +6,39 @@ import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RadarChartSection extends AbstractChartSection {
 
+//    @Override
+//    protected XDDFChartData createChartData(XSSFChart chart) {
+//        // 設定圖表的軸
+//        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+//        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
+//        valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+//
+//        XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
+//        radarData.setStyle(RadarStyle.FILLED);
+//
+//        return radarData;
+//    }
+
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
-        // 設定圖表的軸
+    protected List<Object> getChartData() {
+        List<Object> data = new ArrayList<>();
+
         XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
         XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
         valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
-        XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
-        radarData.setStyle(RadarStyle.FILLED);
+        //XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
 
-        return radarData;
+        data.add(ChartTypes.RADAR);
+        data.add(categoryAxis);
+        data.add(valueAxis);
+
+        return data;
     }
 
     @Override

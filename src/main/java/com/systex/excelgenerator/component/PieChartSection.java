@@ -4,11 +4,20 @@ import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTDLbls;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PieChartSection extends AbstractChartSection {
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
-        return chart.createData(ChartTypes.PIE, null , null);
+    protected List<Object> getChartData() {
+        List<Object> data = new ArrayList<>();
+
+        data.add(ChartTypes.PIE);
+        data.add(null);
+        data.add(null);
+
+        return data;
     }
 
     @Override
