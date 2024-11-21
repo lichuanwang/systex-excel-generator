@@ -1,6 +1,8 @@
 package com.systex.excelgenerator.utils;
 
+import com.systex.excelgenerator.excel.ExcelSheet;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ExcelStyleUtils {
     // 日期格式
@@ -32,9 +34,13 @@ public class ExcelStyleUtils {
         }
     }
 
-    // 指定保護儲存格範圍
-        public static void protectSheet(Sheet sheet, String password) {
-            sheet.protectSheet(password);
+    // 指定保護Sheet
+    public static void protectSheet(XSSFSheet sheet, String password) {
+        if (sheet == null) {
+            throw new IllegalArgumentException("Sheet cannot be null.");
         }
+        sheet.protectSheet(password);
+    }
 }
+
 
