@@ -75,7 +75,7 @@ public class Main {
         // Step 5: Add Projects data
         Project project1 = new Project();
         project1.setProjectName("E-commerce Platform");
-        project1.setDescription("Developed an online shopping platform with Spring Boot and React.");
+        project1.setDescription("Developed an online shopping platform with Spring Boot and React.Developed an online shopping platform with Spring Boot and React.Developed an online shopping platform with Spring Boot and React. with Spring Boot and React.Developed an online shopping pltaaaaaaBoot anssssss.");
         project1.setRole("Web Developer");
         project1.setTechnologiesUsed("Angular, Spring Boot");
         candidate1.setProjects(Arrays.asList(project1));
@@ -129,7 +129,7 @@ public class Main {
         // Add Projects data for Candidate 2
         Project project2 = new Project();
         project2.setProjectName("Market Analysis Platform");
-        project2.setDescription("Led the development of a platform for market data analysis.");
+        project2.setDescription("Led the development of a platform for market data analysis.Led the development of a platform for market data analysis.");
         project2.setRole("Team Lead");
         project2.setTechnologiesUsed("Python, Tableau");
         candidate2.setProjects(Arrays.asList(project2));
