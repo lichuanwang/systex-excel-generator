@@ -47,7 +47,7 @@ public class ExcelGenerationService {
             sheet.addSection(skillDataSection, "A15");
 
             // add image section to sheet
-            sheet.addImageSection(imageDataSection , "png" , "G30");
+            sheet.addSection(imageDataSection , "png" , "G30");
 
             // add chart sections to sheet
             sheet.addChartSection("A30", new RadarChartSection(), "Skill", 6, 6);
