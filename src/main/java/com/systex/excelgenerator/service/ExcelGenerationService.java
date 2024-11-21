@@ -4,12 +4,15 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
+import com.systex.excelgenerator.utils.ExcelStyleUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.systex.excelgenerator.utils.ExcelStyleUtils.protectSheet;
 
 public class ExcelGenerationService {
 
@@ -21,7 +24,6 @@ public class ExcelGenerationService {
         for (Candidate candidate : candidates) {
             // create a new sheet
             ExcelSheet sheet = excelFile.createSheet(candidate.getName());
-
             PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
             personalInfoDataSection.setData(List.of(candidate));
 
@@ -74,6 +76,9 @@ public class ExcelGenerationService {
                 xssfSheet.setColumnWidth(columnIndex, (int) (currentWidth * 1.1));
             }
         }
+
+        ExcelStyleUtils styleUtils = new ExcelStyleUtils();
+        styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
 
         // Save the Excel file
         try {
