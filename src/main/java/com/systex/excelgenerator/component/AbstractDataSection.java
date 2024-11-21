@@ -2,10 +2,12 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
+import com.systex.excelgenerator.style.StyleTemplate;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +34,9 @@ public abstract class AbstractDataSection<T> implements DataSection<T> {
     // problem with pass by value, should we use a rowNum or primitive type to determine in this way
     // probably using pass by reference could be better
     public void render(ExcelSheet sheet, int startRow, int startCol) {
+        if (content == null || content.isEmpty()) {
+            return;
+        }
         addSectionTitle(sheet, startRow, startCol);
         renderHeader(sheet, startRow + 1, startCol);
         renderBody(sheet, startRow + 2, startCol);
@@ -43,12 +48,13 @@ public abstract class AbstractDataSection<T> implements DataSection<T> {
         Cell headerCell = headerRow.createCell(startCol);
         headerCell.setCellValue(this.title);
 
-        // Apply style if needed (e.g., bold, font size)
-        CellStyle style = excelSheet.getWorkbook().createCellStyle();
-        Font font = excelSheet.getWorkbook().createFont();
-        font.setBold(true);
-        font.setFontHeightInPoints((short) 14);
-        style.setFont(font);
+        // Apply style if needed (e.g., bold, font size)b
+//        CellStyle style = excelSheet.getWorkbook().createCellStyle();
+//        Font font = excelSheet.getWorkbook().createFont();
+//        font.setBold(true);
+//        font.setFontHeightInPoints((short) 14);
+//        style.setFont(font);
+        CellStyle style = StyleTemplate.createCommonTitleStyle((XSSFWorkbook)excelSheet.getWorkbook());
         headerCell.setCellStyle(style);
     }
 

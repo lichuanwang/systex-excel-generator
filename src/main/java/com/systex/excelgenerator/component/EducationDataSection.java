@@ -1,9 +1,9 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
-import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.model.Education;
 import com.systex.excelgenerator.style.ExcelFormat;
+import com.systex.excelgenerator.utils.ExcelStyleUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -52,7 +52,7 @@ public class EducationDataSection extends AbstractDataSection<Education> {
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+        CellStyle dateStyle = ExcelStyleUtils.dateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 
