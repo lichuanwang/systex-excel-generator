@@ -16,6 +16,7 @@ public abstract class AbstractChartSection implements ChartSection {
     protected int dataLastRow;
     protected int xAxisCol;
     protected int yAxisCol;
+    protected String chartTitle;
 
     // 設定圖表的位置
     public void setChartPosition(int startingRow, int startingColumn, int endingRow, int endingColumn) {
@@ -33,10 +34,10 @@ public abstract class AbstractChartSection implements ChartSection {
     }
 
     // 決定是甚麼圖表類型跟軸設定
-    protected abstract XDDFChartData createChartData(XSSFChart chart);
+    protected abstract XDDFChartData generateChartData(XSSFChart chart);
 
     // 各個圖表的特有設定
-    protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
+    protected abstract void addAdditionalChartFeature(XSSFChart chart);
 
     // 各個圖表共通有的東西
 
@@ -57,17 +58,21 @@ public abstract class AbstractChartSection implements ChartSection {
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, yAxisCol, yAxisCol));
 
         // 創建具體的圖表數據並配置
-        XDDFChartData data = createChartData(chart);
+        XDDFChartData chosenChartData = generateChartData(chart);
 
         // bar chart如果沒有用series設定標題會出錯
         // title可以之後套用進來
-        XDDFChartData.Series series = data.addSeries(categories, values);
-        series.setTitle("no",null);
+        XDDFChartData.Series series = chosenChartData.addSeries(categories, values);
+        series.setTitle(this.chartTitle,null);
 
         // 各圖表特有的設定
-        setChartItems(chart, data);
+        addAdditionalChartFeature(chart);
 
         // 顯示圖表
-        chart.plot(data);
+        chart.plot(chosenChartData);
+    }
+
+    public void setChartTitle(String chartTitle) {
+        this.chartTitle = chartTitle;
     }
 }
