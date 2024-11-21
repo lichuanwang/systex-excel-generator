@@ -80,6 +80,12 @@ public class Main {
         project1.setTechnologiesUsed("Angular, Spring Boot");
         candidate1.setProjects(Arrays.asList(project1));
 
+        // Add ImagePath for Candidate 1
+        List<String> imagepathList = new ArrayList<>();
+        imagepathList.add("C:\\Users\\2400823\\Downloads\\test.jpg");
+        imagepathList.add("C:\\Users\\2400823\\Downloads\\SSU_Kirby_artwork.png");
+        candidate1.setImagepath(imagepathList);
+
         // Step 2: Create another mock Candidate with different data
         Candidate candidate2 = new Candidate();
         candidate2.setName("Jane Smith");
