@@ -11,19 +11,6 @@ import java.util.List;
 
 public class RadarChartSection extends AbstractChartSection {
 
-//    @Override
-//    protected XDDFChartData createChartData(XSSFChart chart) {
-//        // 設定圖表的軸
-//        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-//        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
-//        valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-//
-//        XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
-//        radarData.setStyle(RadarStyle.FILLED);
-//
-//        return radarData;
-//    }
-
     @Override
     protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();
@@ -32,7 +19,8 @@ public class RadarChartSection extends AbstractChartSection {
         XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
         valueAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
-        //XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
+        XDDFRadarChartData radarData = (XDDFRadarChartData) chart.createData(ChartTypes.RADAR, categoryAxis, valueAxis);
+        radarData.setStyle(RadarStyle.FILLED);
 
         data.add(ChartTypes.RADAR);
         data.add(categoryAxis);

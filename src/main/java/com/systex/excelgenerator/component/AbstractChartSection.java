@@ -77,17 +77,17 @@ public abstract class AbstractChartSection implements ChartSection {
         // 創建具體的圖表數據並配置
         List<Object> chartData = generateChartData();
 
-        XDDFChartData data = chart.createData((ChartTypes) chartData.get(0),
+        XDDFChartData chosenChartData = chart.createData((ChartTypes) chartData.get(0),
                 (XDDFChartAxis) chartData.get(1), (XDDFValueAxis) chartData.get(2));
 
         // bar chart如果沒有用series設定標題會出錯
-        XDDFChartData.Series series = data.addSeries(categories, values);
+        XDDFChartData.Series series = chosenChartData.addSeries(categories, values);
         series.setTitle(chartTitle,null);
 
         // 各圖表特有的設定
-        addAdditionalChartFeature(chart, data);
+        addAdditionalChartFeature(chart, chosenChartData);
 
         // 顯示圖表
-        chart.plot(data);
+        chart.plot(chosenChartData);
     }
 }

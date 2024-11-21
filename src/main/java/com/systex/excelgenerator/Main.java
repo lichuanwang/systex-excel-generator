@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) {
         // Step 1: Create a mock Candidate with sample data
         Candidate candidate1 = new Candidate();
-        candidate1.setName("John Doe");
+        candidate1.setName("JohnDoe");
         candidate1.setEmail("john.doe@gmail.com");
         candidate1.setPhone("0123456789");
         candidate1.setBirthday(new Date(1999));
@@ -82,13 +82,13 @@ public class Main {
 
         // Add ImagePath for Candidate 1
         List<String> imagepathList = new ArrayList<>();
-        imagepathList.add("C:\\Users\\2400823\\Downloads\\test.jpg");
-        imagepathList.add("C:\\Users\\2400823\\Downloads\\SSU_Kirby_artwork.png");
+//        imagepathList.add("C:\\Users\\2400847\\Downloads\\test.jpg");
+//        imagepathList.add("C:\\Users\\2400847\\Downloads\\SSU_Kirby_artwork.png");
         candidate1.setImagepath(imagepathList);
 
         // Step 2: Create another mock Candidate with different data
         Candidate candidate2 = new Candidate();
-        candidate2.setName("Jane Smith");
+        candidate2.setName("JaneSmith");
         candidate2.setEmail("jane.smith@gmail.com");
         candidate2.setPhone("0987654321");
         candidate2.setBirthday(new Date(1997));

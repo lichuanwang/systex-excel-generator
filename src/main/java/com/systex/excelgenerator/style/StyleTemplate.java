@@ -17,4 +17,16 @@ public class StyleTemplate {
 
         return specialStyle;
     }
+
+    public static CellStyle createCommonTitleStyle(XSSFWorkbook workbook) {
+        CellStyle titleStyle = workbook.createCellStyle();
+
+        Font font1 = workbook.createFont();
+        font1.setBold(true);
+        titleStyle.setFont(font1);
+
+        font1.setFontHeightInPoints((short)14);
+
+        return titleStyle;
+    }
 }
