@@ -25,7 +25,7 @@ public class RadarChartSection extends AbstractChartSection {
 //    }
 
     @Override
-    protected List<Object> getChartData() {
+    protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();
 
         XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
@@ -42,7 +42,7 @@ public class RadarChartSection extends AbstractChartSection {
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+    protected void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data) {
         // 設定為填充式雷達圖
         ((XDDFRadarChartData) data).setStyle(RadarStyle.FILLED);
 

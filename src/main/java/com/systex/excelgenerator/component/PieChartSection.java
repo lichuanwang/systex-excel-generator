@@ -10,7 +10,7 @@ import java.util.List;
 public class PieChartSection extends AbstractChartSection {
 
     @Override
-    protected List<Object> getChartData() {
+    protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();
 
         data.add(ChartTypes.PIE);
@@ -21,7 +21,7 @@ public class PieChartSection extends AbstractChartSection {
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+    protected void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data) {
         data.setVaryColors(true);
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();

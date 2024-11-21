@@ -9,7 +9,7 @@ import java.util.List;
 public class BarChartSection extends AbstractChartSection {
 
     @Override
-    protected List<Object> getChartData() {
+    protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();
 
         XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
@@ -23,7 +23,7 @@ public class BarChartSection extends AbstractChartSection {
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+    protected void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data) {
         data.setVaryColors(true);
         ((XDDFBar3DChartData) data).setBarDirection(BarDirection.COL);
         // 顯示圖表圖例

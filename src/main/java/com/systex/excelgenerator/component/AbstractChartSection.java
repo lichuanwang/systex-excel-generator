@@ -29,8 +29,6 @@ public abstract class AbstractChartSection implements ChartSection {
     public void setChartPosition(int startingRow, int startingColumn) {
         this.chartStartingRow = startingRow;
         this.chartStartingCol = startingColumn;
-        //this.chartEndingRow = endingRow;
-        //this.chartEndingCol = endingColumn;
     }
 
     public void setDataSource(DataSection<?> dataSection) {
@@ -55,10 +53,10 @@ public abstract class AbstractChartSection implements ChartSection {
         return width;
     }
 
-    protected abstract List<Object> getChartData();
+    protected abstract List<Object> generateChartData();
 
     // 各個圖表的特有設定
-    protected abstract void setChartItems(XSSFChart chart, XDDFChartData data);
+    protected abstract void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data);
 
     public void render(ExcelSheet sheet){
 
@@ -77,7 +75,7 @@ public abstract class AbstractChartSection implements ChartSection {
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, yAxisCol, yAxisCol));
 
         // 創建具體的圖表數據並配置
-        List<Object> chartData = getChartData();
+        List<Object> chartData = generateChartData();
 
         XDDFChartData data = chart.createData((ChartTypes) chartData.get(0),
                 (XDDFChartAxis) chartData.get(1), (XDDFValueAxis) chartData.get(2));
@@ -87,7 +85,7 @@ public abstract class AbstractChartSection implements ChartSection {
         series.setTitle(chartTitle,null);
 
         // 各圖表特有的設定
-        setChartItems(chart, data);
+        addAdditionalChartFeature(chart, data);
 
         // 顯示圖表
         chart.plot(data);
