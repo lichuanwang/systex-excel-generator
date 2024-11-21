@@ -63,7 +63,7 @@ public class ExcelGenerationService {
             for (int columnIndex = 0; columnIndex < maxColumns; columnIndex++) {
                 xssfSheet.autoSizeColumn(columnIndex);
                 int currentWidth = xssfSheet.getColumnWidth(columnIndex);
-                xssfSheet.setColumnWidth(columnIndex, currentWidth + 1024);
+                xssfSheet.setColumnWidth(columnIndex, (int) (currentWidth * 1.1));
             }
         }
 

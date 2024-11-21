@@ -58,7 +58,7 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
         clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        CellStyle dateStyle = ExcelFormat.DateFormatting(workbook);
+        CellStyle dateStyle = ExcelFormat.dateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 

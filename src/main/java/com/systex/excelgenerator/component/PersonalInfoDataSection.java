@@ -63,7 +63,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle cloneStyle = StyleTemplate.createCommonStyle(workbook);
-        CellStyle phoneStyle = ExcelFormat.TextFormatting(workbook);
+        CellStyle phoneStyle = ExcelFormat.textFormatting(workbook);
 
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);
