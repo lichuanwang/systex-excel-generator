@@ -185,12 +185,12 @@ public abstract class AbstractChartSection implements ChartSection {
         XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(
                 sheet.getXssfSheet(), new CellRangeAddress(dataFirstRow, dataLastRow, yAxisCol, yAxisCol));
 
-        XDDFChartData data = createChartData(chart);
+        XDDFChartData data = setChartType(chart);
 
         XDDFChartData.Series series = data.addSeries(categories, values);
         series.setTitle("no",null);
 
-        setChartItems(chart, data);
+        addChartFeature(chart, data);
 
         chart.plot(data);
     }

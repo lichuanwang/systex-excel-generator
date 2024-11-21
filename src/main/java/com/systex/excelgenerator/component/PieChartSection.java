@@ -7,13 +7,14 @@ import org.openxmlformats.schemas.drawingml.x2006.chart.CTDLbls;
 public class PieChartSection extends AbstractChartSection {
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
-        return chart.createData(ChartTypes.PIE, null , null);
+    protected XDDFChartData generateChartData(XSSFChart chart) {
+        XDDFChartData pieChartData = chart.createData(ChartTypes.PIE, null , null);
+        pieChartData.setVaryColors(true);
+        return pieChartData;
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
-        data.setVaryColors(true);
+    protected void addAdditionalChartFeature(XSSFChart chart) {
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT);

@@ -9,7 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFChart;
 public class LineChartSection extends AbstractChartSection{
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
+    protected XDDFChartData generateChartData(XSSFChart chart) {
 
         // 設定類別軸和數值軸
         XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
@@ -19,8 +19,7 @@ public class LineChartSection extends AbstractChartSection{
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
-        data.setVaryColors(true);
+    protected void addAdditionalChartFeature(XSSFChart chart) {
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();
         legend.setPosition(LegendPosition.RIGHT); // 圖表圖例顯示在右邊
