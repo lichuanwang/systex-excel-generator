@@ -15,7 +15,7 @@ public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
     private Map<String, DataSection<?>> sectionMap = new HashMap<>();
-    private final List<SectionRange> sectionRanges = new ArrayList<>();
+    private final List<ExcelSectionRange> sectionRanges = new ArrayList<ExcelSectionRange>();
 
     public ExcelSheet(XSSFWorkbook workbook, String sheetName) {
         this.sheetName = sheetName;
@@ -46,30 +46,8 @@ public class ExcelSheet {
         dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
-    // add chart sections
-    public <T> void addChartSection(String cellReference, AbstractChartSection chartSection, String referenceSectionTitle, int chartHeight, int chartWidth) {
-        // 傳section name進來再去查找
-        DataSection<T> dataSection = getSectionByName(referenceSectionTitle);
-
-        int[] startingPoint = parseCellReference(cellReference);
-
-        // Cell is empty or not empty can add section
-        if (isEmptyCell(dataSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
-        }
-
-        // set chart position
-        chartSection.setChartPosition(startingPoint[0], startingPoint[1], startingPoint[0] + chartHeight, startingPoint[1]+chartWidth);
-
-        // set chart data source
-        chartSection.setDataSource(dataSection);
-
-        // render chart sections
-        chartSection.render(this);
-    }
-
     // add image sections
-    public <T> void addImageSection(ImageDataSection dataSection, String imageType , String cellReference){
+    public <T> void addSection(ImageDataSection dataSection, String imageType , String cellReference){
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
@@ -83,6 +61,28 @@ public class ExcelSheet {
         dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
+    // add chart sections
+    public <T> void addChartSection(String cellReference, AbstractChartSection chartSection, String referenceSectionTitle, int chartHeight, int chartWidth) {
+        // 傳section name進來再去查找
+        DataSection<T> dataSection = getSectionByName(referenceSectionTitle);
+
+        int[] startingPoint = parseCellReference(cellReference);
+
+        // Cell is empty or not empty can add section
+        if (!isEmptyCell(dataSection, startingPoint)) {
+            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        }
+
+        // set chart position
+        chartSection.setChartPosition(startingPoint[0], startingPoint[1], startingPoint[0] + chartHeight, startingPoint[1]+chartWidth);
+
+        // set chart data source
+        chartSection.setDataSource(dataSection);
+
+        // render chart sections
+        chartSection.render(this);
+    }
+
     // 判斷儲存格內是否有資料
     private <T> boolean isEmptyCell(DataSection<T> dataSection , int[] startingPoint) {
 
@@ -91,34 +91,21 @@ public class ExcelSheet {
         int endRow = startRow + dataSection.getHeight();
         int endCol = startCol + dataSection.getWidth();
 
-        if (isCellRangeOverlap(startRow, startCol, endRow, endCol)) {
-            return true;
+        // 跟每個Section去做比對
+        for (ExcelSectionRange range : sectionRanges) {
+            // 最晚開始的row or col <= 最早結束的row or col
+            boolean isRowOverlap = Math.max(range.getStartRow(), startRow) <= Math.min(range.getEndRow(), endRow);
+            boolean isColOverlap = Math.max(range.getStartCol(), startCol) <= Math.min(range.getEndCol(), endCol);
+
+            // row and col都有交集才是有重疊到
+            if (isRowOverlap && isColOverlap) {
+                return false;
+            }
         }
 
         // 如果沒有交集的話再把section的位置加入之後要比對的section range list裡面
-        this.sectionRanges.add(new SectionRange(startRow, startCol, endRow, endCol));
-        return false;
-    }
-
-    // 跟每個section去做比對
-    private boolean isCellRangeOverlap(int startRow, int startCol, int endRow, int endCol) {
-        for (SectionRange range : sectionRanges) {
-            if (isOverlap(range.startRow, range.startCol, range.endRow, range.endCol, startRow, startCol, endRow, endCol)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 判斷兩個範圍是否有交集
-    private boolean isOverlap(int startRow1, int startCol1, int endRow1, int endCol1,
-                              int startRow2, int startCol2, int endRow2, int endCol2) {
-        // 最晚開始的row or col <= 最早結束的row or col
-        boolean isRowOverlap = Math.max(startRow1, startRow2) <= Math.min(endRow1, endRow2);
-        boolean isColOverlap = Math.max(startCol1, startCol2) <= Math.min(endCol1, endCol2);
-
-        // row and col都有交集才是有重疊到
-        return isRowOverlap && isColOverlap;
+        this.sectionRanges.add(new ExcelSectionRange(startRow, startCol, endRow, endCol));
+        return true;
     }
 
     private int[] parseCellReference(String cellReference) {
@@ -147,20 +134,5 @@ public class ExcelSheet {
     // Getter for the underlying XSSFSheet, if needed
     public XSSFSheet getXssfSheet() {
         return xssfSheet;
-    }
-
-    // Section 範圍記錄類
-    private static class SectionRange {
-        int startRow;
-        int startCol;
-        int endRow;
-        int endCol;
-
-        public SectionRange(int startRow, int startCol, int endRow, int endCol) {
-            this.startRow = startRow;
-            this.startCol = startCol;
-            this.endRow = endRow;
-            this.endCol = endCol;
-        }
     }
 }
