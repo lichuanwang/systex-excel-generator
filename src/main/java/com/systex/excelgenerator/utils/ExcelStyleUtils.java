@@ -33,21 +33,8 @@ public class ExcelStyleUtils {
     }
 
     // 指定保護儲存格範圍
-    public static void setRangeProtection(Sheet sheet, Workbook workbook, boolean locked, int startRow, int endRow, int startCol, int endCol) {
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setLocked(locked);
-
-        for (int rowIndex = startRow; rowIndex <= endRow; rowIndex++) {
-            Row row = sheet.getRow(rowIndex);
-            if (row == null) row = sheet.createRow(rowIndex);
-
-            for (int columnIndex = startCol; columnIndex <= endCol; columnIndex++){
-                Cell cell = row.getCell(columnIndex);
-                if (cell == null) cell = row.createCell(columnIndex);
-                cell.setCellStyle(cellStyle);
-            }
+        public static void protectSheet(Sheet sheet, String password) {
+            sheet.protectSheet(password);
         }
-    }
-
 }
 

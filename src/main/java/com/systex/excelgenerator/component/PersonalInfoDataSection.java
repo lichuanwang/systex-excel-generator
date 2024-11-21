@@ -78,7 +78,8 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         ExcelStyleUtils.hideColumns(sheet.getXssfSheet(),false,2,4);
 
         // Protection cell
-        ExcelStyleUtils.setRangeProtection(sheet.getXssfSheet(), workbook, true, 0, 2, 1, 3);
+//        ExcelStyleUtils.setRangeProtection(sheet.getXssfSheet(), workbook, 0, 2, 1, 3);
+        ExcelStyleUtils.protectSheet(sheet.getXssfSheet(),"password");
 
         // 啟用密碼
         sheet.getXssfSheet().protectSheet("password");
