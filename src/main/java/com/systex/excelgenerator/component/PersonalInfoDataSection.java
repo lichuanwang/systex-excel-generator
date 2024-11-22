@@ -74,8 +74,6 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         // freeze cell
         formattingAndFilter.freezeCell(sheet.getXssfSheet() , startCol , startRow);
 
-        // Hidden col
-        ExcelStyleAndSheetHandler.hideColumns(sheet.getXssfSheet(),false,2,4);
 
         // Protection cell
         row = sheet.createOrGetRow(startRow++);
