@@ -4,15 +4,13 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
-import com.systex.excelgenerator.utils.ExcelStyleUtils;
+import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.systex.excelgenerator.utils.ExcelStyleUtils.protectSheet;
 
 public class ExcelGenerationService {
 
@@ -77,8 +75,9 @@ public class ExcelGenerationService {
             }
         }
 
-        ExcelStyleUtils styleUtils = new ExcelStyleUtils();
-        styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
+        // add protectSheet
+//        ExcelStyleAndSheetHandler styleUtils = new ExcelStyleAndSheetHandler();
+//        styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
 
         // Save the Excel file
         try {

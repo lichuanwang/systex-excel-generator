@@ -1,10 +1,9 @@
 package com.systex.excelgenerator.utils;
 
-import com.systex.excelgenerator.excel.ExcelSheet;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-public class ExcelStyleUtils {
+public class ExcelStyleAndSheetHandler {
     // 日期格式
     public static CellStyle dateFormatting(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
