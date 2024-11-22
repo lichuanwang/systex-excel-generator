@@ -6,20 +6,26 @@ import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LineChartSection extends AbstractChartSection{
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
+    protected List<Object> generateChartData(){
+        List<Object> data = new ArrayList<>();
+        XDDFCategoryAxis categoryAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+        XDDFValueAxis valueAxis = chart.createValueAxis(AxisPosition.LEFT);
 
-        // 設定類別軸和數值軸
-        XDDFCategoryAxis xAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-        XDDFValueAxis yAxis = chart.createValueAxis(AxisPosition.LEFT);
+        data.add(ChartTypes.LINE);
+        data.add(categoryAxis);
+        data.add(valueAxis);
 
-        return chart.createData(ChartTypes.LINE, xAxis, yAxis);
+        return data;
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+    protected void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data) {
         data.setVaryColors(true);
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();

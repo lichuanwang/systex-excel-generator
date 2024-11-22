@@ -4,15 +4,24 @@ import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTDLbls;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PieChartSection extends AbstractChartSection {
 
     @Override
-    protected XDDFChartData createChartData(XSSFChart chart) {
-        return chart.createData(ChartTypes.PIE, null , null);
+    protected List<Object> generateChartData() {
+        List<Object> data = new ArrayList<>();
+
+        data.add(ChartTypes.PIE);
+        data.add(null);
+        data.add(null);
+
+        return data;
     }
 
     @Override
-    protected void setChartItems(XSSFChart chart, XDDFChartData data) {
+    protected void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data) {
         data.setVaryColors(true);
         // 顯示圖表圖例
         XDDFChartLegend legend = chart.getOrAddLegend();

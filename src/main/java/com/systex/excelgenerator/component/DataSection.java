@@ -5,11 +5,9 @@ import com.systex.excelgenerator.model.Candidate;
 
 import java.util.Collection;
 
-public interface DataSection<T> {
+public interface DataSection<T> extends Section {
     void setData(Collection<T> data);
     boolean isEmpty();
-    int getWidth();
-    int getHeight();
     void render(ExcelSheet sheet, int startRow, int startCol);
     String getTitle();
     int getDataStartRow();

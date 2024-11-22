@@ -89,11 +89,11 @@ public class ImageDataSection extends AbstractDataSection<String> {
 
     @Override
     public int getWidth() {
-        return 0;
+        return 3;
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return 3;
     }
 }

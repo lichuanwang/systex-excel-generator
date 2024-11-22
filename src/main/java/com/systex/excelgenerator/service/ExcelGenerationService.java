@@ -42,19 +42,19 @@ public class ExcelGenerationService {
 
             // add sections to sheet
             sheet.addSection(personalInfoDataSection, "A1");
-            sheet.addSection(educationDataSection, "H1");
+            sheet.addSection(educationDataSection, "H60");
             sheet.addSection(experienceDataSection, "A9");
             sheet.addSection(projectDataSection, "H9");
             sheet.addSection(skillDataSection, "A15");
 
             // add image section to sheet
-            sheet.addImageSection(imageDataSection , "png" , "G30");
+            sheet.addSection(imageDataSection , "png" , "G30");
 
             // add chart sections to sheet
-            sheet.addChartSection("A30", new RadarChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("A50", new PieChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("A70", new BarChartSection(), "Skill",  6, 6);
-            sheet.addChartSection("A90", new LineChartSection(), "Skill", 6, 6);
+            sheet.addChartSection("B30", new RadarChartSection(), "Skill", 6, 6);
+            sheet.addChartSection("B50", new PieChartSection(), "Skill", 6, 6);
+            sheet.addChartSection("B70", new BarChartSection(), "Skill",  6, 6);
+            sheet.addChartSection("B90", new LineChartSection(), "Skill", 6, 6);
 
             autoSizeColumns(sheet);
             // Determine the maximum number of columns

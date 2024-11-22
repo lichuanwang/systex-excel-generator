@@ -56,14 +56,18 @@ public class DataValidationHandler {
     }
 
     // 日期資料驗證
-    public void DateValid(String operator , String startDate , String endDate){
-        // 預設日期格式為"yyyy/MM/dd"(可更改)
-        constraint = validationHelper.createDateConstraint(ConvertOperator(operator)
-                , startDate , endDate , "yyyy/MM/dd");
-
-        // final setting
-        applyValidation();
-    }
+//    public void DateValid(String operator , String startDate , String endDate){
+//        // 預設日期格式為"yyyy/MM/dd"(可更改)
+//        constraint = validationHelper.createDateConstraint(
+//                ConvertOperator(operator),
+//                "\"" + startDate + "\"",
+//                "\"" + endDate + "\"",
+//                "yyyy/MM/dd"
+//        );
+//
+//        // final setting
+//        applyValidation();
+//    }
 
     // convert operator
     public int ConvertOperator(String operator){
