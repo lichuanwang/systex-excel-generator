@@ -31,30 +31,30 @@ public class ImageDataSection extends AbstractDataSection<String> {
     @Override
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
-        for (String imagePath : content) {
-
-            // 讀取圖片
-            try (FileInputStream inputStream = new FileInputStream(imagePath)) {
-                byte[] bytes = IOUtils.toByteArray(inputStream);
-                int pictureIndex = sheet.getWorkbook().addPicture(bytes, converetImageType(imageType));
-
-                XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
-                anchor.setCol1(startCol);
-                anchor.setRow1(startRow);
-                anchor.setCol2(startCol + 3);
-                anchor.setRow2(startRow + 7);
-
-                // Insert the image into the sheet
-                XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
-                drawing.createPicture(anchor, pictureIndex);
-
-
-                log.info("Image added");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        for (String imagePath : content) {
+//
+//            // 讀取圖片
+//            try (FileInputStream inputStream = new FileInputStream(imagePath)) {
+//                byte[] bytes = IOUtils.toByteArray(inputStream);
+//                int pictureIndex = sheet.getWorkbook().addPicture(bytes, converetImageType(imageType));
+//
+//                XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
+//                anchor.setCol1(startCol);
+//                anchor.setRow1(startRow);
+//                anchor.setCol2(startCol + 3);
+//                anchor.setRow2(startRow + 7);
+//
+//                // Insert the image into the sheet
+//                XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
+//                drawing.createPicture(anchor, pictureIndex);
+//
+//
+//                log.info("Image added");
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     @Override

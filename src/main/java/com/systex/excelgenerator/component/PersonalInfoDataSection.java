@@ -12,6 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.text.DateFormat;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
@@ -23,12 +25,12 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         super("Personal Information");
     }
 
-    @Override
-    public void setData(Collection<Candidate> dataCollection) {
-        if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.candidate = dataCollection.iterator().next();
-        }
-    }
+//    @Override
+//    public void setData(List<?> dataCollection) {
+//        if (dataCollection != null && !dataCollection.isEmpty()) {
+//            this.candidate = dataCollection.iterator().next();
+//        }
+//    }
 
     @Override
     public boolean isEmpty() {

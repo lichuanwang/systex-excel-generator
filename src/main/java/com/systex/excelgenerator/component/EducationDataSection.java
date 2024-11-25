@@ -5,13 +5,16 @@ import com.systex.excelgenerator.model.Education;
 import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
 
@@ -41,47 +44,57 @@ public class EducationDataSection extends AbstractDataSection<Education> {
     protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
         // Create header row for Education section
         Row headerRow = sheet.createOrGetRow(startRow);
-        headerRow.createCell(startCol).setCellValue("School Name");
-        headerRow.createCell(startCol + 1).setCellValue("Major");
-        headerRow.createCell(startCol + 2).setCellValue("Grade");
-        headerRow.createCell(startCol + 3).setCellValue("Start Date");
-        headerRow.createCell(startCol + 4).setCellValue("End Date");
-        headerRow.createCell(startCol + 5).setCellValue("Date Interval");
+        int startingColumnIndex = startCol;
+
+//        for (int i = 0; i < headerColumnValue.length; i++) {
+//            headerRow.createCell(startingColumnIndex++).setCellValue(headerColumnValue[i]);
+//        }
+//        headerRow.createCell(startCol).setCellValue("School Name");
+//        headerRow.createCell(startCol + 1).setCellValue("Major");
+//        headerRow.createCell(startCol + 2).setCellValue("Grade");
+//        headerRow.createCell(startCol + 3).setCellValue("Start Date");
+//        headerRow.createCell(startCol + 4).setCellValue("End Date");
+//        headerRow.createCell(startCol + 5).setCellValue("Date Interval");
     }
 
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
-        CellStyle dateStyle = ExcelStyleAndSheetHandler.dateFormatting(workbook);
+        CellStyle dateStyle = ExcelStyleAndSheetHandler.dateFormatting(workbook); // Reuse a single date style
+        int rowNum = startRow;
 
-        int rowNum = startRow; // Start from the row after the header
-
-        for (Education edu : content) {
+        for (Map.Entry<Integer, List<Object>> entry : content.entrySet()) {
             Row row = sheet.createOrGetRow(rowNum++);
-            row.createCell(startCol).setCellValue(edu.getSchoolName());
-            row.createCell(startCol + 1).setCellValue(edu.getMajor());
-            row.createCell(startCol + 2).setCellValue(edu.getGrade());
-            Cell dateCell =  row.createCell(startCol + 3);
-            dateCell.setCellValue(edu.getStartDate());
-            dateCell.setCellStyle(dateStyle);
-            dateCell =  row.createCell(startCol + 4);
-            dateCell.setCellValue(edu.getEndDate());
-            dateCell.setCellStyle(dateStyle);
+            List<Object> data = entry.getValue();
+            int colNum = startCol;
 
-            // 計算時間區間(解析公式)
-            // 輸入公式
-            String formula = """
-                    IF(DATEDIF(${startCellRef},${endCellRef},"y")=0,"",
-                    DATEDIF(${startCellRef},${endCellRef},"y")&"年")&
-                    DATEDIF(${startCellRef},${endCellRef},"ym")&"個月"
-                    """;
+            for (Object value : data) {
+                Cell cell = row.createCell(colNum++);
+                setCellValue(cell, value, dateStyle);
+            }
+        }
+    }
 
-            // 要替換的佔位符set
-            Set<NamedCellReference> replaceSet = new HashSet<>();
-            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
-            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
-
-            // 計算過後的時間區間的值
-            row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
+    private void setCellValue(Cell cell, Object value, CellStyle dateStyle) {
+        if (value == null) {
+            cell.setCellValue("");
+        } else if (value instanceof String) {
+            cell.setCellValue((String) value);
+        } else if (value instanceof Double) {
+            cell.setCellValue((Double) value);
+        } else if (value instanceof Boolean) {
+            cell.setCellValue((Boolean) value);
+        } else if (value instanceof Date) {
+            cell.setCellValue((Date) value);
+        } else if (value instanceof LocalDate) {
+            cell.setCellValue((LocalDate) value);
+        } else if (value instanceof LocalDateTime) {
+            cell.setCellValue((LocalDateTime) value);
+        } else if (value instanceof RichTextString) {
+            cell.setCellValue((RichTextString) value);
+        } else if (value instanceof Calendar) {
+            cell.setCellValue((Calendar) value);
+        } else {
+            cell.setCellValue(value.toString());
         }
     }
 

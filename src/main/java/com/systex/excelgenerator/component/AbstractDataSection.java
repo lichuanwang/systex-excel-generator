@@ -7,12 +7,13 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractDataSection<T> implements DataSection<T> {
     protected String title;
-    protected Collection<T> content;
+    protected String[] headerColumnValues;
+    protected Map<Integer, List<Object>> content;
     protected int dataStartRow;
     protected int dataEndRow;
     protected int dataStartColumn;
@@ -48,9 +49,13 @@ public abstract class AbstractDataSection<T> implements DataSection<T> {
         headerCell.setCellStyle(style);
     }
 
-    public void setData(Collection<T> dataCollection) {
+    public void setData(String[] headerColumnValues, Map<Integer, List<Object>> dataCollection) {
+        if (headerColumnValues != null || headerColumnValues.length != 0) {
+            this.headerColumnValues = headerColumnValues;
+        }
+
         if (dataCollection != null && !dataCollection.isEmpty()) {
-            this.content = new ArrayList<>(dataCollection);
+            this.content = dataCollection;
         }
     }
 
