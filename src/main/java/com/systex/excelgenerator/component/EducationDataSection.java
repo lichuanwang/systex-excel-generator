@@ -29,7 +29,7 @@ public class EducationDataSection extends AbstractDataSection<Education> {
     @Override
     public int getWidth() {
         // Set the width based on the number of columns this section uses.
-        return 6; // Example width, assuming we have 5 columns for education details plus one additional column to separate different section
+        return 6;
     }
 
     @Override
@@ -60,8 +60,6 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             row.createCell(startCol).setCellValue(edu.getSchoolName());
             row.createCell(startCol + 1).setCellValue(edu.getMajor());
             row.createCell(startCol + 2).setCellValue(edu.getGrade());
-            row.createCell(startCol + 3).setCellValue(edu.getStartDate());
-
             Cell dateCell =  row.createCell(startCol + 3);
             dateCell.setCellValue(edu.getStartDate());
             dateCell.setCellStyle(dateStyle);

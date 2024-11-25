@@ -63,9 +63,9 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
             row.createCell(startCol + 2).setCellValue(project.getDescription());
             XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
             CellStyle initialStyle = StyleTemplate.createCommonStyle(workbook);
-            Cell TechnologiesUsed = row.createCell(startCol + 1);
-            TechnologiesUsed.setCellValue(project.getTechnologiesUsed());
-            TechnologiesUsed.setCellStyle(initialStyle);
+            Cell technologiesUsed = row.createCell(startCol + 1);
+            technologiesUsed.setCellValue(project.getTechnologiesUsed());
+            technologiesUsed.setCellStyle(initialStyle);
         }
     }
 

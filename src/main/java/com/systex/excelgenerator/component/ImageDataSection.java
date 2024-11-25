@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class ImageDataSection extends AbstractDataSection<String> {
 
-    private static final Logger log = LogManager.getLogger(PersonalInfoDataSection.class);
+    private static final Logger log = LogManager.getLogger(ImageDataSection.class);
     private String imageType;
 
     public ImageDataSection() {
@@ -25,7 +25,7 @@ public class ImageDataSection extends AbstractDataSection<String> {
 
     @Override
     protected void renderHeader(ExcelSheet sheet, int startRow, int startCol) {
-
+        // add header related content if necessary
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ImageDataSection extends AbstractDataSection<String> {
 
     @Override
     protected void renderFooter(ExcelSheet sheet, int startRow, int startCol) {
-
+        // add footer related content if necessary
     }
 
     protected int converetImageType(String imageType) {

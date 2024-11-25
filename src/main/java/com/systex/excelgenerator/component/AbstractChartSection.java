@@ -10,8 +10,6 @@ import java.util.List;
 
 public abstract class AbstractChartSection implements ChartSection {
 
-    protected int chartStartingCol;
-    protected int chartStartingRow;
     protected int height;
     protected int width;
     protected int dataFirstRow;
@@ -21,18 +19,8 @@ public abstract class AbstractChartSection implements ChartSection {
     protected String chartTitle;
     protected XSSFChart chart;
 
-    public AbstractChartSection(String chartTitle) {
+    protected AbstractChartSection(String chartTitle) {
         this.chartTitle = chartTitle;
-    }
-
-//    public void setChartTitle(String chartTitle) {
-//        this.chartTitle = chartTitle;
-//    }
-
-    // 設定圖表的位置
-    public void setChartPosition(int startingRow, int startingColumn) {
-        this.chartStartingRow = startingRow;
-        this.chartStartingCol = startingColumn;
     }
 
     public void setDataSource(DataSection<?> dataSection) {
@@ -66,13 +54,13 @@ public abstract class AbstractChartSection implements ChartSection {
     // 各個圖表的特有設定
     protected abstract void addAdditionalChartFeature(XSSFChart chart, XDDFChartData data);
 
-    public void render(ExcelSheet sheet){
+    public void render(ExcelSheet sheet, int startRow, int startCol){
 
         // 設定sheet中的畫布
         XSSFDrawing drawing = sheet.getXssfSheet().createDrawingPatriarch();
 
         // 設定圖表位置
-        chart = drawing.createChart(drawing.createAnchor(0,0,0,0, chartStartingCol, chartStartingRow, chartStartingCol + width, chartStartingRow + height));
+        chart = drawing.createChart(drawing.createAnchor(0,0,0,0, startCol, startRow, startCol + width, startRow + height));
 
         // 選定資料範圍類別的資料來源
         XDDFDataSource<String> categories = XDDFDataSourcesFactory.fromStringCellRange(

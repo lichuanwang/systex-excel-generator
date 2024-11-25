@@ -74,9 +74,6 @@ public class ExcelSheet {
         chartSection.setHeight(chartHeight);
         chartSection.setWidth(chartWidth);
 
-        // set chart position
-        chartSection.setChartPosition(startingPoint[0], startingPoint[1]);
-
         // Cell is empty or not empty can add section
         if (!isEmptyCell(chartSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
@@ -88,7 +85,7 @@ public class ExcelSheet {
          this.sectionMap.put(dataSection.getTitle() + " " + chartSection.getTitle(), chartSection);
 
         // render chart sections
-        chartSection.render(this);
+        chartSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
     // 判斷儲存格內是否有資料

@@ -4,7 +4,6 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.StyleTemplate;
 
-import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
@@ -17,8 +16,6 @@ import java.util.Set;
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
     private FormulaHandler formulaHandler = new FormulaHandler();
-    private DataValidationHandler dataValidationHandler;
-    private CellStyle clonedBlueStyle;
 
     public ExperienceDataSection() {
         super("Experience");
@@ -55,7 +52,8 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle initialStyle = StyleTemplate.createCommonStyle(workbook);
-        clonedBlueStyle = workbook.createCellStyle();
+
+        CellStyle clonedBlueStyle = workbook.createCellStyle();
         clonedBlueStyle.cloneStyleFrom(initialStyle);
 
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
@@ -73,8 +71,6 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
             jobTitleCell.setCellStyle(clonedBlueStyle);
 
             row.createCell(startCol + 2).setCellValue(exp.getDescription());
-            row.createCell(startCol + 3).setCellValue(exp.getStartDate());
-            row.createCell(startCol + 4).setCellValue(exp.getEndDate());
             Cell dateCell =  row.createCell(startCol + 3);
             dateCell.setCellValue(exp.getStartDate());
             dateCell.setCellStyle(dateStyle);

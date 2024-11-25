@@ -7,8 +7,6 @@ import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
 import com.systex.excelgenerator.utils.FormattingAndFilter;
 import com.systex.excelgenerator.utils.HyperlinkHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -17,7 +15,6 @@ import java.util.Collection;
 
 public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
-    private static final Logger log = LogManager.getLogger(PersonalInfoDataSection.class);
     private Candidate candidate;
     private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
     private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
