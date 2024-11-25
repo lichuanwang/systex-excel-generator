@@ -31,10 +31,10 @@ public class ImageDataSection extends AbstractDataSection<String> {
     @Override
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
 
-        for (String imagepath : content) {
+        for (String imagePath : content) {
 
             // 讀取圖片
-            try (FileInputStream inputStream = new FileInputStream(imagepath)) {
+            try (FileInputStream inputStream = new FileInputStream(imagePath)) {
                 byte[] bytes = IOUtils.toByteArray(inputStream);
                 int pictureIndex = sheet.getWorkbook().addPicture(bytes, converetImageType(imageType));
 
