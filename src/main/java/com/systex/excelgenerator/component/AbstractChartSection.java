@@ -21,9 +21,13 @@ public abstract class AbstractChartSection implements ChartSection {
     protected String chartTitle;
     protected XSSFChart chart;
 
-    public void setChartTitle(String chartTitle) {
+    public AbstractChartSection(String chartTitle) {
         this.chartTitle = chartTitle;
     }
+
+//    public void setChartTitle(String chartTitle) {
+//        this.chartTitle = chartTitle;
+//    }
 
     // 設定圖表的位置
     public void setChartPosition(int startingRow, int startingColumn) {
@@ -51,6 +55,10 @@ public abstract class AbstractChartSection implements ChartSection {
 
     public int getWidth() {
         return width;
+    }
+
+    public String getTitle() {
+        return chartTitle;
     }
 
     protected abstract List<Object> generateChartData();

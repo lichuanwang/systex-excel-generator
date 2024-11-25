@@ -11,6 +11,10 @@ import java.util.List;
 
 public class LineChartSection extends AbstractChartSection{
 
+    public LineChartSection() {
+        super("Line Chart");
+    }
+
     @Override
     protected List<Object> generateChartData(){
         List<Object> data = new ArrayList<>();

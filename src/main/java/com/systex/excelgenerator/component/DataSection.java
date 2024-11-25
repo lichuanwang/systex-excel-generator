@@ -9,7 +9,6 @@ public interface DataSection<T> extends Section {
     void setData(Collection<T> data);
     boolean isEmpty();
     void render(ExcelSheet sheet, int startRow, int startCol);
-    String getTitle();
     int getDataStartRow();
     int getDataEndRow();
     int getDataStartCol();

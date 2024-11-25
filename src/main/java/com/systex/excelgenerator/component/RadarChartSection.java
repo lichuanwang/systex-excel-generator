@@ -11,6 +11,10 @@ import java.util.List;
 
 public class RadarChartSection extends AbstractChartSection {
 
+    public RadarChartSection() {
+        super("Radar Chart");
+    }
+
     @Override
     protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();

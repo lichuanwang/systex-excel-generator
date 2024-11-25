@@ -8,6 +8,10 @@ import java.util.List;
 
 public class BarChartSection extends AbstractChartSection {
 
+    public BarChartSection() {
+        super("Bar Chart");
+    }
+
     @Override
     protected List<Object> generateChartData() {
         List<Object> data = new ArrayList<>();

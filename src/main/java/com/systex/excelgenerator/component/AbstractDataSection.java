@@ -25,7 +25,6 @@ public abstract class AbstractDataSection<T> implements DataSection<T> {
         this.title = title;
     }
 
-    // wrong naming
     protected abstract void renderHeader(ExcelSheet sheet, int startRow, int startCol);
     protected abstract void renderBody(ExcelSheet sheet, int startRow, int startCol);
     protected abstract void renderFooter(ExcelSheet sheet, int startRow, int startCol);

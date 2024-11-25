@@ -15,8 +15,8 @@ import java.util.*;
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Map<String, DataSection<?>> sectionMap = new HashMap<>();
-    private final List<ExcelSectionRange> sectionRanges = new ArrayList<ExcelSectionRange>();
+    private Map<String, Section> sectionMap = new HashMap<>();
+    private final List<ExcelSectionRange> sectionRanges = new ArrayList<>();
 
     public ExcelSheet(XSSFWorkbook workbook, String sheetName) {
         this.sheetName = sheetName;
@@ -59,6 +59,8 @@ public class ExcelSheet {
         // set image type
         dataSection.setImageType(imageType);
 
+        this.sectionMap.put(dataSection.getTitle(), dataSection);
+
         dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
@@ -82,6 +84,8 @@ public class ExcelSheet {
 
         // set chart data source
         chartSection.setDataSource(dataSection);
+
+         this.sectionMap.put(dataSection.getTitle() + " " + chartSection.getTitle(), chartSection);
 
         // render chart sections
         chartSection.render(this);
