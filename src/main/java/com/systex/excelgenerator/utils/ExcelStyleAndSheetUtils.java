@@ -23,7 +23,7 @@ public class ExcelStyleAndSheetUtils {
     }
 
     /**
-     * 隱藏指定一到多個列
+     * 隱藏指定一到多個
      *
      * @param sheet         指定的工作表，不能為空
      * @param columnIndices 要隱藏的列(從0開始)
