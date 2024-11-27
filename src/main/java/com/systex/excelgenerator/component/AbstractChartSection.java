@@ -18,6 +18,7 @@ public abstract class AbstractChartSection implements ChartSection {
     protected int yAxisCol;
     protected String chartTitle;
     protected XSSFChart chart;
+    protected Section section;
 
     protected AbstractChartSection(String chartTitle) {
         this.chartTitle = chartTitle;
@@ -28,6 +29,7 @@ public abstract class AbstractChartSection implements ChartSection {
         this.dataLastRow = dataSection.getDataEndRow();
         this.xAxisCol = dataSection.getDataStartCol();
         this.yAxisCol = dataSection.getDataEndCol();
+        this.section = dataSection;
     }
 
     public void setHeight(int height) {
@@ -47,6 +49,10 @@ public abstract class AbstractChartSection implements ChartSection {
 
     public String getTitle() {
         return chartTitle;
+    }
+
+    public Section getReferenceDataSection() {
+        return this.section;
     }
 
     protected abstract List<Object> generateChartData();

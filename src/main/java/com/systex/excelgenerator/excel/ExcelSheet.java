@@ -23,20 +23,29 @@ public class ExcelSheet {
         this.xssfSheet = workbook.createSheet(sheetName);
     }
 
+    public XSSFSheet getXssfSheet() {
+        return xssfSheet;
+    }
+
     public String getSheetName() {
         return sheetName;
+    }
+
+    public Map<String, Section> getSectionMap() {
+        return this.sectionMap;
     }
 
     public Workbook getWorkbook() {
         return xssfSheet.getWorkbook();
     }
 
+
     public <T> void addSection(DataSection<T> dataSection, String cellReference) {
 
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
-        if (!isEmptyCell(dataSection, startingPoint)) {
+        if (!isEmptyRange(dataSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
@@ -52,7 +61,7 @@ public class ExcelSheet {
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
-        if (!isEmptyCell(dataSection, startingPoint)) {
+        if (!isEmptyRange(dataSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
@@ -64,32 +73,26 @@ public class ExcelSheet {
         dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
-    // add chart sections
-    public <T> void addChartSection(String cellReference, AbstractChartSection chartSection, String referenceSectionTitle, int chartHeight, int chartWidth) {
-        // 傳section name進來再去查找
-        DataSection<T> dataSection = getSectionByName(referenceSectionTitle);
+
+    public void addChartSection(String cellReference, AbstractChartSection chartSection) {
 
         int[] startingPoint = parseCellReference(cellReference);
 
-        chartSection.setHeight(chartHeight);
-        chartSection.setWidth(chartWidth);
 
         // Cell is empty or not empty can add section
-        if (!isEmptyCell(chartSection, startingPoint)) {
+        if (!isEmptyRange(chartSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
-        // set chart data source
-        chartSection.setDataSource(dataSection);
-
-         this.sectionMap.put(dataSection.getTitle() + " " + chartSection.getTitle(), chartSection);
+        this.sectionMap.put(chartSection.getReferenceDataSection().getTitle() + " " + chartSection.getTitle(), chartSection);
 
         // render chart sections
         chartSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
     // 判斷儲存格內是否有資料
-    private <T> boolean isEmptyCell(Section section , int[] startingPoint) {
+    // change function naming
+    private boolean isEmptyRange(Section section , int[] startingPoint) {
 
         int startRow = startingPoint[0];
         int startCol = startingPoint[1];
@@ -114,17 +117,12 @@ public class ExcelSheet {
     }
 
     private int[] parseCellReference(String cellReference) {
+        // error handling
         CellReference data = new CellReference(cellReference);
         int[] result = new int[2];
         result[0] = data.getRow();
         result[1] = data.getCol();
         return result;
-
-    }
-
-    public <T> DataSection<T> getSectionByName(String name) {
-
-        return (DataSection<T>) sectionMap.get(name);
     }
 
     // Method to create or get a row
@@ -134,10 +132,5 @@ public class ExcelSheet {
             row = xssfSheet.createRow(rowNum);
         }
         return row;
-    }
-
-    // Getter for the underlying XSSFSheet, if needed
-    public XSSFSheet getXssfSheet() {
-        return xssfSheet;
     }
 }

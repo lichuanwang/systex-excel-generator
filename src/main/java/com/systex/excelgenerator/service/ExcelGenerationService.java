@@ -21,41 +21,58 @@ public class ExcelGenerationService {
         for (Candidate candidate : candidates) {
             // create a new sheet
             ExcelSheet sheet = excelFile.createSheet(candidate.getName());
+
+            // create all data section that we want to add the sheet
             PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
-            personalInfoDataSection.setData(List.of(candidate));
-
             EducationDataSection educationDataSection = new EducationDataSection();
-            educationDataSection.setData(candidate.getEducationList());
-
             ExperienceDataSection experienceDataSection = new ExperienceDataSection();
-            experienceDataSection.setData(candidate.getExperienceList());
-
             ProjectDataSection projectDataSection = new ProjectDataSection();
-            projectDataSection.setData(candidate.getProjects());
-
             SkillDataSection skillDataSection = new SkillDataSection();
-            skillDataSection.setData(candidate.getSkills());
-
             ImageDataSection imageDataSection = new ImageDataSection();
+
+            // provide data for each data section
+            personalInfoDataSection.setData(List.of(candidate));
+            educationDataSection.setData(candidate.getEducationList());
+            experienceDataSection.setData(candidate.getExperienceList());
+            projectDataSection.setData(candidate.getProjects());
+            skillDataSection.setData(candidate.getSkills());
             imageDataSection.setData(candidate.getImagepath());
 
-            // add sections to sheet
+            // create each chart section
+            RadarChartSection radarChartSection = new RadarChartSection();
+            PieChartSection pieChartSection = new PieChartSection();
+            BarChartSection barChartSection = new BarChartSection();
+            LineChartSection lineChartSection = new LineChartSection();
+
+            // set each chart section's data section reference
+            radarChartSection.setDataSource(skillDataSection);
+            pieChartSection.setDataSource(skillDataSection);
+            barChartSection.setDataSource(skillDataSection);
+            lineChartSection.setDataSource(skillDataSection);
+
+            // set height and width for each chart section
+            radarChartSection.setHeight(6);
+            radarChartSection.setWidth(6);
+            pieChartSection.setHeight(6);
+            pieChartSection.setWidth(6);
+            barChartSection.setHeight(6);
+            barChartSection.setWidth(6);
+            lineChartSection.setHeight(6);
+            lineChartSection.setWidth(6);
+
+            // add chart sections to sheet
             sheet.addSection(personalInfoDataSection, "A1");
             sheet.addSection(educationDataSection, "H60");
             sheet.addSection(experienceDataSection, "A9");
             sheet.addSection(projectDataSection, "H9");
             sheet.addSection(skillDataSection, "A15");
-
-            // add image section to sheet
             sheet.addSection(imageDataSection , "png" , "Z50");
+            sheet.addChartSection("B30", radarChartSection);
+            sheet.addChartSection("B50", pieChartSection);
+            sheet.addChartSection("B70", barChartSection);
+            sheet.addChartSection("B90", lineChartSection);
 
-            // add chart sections to sheet
-            sheet.addChartSection("B30", new RadarChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("B50", new PieChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("B70", new BarChartSection(), "Skill",  6, 6);
-            sheet.addChartSection("B90", new LineChartSection(), "Skill", 6, 6);
-
-            // Hidden col
+            // Hidden column
             ExcelStyleAndSheetHandler.hideColumns(sheet.getXssfSheet(),false,10,12);
 
             // Determine the maximum number of columns
