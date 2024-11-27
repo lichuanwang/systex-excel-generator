@@ -5,7 +5,7 @@ import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.StyleTemplate;
 
 import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
+import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.*;
@@ -61,7 +61,7 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
         clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        CellStyle dateStyle = ExcelStyleAndSheetHandler.dateFormatting(workbook);
+        CellStyle dateStyle = ExcelStyleAndSheetUtils.dateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 

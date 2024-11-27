@@ -3,7 +3,7 @@ package com.systex.excelgenerator.utils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-public class ExcelStyleAndSheetHandler {
+public class ExcelStyleAndSheetUtils {
     // 日期格式
     public static CellStyle dateFormatting(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();

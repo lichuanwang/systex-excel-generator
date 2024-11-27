@@ -4,7 +4,7 @@ import com.systex.excelgenerator.component.*;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.excel.ExcelFile;
 import com.systex.excelgenerator.model.Candidate;
-import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
+import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -48,13 +48,16 @@ public class ExcelGenerationService {
             sheet.addSection(skillDataSection, "A15");
 
             // add image section to sheet
-            sheet.addSection(imageDataSection , "png" , "G30");
+            sheet.addSection(imageDataSection , "png" , "Z50");
 
             // add chart sections to sheet
             sheet.addChartSection("B30", new RadarChartSection(), "Skill", 6, 6);
             sheet.addChartSection("B50", new PieChartSection(), "Skill", 6, 6);
             sheet.addChartSection("B70", new BarChartSection(), "Skill",  6, 6);
             sheet.addChartSection("B90", new LineChartSection(), "Skill", 6, 6);
+
+            // Hidden col
+            ExcelStyleAndSheetUtils.hideColumns(sheet.getXssfSheet(),false,10,12);
 
             autoSizeColumns(sheet);
             // Determine the maximum number of columns
