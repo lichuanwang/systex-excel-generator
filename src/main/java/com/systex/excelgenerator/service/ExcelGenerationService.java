@@ -57,7 +57,8 @@ public class ExcelGenerationService {
             sheet.addChartSection("B90", new LineChartSection(), "Skill", 6, 6);
 
             // Hidden col
-            ExcelStyleAndSheetUtils.hideColumns(sheet.getXssfSheet(),false,10,12);
+//            ExcelStyleAndSheetUtils.hideColumns(sheet.getXssfSheet(), 1);
+              ExcelStyleAndSheetUtils.hideColumnRange(sheet.getXssfSheet(), 5,7);
 
             autoSizeColumns(sheet);
             // Determine the maximum number of columns
@@ -79,7 +80,7 @@ public class ExcelGenerationService {
         }
 
         // add protectSheet
-//        ExcelStyleAndSheetHandler styleUtils = new ExcelStyleAndSheetHandler();
+//        ExcelStyleAndSheetUtils styleUtils = new ExcelStyleAndSheetUtils();
 //        styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
 
         // Save the Excel file
