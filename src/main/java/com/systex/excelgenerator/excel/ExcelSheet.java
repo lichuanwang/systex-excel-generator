@@ -57,7 +57,7 @@ public class ExcelSheet {
     }
 
     // add image sections
-    public <T> void addSection(ImageDataSection dataSection, String imageType , String cellReference){
+    public void addSection(ImageDataSection dataSection, String imageType , String cellReference){
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
