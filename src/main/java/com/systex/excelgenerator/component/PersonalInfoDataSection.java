@@ -1,7 +1,7 @@
 package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.style.StyleTemplate;
-import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
+import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
 import com.systex.excelgenerator.utils.DataValidationHandler;
@@ -62,7 +62,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle cloneStyle = StyleTemplate.createCommonStyle(workbook);
-        CellStyle phoneStyle = ExcelStyleAndSheetHandler.textFormatting(workbook);
+        CellStyle phoneStyle = ExcelStyleAndSheetUtils.textFormatting(workbook);
 
         // Fill in the data
         Row row = sheet.createOrGetRow(startRow++);

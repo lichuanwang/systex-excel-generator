@@ -4,7 +4,8 @@ import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.StyleTemplate;
 
-import com.systex.excelgenerator.utils.ExcelStyleAndSheetHandler;
+import com.systex.excelgenerator.utils.DataValidationHandler;
+import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import com.systex.excelgenerator.utils.FormulaHandler;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.*;
@@ -16,6 +17,8 @@ import java.util.Set;
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
     private FormulaHandler formulaHandler = new FormulaHandler();
+    private DataValidationHandler dataValidationHandler;
+    private CellStyle clonedBlueStyle;
 
     public ExperienceDataSection() {
         super("Experience");
@@ -52,14 +55,13 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
     protected void renderBody(ExcelSheet sheet, int startRow, int startCol) {
         XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();
         CellStyle initialStyle = StyleTemplate.createCommonStyle(workbook);
-
-        CellStyle clonedBlueStyle = workbook.createCellStyle();
+        clonedBlueStyle = workbook.createCellStyle();
         clonedBlueStyle.cloneStyleFrom(initialStyle);
 
         clonedBlueStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
         clonedBlueStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        CellStyle dateStyle = ExcelStyleAndSheetHandler.dateFormatting(workbook);
+        CellStyle dateStyle = ExcelStyleAndSheetUtils.dateFormatting(workbook);
 
         int rowNum = startRow; // Start from the row after the header
 
