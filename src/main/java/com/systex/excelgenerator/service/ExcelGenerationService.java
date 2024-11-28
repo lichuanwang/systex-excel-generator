@@ -21,6 +21,8 @@ public class ExcelGenerationService {
         for (Candidate candidate : candidates) {
             // create a new sheet
             ExcelSheet sheet = excelFile.createSheet(candidate.getName());
+
+            // Start creating each section
             PersonalInfoDataSection personalInfoDataSection = new PersonalInfoDataSection();
             personalInfoDataSection.setData(List.of(candidate));
 
@@ -38,6 +40,23 @@ public class ExcelGenerationService {
 
             ImageDataSection imageDataSection = new ImageDataSection();
             imageDataSection.setData(candidate.getImagepath());
+            imageDataSection.setImageType("png");
+
+            RadarChartSection radarChartSection = new RadarChartSection();
+            radarChartSection.setHeight(6);
+            radarChartSection.setWidth(6);
+
+            PieChartSection pieChartSection = new PieChartSection();
+            pieChartSection.setHeight(6);
+            pieChartSection.setWidth(6);
+
+            BarChartSection barChartSection = new BarChartSection();
+            barChartSection.setHeight(6);
+            barChartSection.setWidth(6);
+
+            LineChartSection lineChartSection = new LineChartSection();
+            lineChartSection.setHeight(6);
+            lineChartSection.setWidth(6);
 
             // add sections to sheet
             sheet.addSection(personalInfoDataSection, "A1");
@@ -45,17 +64,13 @@ public class ExcelGenerationService {
             sheet.addSection(experienceDataSection, "A9");
             sheet.addSection(projectDataSection, "H9");
             sheet.addSection(skillDataSection, "A15");
+            sheet.addSection(imageDataSection, "Z50");
+            sheet.addChartSection("B30", radarChartSection, "Skill");
+            sheet.addChartSection("B50", pieChartSection, "Skill");
+            sheet.addChartSection("B70", barChartSection, "Skill");
+            sheet.addChartSection("B90", lineChartSection, "Skill");
 
-            // add image section to sheet
-            sheet.addSection(imageDataSection , "png" , "Z50");
-
-            // add chart sections to sheet
-            sheet.addChartSection("B30", new RadarChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("B50", new PieChartSection(), "Skill", 6, 6);
-            sheet.addChartSection("B70", new BarChartSection(), "Skill",  6, 6);
-            sheet.addChartSection("B90", new LineChartSection(), "Skill", 6, 6);
-
-            // Hidden col
+            // Hide Column
             ExcelStyleAndSheetHandler.hideColumns(sheet.getXssfSheet(),false,10,12);
 
             // Determine the maximum number of columns
@@ -77,8 +92,7 @@ public class ExcelGenerationService {
         }
 
         // add protectSheet
-        ExcelStyleAndSheetHandler styleUtils = new ExcelStyleAndSheetHandler();
-        styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
+        ExcelStyleAndSheetHandler.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
 
         // Save the Excel file
         try {

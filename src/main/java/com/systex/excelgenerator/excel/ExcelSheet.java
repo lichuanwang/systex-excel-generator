@@ -2,13 +2,14 @@ package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
 import com.systex.excelgenerator.component.DataSection;
-import com.systex.excelgenerator.component.ImageDataSection;
 import com.systex.excelgenerator.component.Section;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class ExcelSheet {
     private final String sheetName;
     private Map<String, Section> sectionMap = new HashMap<>();
     private final List<ExcelSectionRange> sectionRanges = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger(ExcelSheet.class);
 
     public ExcelSheet(XSSFWorkbook workbook, String sheetName) {
         this.sheetName = sheetName;
@@ -36,7 +38,7 @@ public class ExcelSheet {
         int[] startingPoint = parseCellReference(cellReference);
 
         // Cell is empty or not empty can add section
-        if (!isEmptyCell(dataSection, startingPoint)) {
+        if (overlapWithOtherSections(dataSection, startingPoint)) {
             throw new IllegalArgumentException("資料重疊在"+cellReference);
         }
 
@@ -47,49 +49,36 @@ public class ExcelSheet {
         dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
-    // add image sections
-    public <T> void addSection(ImageDataSection dataSection, String imageType , String cellReference){
-        int[] startingPoint = parseCellReference(cellReference);
-
-        // Cell is empty or not empty can add section
-        if (!isEmptyCell(dataSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
-        }
-
-        // set image type
-        dataSection.setImageType(imageType);
-
-        this.sectionMap.put(dataSection.getTitle(), dataSection);
-
-        dataSection.render(this, startingPoint[0], startingPoint[1]);
-    }
-
     // add chart sections
-    public <T> void addChartSection(String cellReference, AbstractChartSection chartSection, String referenceSectionTitle, int chartHeight, int chartWidth) {
+    public void addChartSection(String cellReference, AbstractChartSection chartSection, String referenceDataSectionTitle) {
         // 傳section name進來再去查找
-        DataSection<T> dataSection = getSectionByName(referenceSectionTitle);
+        Section dataSection = this.sectionMap.get(referenceDataSectionTitle);
+
+        if (dataSection == null) {
+            throw new IllegalArgumentException("No reference section found. Please add dataSection to the sheet first.");
+        }
+
+        if (!(dataSection instanceof DataSection)) {
+            throw new IllegalArgumentException("Reference section is not a data section. Please refer to a data section when using addChartSection.");
+        }
+
+        chartSection.setDataSource((DataSection<?>) dataSection);
 
         int[] startingPoint = parseCellReference(cellReference);
 
-        chartSection.setHeight(chartHeight);
-        chartSection.setWidth(chartWidth);
-
         // Cell is empty or not empty can add section
-        if (!isEmptyCell(chartSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        if (overlapWithOtherSections(chartSection, startingPoint)) {
+            throw new IllegalArgumentException("資料重疊在" + cellReference);
         }
 
-        // set chart data source
-        chartSection.setDataSource(dataSection);
-
-         this.sectionMap.put(dataSection.getTitle() + " " + chartSection.getTitle(), chartSection);
+        this.sectionMap.put(dataSection.getTitle() + " " + chartSection.getTitle(), chartSection);
 
         // render chart sections
         chartSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
     // 判斷儲存格內是否有資料
-    private <T> boolean isEmptyCell(Section section , int[] startingPoint) {
+    private boolean overlapWithOtherSections(Section section , int[] startingPoint) {
 
         int startRow = startingPoint[0];
         int startCol = startingPoint[1];
@@ -104,27 +93,42 @@ public class ExcelSheet {
 
             // row and col都有交集才是有重疊到
             if (isRowOverlap && isColOverlap) {
-                return false;
+                return true;
             }
         }
 
         // 如果沒有交集的話再把section的位置加入之後要比對的section range list裡面
         this.sectionRanges.add(new ExcelSectionRange(startRow, startCol, endRow, endCol));
-        return true;
+        return false;
     }
 
     private int[] parseCellReference(String cellReference) {
-        CellReference data = new CellReference(cellReference);
+        // Initialize result array with default values
         int[] result = new int[2];
-        result[0] = data.getRow();
-        result[1] = data.getCol();
+
+        try {
+            // Null or empty check
+            if (cellReference == null || cellReference.trim().isEmpty()) {
+                throw new IllegalArgumentException("Cell reference cannot be null or empty.");
+            }
+
+            // Parse the cell reference
+            CellReference data = new CellReference(cellReference);
+
+            // Extract row and column
+            result[0] = data.getRow();
+            result[1] = data.getCol();
+        } catch (IllegalArgumentException e) {
+            // Handle invalid input format
+            logger.info("Invalid cell reference provided: " + cellReference);
+            throw e; // Re-throw the exception if needed, or handle it here
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            logger.info("An error occurred while parsing cell reference: " + e.getMessage());
+            throw new RuntimeException("Failed to parse cell reference: " + cellReference, e);
+        }
+
         return result;
-
-    }
-
-    public <T> DataSection<T> getSectionByName(String name) {
-
-        return (DataSection<T>) sectionMap.get(name);
     }
 
     // Method to create or get a row
