@@ -9,8 +9,8 @@ import java.util.List;
 
 public class PieChartSection extends AbstractChartSection {
 
-    public PieChartSection() {
-        super("Pie Chart");
+    public PieChartSection(String title) {
+        super(title);
     }
 
     @Override

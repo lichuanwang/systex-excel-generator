@@ -8,8 +8,8 @@ import java.util.List;
 
 public class LineChartSection extends AbstractChartSection{
 
-    public LineChartSection() {
-        super("Line Chart");
+    public LineChartSection(String title) {
+        super(title);
     }
 
     @Override

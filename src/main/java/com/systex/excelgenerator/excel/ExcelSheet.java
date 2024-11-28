@@ -1,22 +1,25 @@
 package com.systex.excelgenerator.excel;
 
 import com.systex.excelgenerator.component.AbstractChartSection;
+import com.systex.excelgenerator.component.ChartSection;
 import com.systex.excelgenerator.component.DataSection;
-import com.systex.excelgenerator.component.ImageDataSection;
 import com.systex.excelgenerator.component.Section;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class ExcelSheet {
     private final XSSFSheet xssfSheet;
     private final String sheetName;
-    private Map<String, Section> sectionMap = new HashMap<>();
+    private Map<String, List<Object>> sectionMap = new LinkedHashMap<>();
     private final List<ExcelSectionRange> sectionRanges = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger(ExcelSheet.class);
 
     public ExcelSheet(XSSFWorkbook workbook, String sheetName) {
         this.sheetName = sheetName;
@@ -31,68 +34,62 @@ public class ExcelSheet {
         return sheetName;
     }
 
-    public Map<String, Section> getSectionMap() {
-        return this.sectionMap;
-    }
+//    public Map<String, Section> getSectionMap() {
+//        return this.sectionMap;
+//    }
 
     public Workbook getWorkbook() {
         return xssfSheet.getWorkbook();
     }
 
-
-    public <T> void addSection(DataSection<T> dataSection, String cellReference) {
+    public void addSection(String cellReference, Section section) {
 
         int[] startingPoint = parseCellReference(cellReference);
 
-        // Cell is empty or not empty can add section
-        if (!isEmptyRange(dataSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        if (!canPlaceSection(section, startingPoint)) {
+            throw new IllegalArgumentException("資料重疊在" + cellReference);
         }
 
         // add section to map
-        this.sectionMap.put(dataSection.getTitle(), dataSection);
-
-        // Render the section at the calculated starting position
-        dataSection.render(this, startingPoint[0], startingPoint[1]);
+        ArrayList<Object> sectionData = new ArrayList<>();
+        sectionData.add(section);
+        sectionData.add(startingPoint);
+        this.sectionMap.put(section.getTitle(), sectionData);
     }
 
-    // add image sections
-    public void addSection(ImageDataSection dataSection, String imageType , String cellReference){
+    public <T> void addSection(String cellReference, AbstractChartSection chartSection, String referenceTitle) {
+        DataSection<T> dataSection = (DataSection<T>) this.sectionMap.get(referenceTitle).get(0);
+        if (dataSection == null) {
+            throw new IllegalArgumentException("Reference Section Not Found: " + referenceTitle);
+        }
         int[] startingPoint = parseCellReference(cellReference);
-
-        // Cell is empty or not empty can add section
-        if (!isEmptyRange(dataSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
+        if (!canPlaceSection(dataSection, startingPoint)) {
+            throw new IllegalArgumentException("There is overlap");
         }
 
-        // set image type
-        dataSection.setImageType(imageType);
+        List<Object> sectionData = new ArrayList<>();
+        sectionData.add(chartSection);
+        sectionData.add(startingPoint);
+        sectionData.add(dataSection);
 
-        this.sectionMap.put(dataSection.getTitle(), dataSection);
+        this.sectionMap.put(chartSection.getTitle(), sectionData);
 
-        dataSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
-
-    public void addChartSection(String cellReference, AbstractChartSection chartSection) {
-
-        int[] startingPoint = parseCellReference(cellReference);
-
-
-        // Cell is empty or not empty can add section
-        if (!isEmptyRange(chartSection, startingPoint)) {
-            throw new IllegalArgumentException("資料重疊在"+cellReference);
+    public void render() {
+        for (Map.Entry<String, List<Object>> sectionEntry : this.sectionMap.entrySet()) {
+            List<Object> sectionEntryValue = sectionEntry.getValue();
+            Section section = (Section) sectionEntryValue.get(0);
+            if (section instanceof ChartSection) {
+                ((ChartSection) section).setDataSource((DataSection<?>) sectionEntryValue.get(2));
+            }
+            int[] startingPoint = (int[]) sectionEntryValue.get(1);
+            section.render(this, startingPoint[0], startingPoint[1]);
         }
-
-        this.sectionMap.put(chartSection.getReferenceDataSection().getTitle() + " " + chartSection.getTitle(), chartSection);
-
-        // render chart sections
-        chartSection.render(this, startingPoint[0], startingPoint[1]);
     }
 
     // 判斷儲存格內是否有資料
-    // change function naming
-    private boolean isEmptyRange(Section section , int[] startingPoint) {
+    private boolean canPlaceSection(Section section , int[] startingPoint) {
 
         int startRow = startingPoint[0];
         int startCol = startingPoint[1];
@@ -117,11 +114,28 @@ public class ExcelSheet {
     }
 
     private int[] parseCellReference(String cellReference) {
-        // error handling
-        CellReference data = new CellReference(cellReference);
+        // Initialize result array with default values
         int[] result = new int[2];
-        result[0] = data.getRow();
-        result[1] = data.getCol();
+        try {
+            // Null or empty check
+            if (cellReference == null || cellReference.trim().isEmpty()) {
+                throw new IllegalArgumentException("Cell reference cannot be null or empty.");
+            }
+
+            // Parse the cell reference
+            CellReference data = new CellReference(cellReference);
+
+            // Extract row and column
+            result[0] = data.getRow();
+            result[1] = data.getCol();
+        } catch (IllegalArgumentException e) {
+            logger.info("Invalid cell reference provided: " + cellReference);
+            throw e; // Re-throw the exception if needed, or handle it here
+        } catch (Exception e) {
+            logger.info("An error occurred while parsing cell reference: " + e.getMessage());
+            throw new RuntimeException("Failed to parse cell reference: " + cellReference, e);
+        }
+
         return result;
     }
 

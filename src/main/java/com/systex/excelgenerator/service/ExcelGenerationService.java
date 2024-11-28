@@ -37,18 +37,19 @@ public class ExcelGenerationService {
             projectDataSection.setData(candidate.getProjects());
             skillDataSection.setData(candidate.getSkills());
             imageDataSection.setData(candidate.getImagepath());
+            imageDataSection.setImageType("png");
 
             // create each chart section
-            RadarChartSection radarChartSection = new RadarChartSection();
-            PieChartSection pieChartSection = new PieChartSection();
-            BarChartSection barChartSection = new BarChartSection();
-            LineChartSection lineChartSection = new LineChartSection();
+            RadarChartSection radarChartSection = new RadarChartSection("Skill Radar Chart");
+            PieChartSection pieChartSection = new PieChartSection("Skill Pie Chart");
+            BarChartSection barChartSection = new BarChartSection("Skill Bar Chart");
+            LineChartSection lineChartSection = new LineChartSection("Skill Line Chart");
 
             // set each chart section's data section reference
-            radarChartSection.setDataSource(skillDataSection);
-            pieChartSection.setDataSource(skillDataSection);
-            barChartSection.setDataSource(skillDataSection);
-            lineChartSection.setDataSource(skillDataSection);
+//            radarChartSection.setDataSource(skillDataSection);
+//            pieChartSection.setDataSource(skillDataSection);
+//            barChartSection.setDataSource(skillDataSection);
+//            lineChartSection.setDataSource(skillDataSection);
 
             // set height and width for each chart section
             radarChartSection.setHeight(6);
@@ -61,18 +62,21 @@ public class ExcelGenerationService {
             lineChartSection.setWidth(6);
 
             // add chart sections to sheet
-            sheet.addSection(personalInfoDataSection, "A1");
-            sheet.addSection(educationDataSection, "H60");
-            sheet.addSection(experienceDataSection, "A9");
-            sheet.addSection(projectDataSection, "H9");
-            sheet.addSection(skillDataSection, "A15");
-            sheet.addSection(imageDataSection , "png" , "Z50");
-            sheet.addChartSection("B30", radarChartSection);
-            sheet.addChartSection("B50", pieChartSection);
-            sheet.addChartSection("B70", barChartSection);
-            sheet.addChartSection("B90", lineChartSection);
+            sheet.addSection("A1", personalInfoDataSection);
+            sheet.addSection( "H60", educationDataSection);
+            sheet.addSection( "A9", experienceDataSection);
+            sheet.addSection( "H9", projectDataSection);
+            sheet.addSection("A15", skillDataSection);
+            sheet.addSection("Z50", imageDataSection);
 
-            // Hidden column
+            sheet.addSection("B30", radarChartSection, "Skill");
+            sheet.addSection("B50", pieChartSection, "Skill");
+            sheet.addSection("B70", barChartSection, "Skill");
+            sheet.addSection("B90", lineChartSection, "Skill");
+
+            sheet.render();
+
+            // Hide Column
             ExcelStyleAndSheetHandler.hideColumns(sheet.getXssfSheet(),false,10,12);
 
             // Determine the maximum number of columns
@@ -93,7 +97,7 @@ public class ExcelGenerationService {
             }
         }
 
-        // add protectSheet
+        // add sheet protection
         ExcelStyleAndSheetHandler styleUtils = new ExcelStyleAndSheetHandler();
         styleUtils.protectSheet(excelFile.getExelSheet("JohnDoe").getXssfSheet(), "12345");
 

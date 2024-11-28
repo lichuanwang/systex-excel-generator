@@ -11,8 +11,8 @@ import java.util.List;
 
 public class RadarChartSection extends AbstractChartSection {
 
-    public RadarChartSection() {
-        super("Radar Chart");
+    public RadarChartSection(String title) {
+        super(title);
     }
 
     @Override
