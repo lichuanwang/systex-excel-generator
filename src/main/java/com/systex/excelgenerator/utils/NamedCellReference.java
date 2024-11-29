@@ -1,48 +1,38 @@
 package com.systex.excelgenerator.utils;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.poi.ss.util.CellReference;
 
 import java.util.Objects;
 
+@EqualsAndHashCode
+@ToString
 public class NamedCellReference {
 
-    private final String cellName;
     private final CellReference cellReference;
+    private final String cellRef;
 
-    public NamedCellReference(String cellName, int pRow, int pCol) {
-        this(cellName, null, pRow, pCol, false, false);
+    public NamedCellReference(String cellRef){
+        this.cellRef = cellRef;
+        this.cellReference = null;
     }
 
-    // Apache POI CellReference Constructor 所有功能
-    public NamedCellReference(String cellName, String pSheetName, int pRow, int pCol, boolean pAbsRow, boolean pAbsCol) {
-        this.cellReference = new CellReference(pSheetName, pRow, pCol, pAbsRow, pAbsCol);
-        this.cellName = cellName;
+    public NamedCellReference(int row , int col){
+        this(row , col , false , false);
     }
 
-    public String getCellName() {
-        return cellName;
+    public NamedCellReference(int row , int col, boolean lockRow, boolean lockCol){
+        this.cellRef = null;
+        this.cellReference = new CellReference(row , col, lockRow, lockCol);
     }
 
-    public CellReference getCellReference() {
-        return cellReference;
-    }
+    public String getReplacement(){
+        if (cellRef != null){
+            return cellRef;
+        }
 
-    public String formatAsString() {
+        Objects.requireNonNull(cellReference);
         return cellReference.formatAsString();
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NamedCellReference that)) return false;
-
-        return Objects.equals(cellName, that.cellName) && Objects.equals(cellReference, that.cellReference);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(cellName);
-        result = 31 * result + Objects.hashCode(cellReference);
-        return result;
     }
 }

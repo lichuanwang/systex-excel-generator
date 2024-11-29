@@ -6,16 +6,16 @@ import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import com.systex.excelgenerator.utils.FormulaHandler;
+import com.systex.excelgenerator.utils.FormulaUtil;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
-
-    private FormulaHandler formulaHandler = new FormulaHandler();
 
     public EducationDataSection() {
         super("Education");
@@ -75,13 +75,35 @@ public class EducationDataSection extends AbstractDataSection<Education> {
                     DATEDIF(${startCellRef},${endCellRef},"ym")&"個月"
                     """;
 
+            Map<String , NamedCellReference> replacemap = new HashMap<>();
+            replacemap.put("startCellRef" , new NamedCellReference("K62"));
+            replacemap.put("endCellRef" , new NamedCellReference(row.getRowNum() , startCol + 4  , true , true));
+
+            row.createCell(startCol + 5).setCellFormula(FormulaUtil.parseFormula(formula , replacemap));
+
+            formula = "${SheetName}!${CellRef}";
+
+            replacemap.clear();
+            replacemap.put("SheetName" , new NamedCellReference("JohnDoe"));
+            replacemap.put("CellRef" , new NamedCellReference("A6"));
+
+            row.createCell(startCol + 6).setCellFormula(FormulaUtil.parseFormula(formula , replacemap));
+
             // 要替換的佔位符set
-            Set<NamedCellReference> replaceSet = new HashSet<>();
-            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
-            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
+//            Set<NamedCellReference> replaceSet = new HashSet<>();
+//            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
+//            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
+
+//            Map<String , String> replacemap = new HashMap<>();
+//            replacemap.put("startCellRef" , "K62");
+//            replacemap.put("endCellRef" , "L62");
+
+//            Map<String , Map<Integer , Integer >> replacemap2 = new HashMap<>();
+//            replacemap2.put("startCellRef" , )
 
             // 計算過後的時間區間的值
-            row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
+            //row.createCell(startCol + 5).setCellFormula(FormulaUtil.parseFormula2(replaceSet , formula));
+//            row.createCell(startCol + 5).setCellFormula(FormulaUtil.parseFormula(formula , replacemap));
         }
     }
 

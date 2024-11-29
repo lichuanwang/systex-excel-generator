@@ -3,10 +3,9 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Experience;
 import com.systex.excelgenerator.style.StyleTemplate;
-
-import com.systex.excelgenerator.utils.DataValidationHandler;
+import com.systex.excelgenerator.utils.DataValidationUtil;
 import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
-import com.systex.excelgenerator.utils.FormulaHandler;
+import com.systex.excelgenerator.utils.FormulaUtil;
 import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,8 +15,6 @@ import java.util.Set;
 
 public class ExperienceDataSection extends AbstractDataSection<Experience> {
 
-    private FormulaHandler formulaHandler = new FormulaHandler();
-    private DataValidationHandler dataValidationHandler;
     private CellStyle clonedBlueStyle;
 
     public ExperienceDataSection() {
@@ -90,12 +87,12 @@ public class ExperienceDataSection extends AbstractDataSection<Experience> {
                     """;
 
             // 要替換的佔位符set
-            Set<NamedCellReference> replaceSet = new HashSet<>();
-            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
-            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
+//            Set<NamedCellReference> replaceSet = new HashSet<>();
+//            replaceSet.add(new NamedCellReference("startCellRef" , row.getRowNum() , startCol + 3));
+//            replaceSet.add(new NamedCellReference("endCellRef" , row.getRowNum() , startCol + 4));
 
             // 計算過後的時間區間的值
-            row.createCell(startCol + 5).setCellFormula(formulaHandler.parseFormula2(replaceSet , formula));
+            //row.createCell(startCol + 5).setCellFormula(FormulaUtil.parseFormula2(replaceSet , formula));
         }
     }
 

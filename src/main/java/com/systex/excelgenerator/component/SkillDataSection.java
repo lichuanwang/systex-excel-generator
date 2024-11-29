@@ -2,13 +2,12 @@ package com.systex.excelgenerator.component;
 
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Skill;
-import com.systex.excelgenerator.utils.DataValidationHandler;
+import com.systex.excelgenerator.utils.DataValidationUtil;
 import org.apache.poi.ss.usermodel.Row;
-import com.systex.excelgenerator.utils.FormattingAndFilter;
+import com.systex.excelgenerator.utils.FormattingAndFilterUtil;
 
 public class SkillDataSection extends AbstractDataSection<Skill> {
 
-    private FormattingAndFilter formattingAndfilter = new FormattingAndFilter();
     public SkillDataSection() {
         super("Skill");
     }
@@ -50,14 +49,13 @@ public class SkillDataSection extends AbstractDataSection<Skill> {
             row.createCell(colNum++).setCellValue(skill.getSkillName());
 
             // test data valid , set skill level between 0-5
-            DataValidationHandler dataValidationHandler = new DataValidationHandler(sheet.getXssfSheet()
-                    , row.getRowNum() , row.getRowNum() , startCol + 2 , startCol + 2);
-            dataValidationHandler.IntegerDataValid("between" , "0" , "5");
+            DataValidationUtil.validIntegerData(sheet , row.getRowNum() , row.getRowNum() ,
+                    startCol + 2 , startCol + 2 ,"between" , "0" , "5");
 
             row.createCell(colNum).setCellValue(skill.getLevel());
             // if skill level > 2 (conditional test)
-            formattingAndfilter.ConditionalFormatting(sheet.getXssfSheet() , "2"
-                    , row.getRowNum() , row.getRowNum() , startCol + 2);
+            FormattingAndFilterUtil.applyConditionalFormatting(sheet , row.getRowNum(), row.getRowNum(),
+                    startCol + 2, startCol + 2, "2");
         }
         this.dataEndRow = rowNum - 1;
     }

@@ -4,9 +4,11 @@ import com.systex.excelgenerator.style.StyleTemplate;
 import com.systex.excelgenerator.utils.ExcelStyleAndSheetUtils;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Candidate;
-import com.systex.excelgenerator.utils.DataValidationHandler;
-import com.systex.excelgenerator.utils.FormattingAndFilter;
-import com.systex.excelgenerator.utils.HyperlinkHandler;
+import com.systex.excelgenerator.utils.DataValidationUtil;
+import com.systex.excelgenerator.utils.FormattingAndFilterUtil;
+import com.systex.excelgenerator.utils.HyperLinkUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -16,8 +18,6 @@ import java.util.Collection;
 public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
 
     private Candidate candidate;
-    private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
-    private FormattingAndFilter formattingAndFilter = new FormattingAndFilter();
 
     public PersonalInfoDataSection() {
         super("Personal Information");
@@ -69,7 +69,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getName());
 
         // freeze cell
-        formattingAndFilter.freezeCell(sheet.getXssfSheet() , startCol , startRow);
+        FormattingAndFilterUtil.freezeCell(sheet , startCol , startRow);
 
 
         // Protection cell
@@ -77,9 +77,8 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getGender());
 
         // test data valid - gender : male/female
-        DataValidationHandler dataValidationHandler = new DataValidationHandler(sheet.getXssfSheet() , row.getRowNum(), row.getRowNum(), startCol, startCol);
         String[] options = {"Male","Female"};
-        dataValidationHandler.ListDataValid(options);
+        DataValidationUtil.validListData(sheet , row.getRowNum(), row.getRowNum(), startCol, startCol ,options);
 
         row = sheet.createOrGetRow(startRow++);
         row.createCell(startCol).setCellValue(DateFormat.getDateInstance().format(candidate.getBirthday()));
@@ -96,7 +95,7 @@ public class PersonalInfoDataSection extends AbstractDataSection<Candidate> {
         row.createCell(startCol).setCellValue(candidate.getEmail());
 
         // Set Email HyperLink
-        hyperlinkHandler.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
+        HyperLinkUtil.setEmailLink(candidate.getEmail(), row.getCell(startCol) , sheet.getWorkbook());
 
         row = sheet.createOrGetRow(startRow);
         row.createCell(startCol).setCellValue(candidate.getAddress().toString());

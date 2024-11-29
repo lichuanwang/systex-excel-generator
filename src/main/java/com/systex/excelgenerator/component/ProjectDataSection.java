@@ -3,7 +3,7 @@ package com.systex.excelgenerator.component;
 import com.systex.excelgenerator.excel.ExcelSheet;
 import com.systex.excelgenerator.model.Project;
 import com.systex.excelgenerator.style.StyleTemplate;
-import com.systex.excelgenerator.utils.HyperlinkHandler;
+import com.systex.excelgenerator.utils.HyperLinkUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,8 +11,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ProjectDataSection extends AbstractDataSection<Project> {
-
-    private HyperlinkHandler hyperlinkHandler = new HyperlinkHandler();
 
     public ProjectDataSection() {
         super("Project");
@@ -52,13 +50,13 @@ public class ProjectDataSection extends AbstractDataSection<Project> {
             row.createCell(startCol).setCellValue(project.getProjectName());
 
             // Set Outer HyperLink
-            hyperlinkHandler.setHyperLink("https://github.com/ruanyanamy/systex-excel-generator"
+            HyperLinkUtil.setHyperLink("https://github.com/ruanyanamy/systex-excel-generator"
                     , row.getCell(startCol) , sheet.getWorkbook());
 
             row.createCell(startCol + 1).setCellValue(project.getRole());
 
             // Set Internal HyperLink
-            hyperlinkHandler.setInternalLink(sheet.getSheetName(), row.getCell(startCol + 1) , sheet.getWorkbook());
+            HyperLinkUtil.setInternalLink("JaneSmith", row.getCell(startCol + 1) , sheet.getWorkbook());
 
             row.createCell(startCol + 2).setCellValue(project.getDescription());
             XSSFWorkbook workbook = (XSSFWorkbook) sheet.getWorkbook();

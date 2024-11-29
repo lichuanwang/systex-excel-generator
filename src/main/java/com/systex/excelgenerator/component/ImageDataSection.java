@@ -36,7 +36,7 @@ public class ImageDataSection extends AbstractDataSection<String> {
             // 讀取圖片
             try (FileInputStream inputStream = new FileInputStream(imagePath)) {
                 byte[] bytes = IOUtils.toByteArray(inputStream);
-                int pictureIndex = sheet.getWorkbook().addPicture(bytes, converetImageType(imageType));
+                int pictureIndex = sheet.getWorkbook().addPicture(bytes, converetImageType(sheet , imageType));
 
                 XSSFClientAnchor anchor = sheet.getXssfSheet().getWorkbook().getCreationHelper().createClientAnchor();
                 anchor.setCol1(startCol);
@@ -62,21 +62,20 @@ public class ImageDataSection extends AbstractDataSection<String> {
         // add footer related content if necessary
     }
 
-    protected int converetImageType(String imageType) {
-        String imagetype = imageType.toLowerCase();
-        switch (imagetype) {
+    protected int converetImageType(ExcelSheet sheet , String imageType) {
+        switch (imageType.toLowerCase()) {
             case "emf":
-                return 2;
+                return sheet.getWorkbook().PICTURE_TYPE_EMF;
             case "wnf":
-                return 3;
+                return sheet.getWorkbook().PICTURE_TYPE_WMF;
             case "pict":
-                return 4;
+                return sheet.getWorkbook().PICTURE_TYPE_PICT;
             case "jpeg":
-                return 5;
+                return sheet.getWorkbook().PICTURE_TYPE_JPEG;
             case "png":
-                return 6;
+                return sheet.getWorkbook().PICTURE_TYPE_PNG;
             case "dib":
-                return 7;
+                return sheet.getWorkbook().PICTURE_TYPE_DIB;
             default:
                 throw new IllegalArgumentException("沒有這種圖片類型: " + imageType);
         }
