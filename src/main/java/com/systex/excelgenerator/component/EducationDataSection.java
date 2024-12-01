@@ -11,9 +11,7 @@ import com.systex.excelgenerator.utils.NamedCellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class EducationDataSection extends AbstractDataSection<Education> {
 
@@ -79,7 +77,7 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             replacemap.put("startCellRef" , new NamedCellReference("K62"));
             replacemap.put("endCellRef" , new NamedCellReference(row.getRowNum() , startCol + 4  , true , true));
 
-            row.createCell(startCol + 5).setCellFormula(FormulaUtil.parseFormula(formula , replacemap));
+            row.createCell(startCol + 5).setCellFormula(FormulaUtil.parse(formula , replacemap));
 
             formula = "${SheetName}!${CellRef}";
 
@@ -87,7 +85,7 @@ public class EducationDataSection extends AbstractDataSection<Education> {
             replacemap.put("SheetName" , new NamedCellReference("JohnDoe"));
             replacemap.put("CellRef" , new NamedCellReference("A6"));
 
-            row.createCell(startCol + 6).setCellFormula(FormulaUtil.parseFormula(formula , replacemap));
+            row.createCell(startCol + 6).setCellFormula(FormulaUtil.parse(formula , replacemap));
 
             // 要替換的佔位符set
 //            Set<NamedCellReference> replaceSet = new HashSet<>();
